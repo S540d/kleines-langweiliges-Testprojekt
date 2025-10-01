@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Eisenhauer Matrix</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -10,73 +10,72 @@
     <div class="container">
         <header>
             <h1>Eisenhauer Matrix</h1>
-            <p class="subtitle">Organisiere deine Aufgaben nach Dringlichkeit und Wichtigkeit</p>
         </header>
 
         <div class="add-task-section">
-            <input type="text" id="taskInput" placeholder="Neue Aufgabe eingeben...">
-            <button id="addTaskBtn">Aufgabe hinzufügen</button>
+            <input type="text" id="taskInput" placeholder="Neue Aufgabe (max. 140 Zeichen)" maxlength="140">
+            <button id="addTaskBtn">+</button>
         </div>
 
-        <div class="matrix">
-            <!-- Quadrant 1: Dringend & Wichtig -->
-            <div class="quadrant q1" data-quadrant="1">
-                <div class="quadrant-header">
-                    <h2>Dringend & Wichtig</h2>
-                    <span class="subtitle-small">Sofort erledigen</span>
+        <div class="segments">
+            <!-- Segment 1: Do! -->
+            <div class="segment q1" data-segment="1">
+                <div class="segment-header">
+                    <h2>Do!</h2>
                 </div>
-                <div class="task-list" id="quadrant1"></div>
+                <div class="task-list" id="segment1" data-segment="1"></div>
             </div>
 
-            <!-- Quadrant 2: Nicht dringend & Wichtig -->
-            <div class="quadrant q2" data-quadrant="2">
-                <div class="quadrant-header">
-                    <h2>Nicht dringend & Wichtig</h2>
-                    <span class="subtitle-small">Planen & einplanen</span>
+            <!-- Segment 2: Schedule! -->
+            <div class="segment q2" data-segment="2">
+                <div class="segment-header">
+                    <h2>Schedule!</h2>
                 </div>
-                <div class="task-list" id="quadrant2"></div>
+                <div class="task-list" id="segment2" data-segment="2"></div>
             </div>
 
-            <!-- Quadrant 3: Dringend & Nicht wichtig -->
-            <div class="quadrant q3" data-quadrant="3">
-                <div class="quadrant-header">
-                    <h2>Dringend & Nicht wichtig</h2>
-                    <span class="subtitle-small">Delegieren</span>
+            <!-- Segment 3: Delegate! -->
+            <div class="segment q3" data-segment="3">
+                <div class="segment-header">
+                    <h2>Delegate!</h2>
                 </div>
-                <div class="task-list" id="quadrant3"></div>
+                <div class="task-list" id="segment3" data-segment="3"></div>
             </div>
 
-            <!-- Quadrant 4: Nicht dringend & Nicht wichtig -->
-            <div class="quadrant q4" data-quadrant="4">
-                <div class="quadrant-header">
-                    <h2>Nicht dringend & Nicht wichtig</h2>
-                    <span class="subtitle-small">Eliminieren</span>
+            <!-- Segment 4: Ignore! -->
+            <div class="segment q4" data-segment="4">
+                <div class="segment-header">
+                    <h2>Ignore!</h2>
                 </div>
-                <div class="task-list" id="quadrant4"></div>
+                <div class="task-list" id="segment4" data-segment="4"></div>
+            </div>
+
+            <!-- Segment 5: Done! -->
+            <div class="segment q5" data-segment="5">
+                <div class="segment-header">
+                    <h2>Done!</h2>
+                </div>
+                <div class="task-list" id="segment5" data-segment="5"></div>
             </div>
         </div>
     </div>
 
-    <!-- Modal für Quadranten-Auswahl -->
-    <div id="quadrantModal" class="modal">
+    <!-- Modal für Segment-Auswahl -->
+    <div id="segmentModal" class="modal">
         <div class="modal-content">
-            <h3>Wähle einen Quadranten</h3>
-            <div class="quadrant-buttons">
-                <button class="quadrant-btn q1-btn" data-quadrant="1">
-                    <strong>Dringend & Wichtig</strong>
-                    <span>Sofort erledigen</span>
+            <h3>Wähle ein Segment</h3>
+            <div class="segment-buttons">
+                <button class="segment-btn q1-btn" data-segment="1">
+                    <strong>Do!</strong>
                 </button>
-                <button class="quadrant-btn q2-btn" data-quadrant="2">
-                    <strong>Nicht dringend & Wichtig</strong>
-                    <span>Planen</span>
+                <button class="segment-btn q2-btn" data-segment="2">
+                    <strong>Schedule!</strong>
                 </button>
-                <button class="quadrant-btn q3-btn" data-quadrant="3">
-                    <strong>Dringend & Nicht wichtig</strong>
-                    <span>Delegieren</span>
+                <button class="segment-btn q3-btn" data-segment="3">
+                    <strong>Delegate!</strong>
                 </button>
-                <button class="quadrant-btn q4-btn" data-quadrant="4">
-                    <strong>Nicht dringend & Nicht wichtig</strong>
-                    <span>Eliminieren</span>
+                <button class="segment-btn q4-btn" data-segment="4">
+                    <strong>Ignore!</strong>
                 </button>
             </div>
             <button id="cancelBtn" class="cancel-btn">Abbrechen</button>

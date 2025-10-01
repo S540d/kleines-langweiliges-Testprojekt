@@ -3,7 +3,8 @@ let tasks = JSON.parse(localStorage.getItem('eisenhauerTasks')) || {
     1: [],
     2: [],
     3: [],
-    4: []
+    4: [],
+    5: []
 };
 
 let currentTask = null;
@@ -11,13 +12,14 @@ let currentTask = null;
 // DOM Elements
 const taskInput = document.getElementById('taskInput');
 const addTaskBtn = document.getElementById('addTaskBtn');
-const modal = document.getElementById('quadrantModal');
+const modal = document.getElementById('segmentModal');
 const cancelBtn = document.getElementById('cancelBtn');
-const quadrantBtns = document.querySelectorAll('.quadrant-btn');
+const segmentBtns = document.querySelectorAll('.segment-btn');
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     renderAllTasks();
+    setupDragAndDrop();
 });
 
 // Add Task Button Click
@@ -33,12 +35,12 @@ taskInput.addEventListener('keypress', (e) => {
 // Cancel Button
 cancelBtn.addEventListener('click', closeModal);
 
-// Quadrant Selection Buttons
-quadrantBtns.forEach(btn => {
+// Segment Selection Buttons
+segmentBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-        const quadrantId = parseInt(btn.dataset.quadrant);
+        const segmentId = parseInt(btn.dataset.segment);
         if (currentTask) {
-            addTaskToQuadrant(currentTask, quadrantId);
+            addTaskToSegment(currentTask, segmentId);
             currentTask = null;
         }
         closeModal();
@@ -66,24 +68,25 @@ function addTask() {
     taskInput.value = '';
 }
 
-function addTaskToQuadrant(taskText, quadrantId) {
+function addTaskToSegment(taskText, segmentId) {
     const task = {
         id: Date.now(),
         text: taskText,
-        quadrant: quadrantId
+        segment: segmentId,
+        checked: false
     };
 
-    tasks[quadrantId].push(task);
+    tasks[segmentId].push(task);
     saveTasks();
-    renderQuadrant(quadrantId);
+    renderSegment(segmentId);
 }
 
-function moveTask(taskId, fromQuadrant) {
-    const taskIndex = tasks[fromQuadrant].findIndex(t => t.id === taskId);
+function moveTask(taskId, fromSegment) {
+    const taskIndex = tasks[fromSegment].findIndex(t => t.id === taskId);
     if (taskIndex === -1) return;
 
-    const task = tasks[fromQuadrant][taskIndex];
-    currentTask = { ...task, fromQuadrant };
+    const task = tasks[fromSegment][taskIndex];
+    currentTask = { ...task, fromSegment };
 
     openModalForMove();
 }
@@ -91,27 +94,28 @@ function moveTask(taskId, fromQuadrant) {
 function openModalForMove() {
     modal.classList.add('active');
 
-    // Update quadrant buttons for move
-    quadrantBtns.forEach(btn => {
-        const quadrantId = parseInt(btn.dataset.quadrant);
+    // Update segment buttons for move
+    segmentBtns.forEach(btn => {
+        const segmentId = parseInt(btn.dataset.segment);
         btn.onclick = () => {
-            if (currentTask.fromQuadrant !== quadrantId) {
-                // Remove from old quadrant
-                tasks[currentTask.fromQuadrant] = tasks[currentTask.fromQuadrant].filter(
+            if (currentTask.fromSegment !== segmentId) {
+                // Remove from old segment
+                tasks[currentTask.fromSegment] = tasks[currentTask.fromSegment].filter(
                     t => t.id !== currentTask.id
                 );
 
-                // Add to new quadrant
+                // Add to new segment
                 const task = {
                     id: currentTask.id,
                     text: currentTask.text,
-                    quadrant: quadrantId
+                    segment: segmentId,
+                    checked: false
                 };
-                tasks[quadrantId].push(task);
+                tasks[segmentId].push(task);
 
                 saveTasks();
-                renderQuadrant(currentTask.fromQuadrant);
-                renderQuadrant(quadrantId);
+                renderSegment(currentTask.fromSegment);
+                renderSegment(segmentId);
             }
             currentTask = null;
             closeModal();
@@ -119,27 +123,49 @@ function openModalForMove() {
     });
 }
 
-function deleteTask(taskId, quadrantId) {
-    if (confirm('Aufgabe wirklich löschen?')) {
-        tasks[quadrantId] = tasks[quadrantId].filter(t => t.id !== taskId);
+function toggleTask(taskId, segmentId) {
+    const taskIndex = tasks[segmentId].findIndex(t => t.id === taskId);
+    if (taskIndex === -1) return;
+
+    const task = tasks[segmentId][taskIndex];
+
+    // Move to Done segment (5)
+    if (!task.checked && segmentId !== 5) {
+        // Remove from current segment
+        tasks[segmentId].splice(taskIndex, 1);
+
+        // Add to Done segment
+        task.segment = 5;
+        task.checked = true;
+        tasks[5].push(task);
+
         saveTasks();
-        renderQuadrant(quadrantId);
+        renderSegment(segmentId);
+        renderSegment(5);
     }
 }
 
-function renderQuadrant(quadrantId) {
-    const quadrantElement = document.getElementById(`quadrant${quadrantId}`);
-    quadrantElement.innerHTML = '';
+function deleteTask(taskId, segmentId) {
+    if (confirm('Aufgabe wirklich löschen?')) {
+        tasks[segmentId] = tasks[segmentId].filter(t => t.id !== taskId);
+        saveTasks();
+        renderSegment(segmentId);
+    }
+}
 
-    tasks[quadrantId].forEach(task => {
+function renderSegment(segmentId) {
+    const segmentElement = document.getElementById(`segment${segmentId}`);
+    segmentElement.innerHTML = '';
+
+    tasks[segmentId].forEach(task => {
         const taskElement = createTaskElement(task);
-        quadrantElement.appendChild(taskElement);
+        segmentElement.appendChild(taskElement);
     });
 }
 
 function renderAllTasks() {
-    for (let i = 1; i <= 4; i++) {
-        renderQuadrant(i);
+    for (let i = 1; i <= 5; i++) {
+        renderSegment(i);
     }
 }
 
@@ -147,81 +173,72 @@ function createTaskElement(task) {
     const div = document.createElement('div');
     div.className = 'task-item';
     div.draggable = true;
+    div.dataset.taskId = task.id;
+    div.dataset.segmentId = task.segment;
 
-    div.innerHTML = `
-        <span class="task-text">${escapeHtml(task.text)}</span>
-        <div class="task-actions">
-            <button class="move-btn" onclick="moveTask(${task.id}, ${task.quadrant})">Verschieben</button>
-            <button class="delete-btn" onclick="deleteTask(${task.id}, ${task.quadrant})">Löschen</button>
-        </div>
-    `;
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.className = 'task-checkbox';
+    checkbox.checked = task.checked;
 
-    // Drag and Drop
-    div.addEventListener('dragstart', (e) => {
-        e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/plain', JSON.stringify({
-            taskId: task.id,
-            fromQuadrant: task.quadrant
-        }));
-        div.style.opacity = '0.5';
+    // Only enable checkbox for segments 1-4
+    if (task.segment !== 5) {
+        checkbox.addEventListener('change', () => {
+            toggleTask(task.id, task.segment);
+        });
+    }
+
+    const content = document.createElement('div');
+    content.className = 'task-content';
+
+    const textSpan = document.createElement('span');
+    textSpan.className = 'task-text';
+    textSpan.textContent = task.text;
+
+    const actions = document.createElement('div');
+    actions.className = 'task-actions';
+
+    // Only show move button for segments 1-4
+    if (task.segment !== 5) {
+        const moveBtn = document.createElement('button');
+        moveBtn.className = 'move-btn';
+        moveBtn.textContent = '↔';
+        moveBtn.addEventListener('click', () => {
+            moveTask(task.id, task.segment);
+        });
+        actions.appendChild(moveBtn);
+    }
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'delete-btn';
+    deleteBtn.textContent = '✕';
+    deleteBtn.addEventListener('click', () => {
+        deleteTask(task.id, task.segment);
     });
+    actions.appendChild(deleteBtn);
 
-    div.addEventListener('dragend', () => {
-        div.style.opacity = '1';
-    });
+    content.appendChild(textSpan);
+    content.appendChild(actions);
+
+    div.appendChild(checkbox);
+    div.appendChild(content);
+
+    // Drag and Drop Events
+    div.addEventListener('dragstart', handleDragStart);
+    div.addEventListener('dragend', handleDragEnd);
 
     return div;
 }
 
-// Drag and Drop for Quadrants
-document.querySelectorAll('.task-list').forEach((quadrantList, index) => {
-    const quadrantId = index + 1;
-
-    quadrantList.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        e.dataTransfer.dropEffect = 'move';
-        quadrantList.style.background = '#e0e7ff';
-    });
-
-    quadrantList.addEventListener('dragleave', () => {
-        quadrantList.style.background = '';
-    });
-
-    quadrantList.addEventListener('drop', (e) => {
-        e.preventDefault();
-        quadrantList.style.background = '';
-
-        const data = JSON.parse(e.dataTransfer.getData('text/plain'));
-        const { taskId, fromQuadrant } = data;
-
-        if (fromQuadrant !== quadrantId) {
-            // Remove from old quadrant
-            const taskIndex = tasks[fromQuadrant].findIndex(t => t.id === taskId);
-            if (taskIndex !== -1) {
-                const task = tasks[fromQuadrant][taskIndex];
-                tasks[fromQuadrant].splice(taskIndex, 1);
-
-                // Add to new quadrant
-                task.quadrant = quadrantId;
-                tasks[quadrantId].push(task);
-
-                saveTasks();
-                renderQuadrant(fromQuadrant);
-                renderQuadrant(quadrantId);
-            }
-        }
-    });
-});
-
 function openModal() {
     modal.classList.add('active');
 
-    // Reset quadrant buttons to normal add functionality
-    quadrantBtns.forEach(btn => {
-        const quadrantId = parseInt(btn.dataset.quadrant);
+    // Reset segment buttons to normal add functionality
+    segmentBtns.forEach(btn => {
+        const segmentId = parseInt(btn.dataset.segment);
         btn.onclick = () => {
             if (currentTask) {
-                addTaskToQuadrant(currentTask, quadrantId);
+                addTaskToSegment(currentTask, segmentId);
                 currentTask = null;
             }
             closeModal();
@@ -242,4 +259,92 @@ function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+}
+
+// Drag and Drop Functions
+let draggedElement = null;
+
+function handleDragStart(e) {
+    draggedElement = e.target;
+    e.target.style.opacity = '0.5';
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', e.target.innerHTML);
+}
+
+function handleDragEnd(e) {
+    e.target.style.opacity = '1';
+
+    // Remove all drag-over styles
+    document.querySelectorAll('.task-list').forEach(list => {
+        list.classList.remove('drag-over');
+    });
+}
+
+function handleDragOver(e) {
+    if (e.preventDefault) {
+        e.preventDefault();
+    }
+    e.dataTransfer.dropEffect = 'move';
+    return false;
+}
+
+function handleDragEnter(e) {
+    if (e.target.classList.contains('task-list')) {
+        e.target.classList.add('drag-over');
+    }
+}
+
+function handleDragLeave(e) {
+    if (e.target.classList.contains('task-list')) {
+        e.target.classList.remove('drag-over');
+    }
+}
+
+function handleDrop(e) {
+    if (e.stopPropagation) {
+        e.stopPropagation();
+    }
+
+    if (!draggedElement) return false;
+
+    const taskId = parseInt(draggedElement.dataset.taskId);
+    const fromSegment = parseInt(draggedElement.dataset.segmentId);
+    const toSegment = parseInt(e.currentTarget.dataset.segment);
+
+    if (fromSegment !== toSegment) {
+        // Find the task
+        const taskIndex = tasks[fromSegment].findIndex(t => t.id === taskId);
+        if (taskIndex !== -1) {
+            const task = tasks[fromSegment][taskIndex];
+
+            // Remove from old segment
+            tasks[fromSegment].splice(taskIndex, 1);
+
+            // Add to new segment
+            task.segment = toSegment;
+            // Reset checked status when moving to segments 1-4
+            if (toSegment !== 5) {
+                task.checked = false;
+            }
+            tasks[toSegment].push(task);
+
+            saveTasks();
+            renderSegment(fromSegment);
+            renderSegment(toSegment);
+        }
+    }
+
+    e.currentTarget.classList.remove('drag-over');
+    return false;
+}
+
+function setupDragAndDrop() {
+    const taskLists = document.querySelectorAll('.task-list');
+
+    taskLists.forEach(list => {
+        list.addEventListener('dragover', handleDragOver, false);
+        list.addEventListener('dragenter', handleDragEnter, false);
+        list.addEventListener('dragleave', handleDragLeave, false);
+        list.addEventListener('drop', handleDrop, false);
+    });
 }
