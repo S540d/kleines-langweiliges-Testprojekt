@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Black background -->
+  <rect width="512" height="512" fill="#000000"/>
+
+  <!-- Grid lines -->
+  <g stroke="#FFFFFF" stroke-width="10" stroke-linecap="round">
+    <!-- Vertical line -->
+    <line x1="256" y1="77" x2="256" y2="435"/>
+    <!-- Horizontal line -->
+    <line x1="77" y1="256" x2="435" y2="256"/>
+  </g>
+
+  <!-- Checkmarks -->
+  <g stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <!-- Top-left -->
+    <polyline points="138,148 152,162 180,134"/>
+    <!-- Top-right -->
+    <polyline points="318,148 332,162 360,134"/>
+    <!-- Bottom-left -->
+    <polyline points="138,328 152,342 180,314"/>
+    <!-- Bottom-right -->
+    <polyline points="318,328 332,342 360,314"/>
+  </g>
+</svg>
