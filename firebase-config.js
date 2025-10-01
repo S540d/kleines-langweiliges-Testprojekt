@@ -2,15 +2,15 @@
 // WICHTIG: Ersetze diese Werte mit deinen eigenen Firebase-Projektwerten
 // Siehe FIREBASE-SETUP.md für Anleitung
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyADQiN-B5oo-JFssHGVzHYnCd6SDHRBgA0",
-    authDomain: "eisenhauer-b18d7.firebaseapp.com",
-    projectId: "eisenhauer-b18d7",
-    storageBucket: "eisenhauer-b18d7.firebasestorage.app",
-    messagingSenderId: "665514608611",
-    appId: "1:665514608611:web:8a44707c5dc2d6276e42d6",
- //   measurementId: "G-CRW8LEWZHL"
-  };
+const firebaseConfig = {
+    apiKey: "AIzaSyDVZh7wLZeFXpoxIqwKFtC8KsYj9zF6lBM",
+    authDomain: "eisenhauer-matrix.firebaseapp.com",
+    projectId: "eisenhauer-matrix",
+    storageBucket: "eisenhauer-matrix.firebasestorage.app",
+    messagingSenderId: "174175941071",
+    appId: "1:174175941071:web:80d5a25ed700b99809e2ba",
+    measurementId: "G-VY3618D2RT"
+};
 
 // Firebase initialisieren
 firebase.initializeApp(firebaseConfig);
