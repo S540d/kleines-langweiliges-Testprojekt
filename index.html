@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eisenhauer Matrix</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Eisenhauer Matrix</h1>
+            <p class="subtitle">Organisiere deine Aufgaben nach Dringlichkeit und Wichtigkeit</p>
+        </header>
+
+        <div class="add-task-section">
+            <input type="text" id="taskInput" placeholder="Neue Aufgabe eingeben...">
+            <button id="addTaskBtn">Aufgabe hinzufügen</button>
+        </div>
+
+        <div class="matrix">
+            <!-- Quadrant 1: Dringend & Wichtig -->
+            <div class="quadrant q1" data-quadrant="1">
+                <div class="quadrant-header">
+                    <h2>Dringend & Wichtig</h2>
+                    <span class="subtitle-small">Sofort erledigen</span>
+                </div>
+                <div class="task-list" id="quadrant1"></div>
+            </div>
+
+            <!-- Quadrant 2: Nicht dringend & Wichtig -->
+            <div class="quadrant q2" data-quadrant="2">
+                <div class="quadrant-header">
+                    <h2>Nicht dringend & Wichtig</h2>
+                    <span class="subtitle-small">Planen & einplanen</span>
+                </div>
+                <div class="task-list" id="quadrant2"></div>
+            </div>
+
+            <!-- Quadrant 3: Dringend & Nicht wichtig -->
+            <div class="quadrant q3" data-quadrant="3">
+                <div class="quadrant-header">
+                    <h2>Dringend & Nicht wichtig</h2>
+                    <span class="subtitle-small">Delegieren</span>
+                </div>
+                <div class="task-list" id="quadrant3"></div>
+            </div>
+
+            <!-- Quadrant 4: Nicht dringend & Nicht wichtig -->
+            <div class="quadrant q4" data-quadrant="4">
+                <div class="quadrant-header">
+                    <h2>Nicht dringend & Nicht wichtig</h2>
+                    <span class="subtitle-small">Eliminieren</span>
+                </div>
+                <div class="task-list" id="quadrant4"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal für Quadranten-Auswahl -->
+    <div id="quadrantModal" class="modal">
+        <div class="modal-content">
+            <h3>Wähle einen Quadranten</h3>
+            <div class="quadrant-buttons">
+                <button class="quadrant-btn q1-btn" data-quadrant="1">
+                    <strong>Dringend & Wichtig</strong>
+                    <span>Sofort erledigen</span>
+                </button>
+                <button class="quadrant-btn q2-btn" data-quadrant="2">
+                    <strong>Nicht dringend & Wichtig</strong>
+                    <span>Planen</span>
+                </button>
+                <button class="quadrant-btn q3-btn" data-quadrant="3">
+                    <strong>Dringend & Nicht wichtig</strong>
+                    <span>Delegieren</span>
+                </button>
+                <button class="quadrant-btn q4-btn" data-quadrant="4">
+                    <strong>Nicht dringend & Nicht wichtig</strong>
+                    <span>Eliminieren</span>
+                </button>
+            </div>
+            <button id="cancelBtn" class="cancel-btn">Abbrechen</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
