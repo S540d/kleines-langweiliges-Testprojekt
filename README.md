@@ -17,7 +17,10 @@ Eine moderne, mobile-first Web-Anwendung zur Aufgabenverwaltung nach der Eisenha
 - ✅ Drag & Drop zwischen Segmenten
 - ✅ Move-Button für Segmentwechsel
 - ✅ Löschen von Aufgaben
-- ✅ LocalStorage-Persistenz (Daten bleiben nach Neuladen erhalten)
+- ✅ **Cloud-Synchronisation** mit Firebase
+- ✅ **Benutzer-Accounts** (Google & Apple Sign-In)
+- ✅ **Geräte-übergreifende Sync** (Daten auf allen Geräten verfügbar)
+- ✅ Offline-Funktionalität (Daten werden lokal gecacht)
 - ✅ Mobile-First Design (optimiert für Smartphones)
 - ✅ Responsive Layout (funktioniert auch auf Desktop)
 
@@ -44,7 +47,10 @@ Die App teilt den Bildschirm in 5 gleich große Segmente (je 20% der Höhe):
 - HTML5
 - CSS3 (Flexbox, Grid, Mobile-First)
 - Vanilla JavaScript (ES6+)
-- LocalStorage API
+- **Firebase**
+  - Firebase Authentication (Google & Apple Sign-In)
+  - Cloud Firestore (Echtzeit-Datenbank)
+  - Offline-Persistenz
 - **Progressive Web App (PWA)**
   - Service Worker für Offline-Funktionalität
   - Web App Manifest
@@ -59,18 +65,28 @@ Die App teilt den Bildschirm in 5 gleich große Segmente (je 20% der Höhe):
 
 ## Installation
 
-### Als Web-App (Browser)
+### 1. Firebase Setup (erforderlich für Login)
 
-Keine Installation erforderlich - einfach die Dateien öffnen:
+**Wichtig:** Die App benötigt Firebase für User-Authentifizierung und Cloud-Sync.
+
+1. Folge der detaillierten Anleitung in [FIREBASE-SETUP.md](FIREBASE-SETUP.md)
+2. Erstelle ein kostenloses Firebase-Projekt
+3. Aktiviere Google & Apple Sign-In
+4. Richte Firestore Database ein
+5. Kopiere deine Firebase-Config in `firebase-config.js`
+
+⏱️ **Dauer:** ~10 Minuten | 💰 **Kosten:** Kostenlos (Firebase Spark Plan)
+
+### 2. Als Web-App (Browser)
 
 ```bash
 git clone https://github.com/S540d/kleines-langweiliges-Testprojekt.git
 cd kleines-langweiliges-Testprojekt
 ```
 
-Dann `index.html` im Browser öffnen.
+Dann `index.html` im Browser öffnen oder auf GitHub Pages deployen.
 
-### Als iOS App (iPhone/iPad)
+### 3. Als iOS App (iPhone/iPad)
 
 Die App kann als Progressive Web App auf iOS installiert werden!
 

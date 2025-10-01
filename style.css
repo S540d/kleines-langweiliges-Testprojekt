@@ -35,6 +35,129 @@ header h1 {
     font-weight: 700;
 }
 
+/* User Info */
+.user-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+.user-email {
+    color: white;
+    font-size: 0.9rem;
+}
+
+.logout-btn {
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background 0.2s;
+}
+
+.logout-btn:active {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Login Screen */
+.login-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.login-container {
+    background: white;
+    border-radius: 20px;
+    padding: 40px 30px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.login-logo {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 20px;
+    display: block;
+}
+
+.login-container h1 {
+    color: #1f2937;
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.login-subtitle {
+    color: #6b7280;
+    font-size: 1rem;
+    margin-bottom: 30px;
+}
+
+.login-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.login-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 14px 20px;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    background: white;
+    color: #1f2937;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.login-btn:active {
+    transform: scale(0.98);
+}
+
+.google-btn {
+    border-color: #4285F4;
+}
+
+.google-btn:active {
+    background: #f0f4ff;
+}
+
+.apple-btn {
+    border-color: #000000;
+}
+
+.apple-btn:active {
+    background: #f9fafb;
+}
+
+.login-info {
+    color: #9ca3af;
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
 /* Add Task Section */
 .add-task-section {
     background: white;

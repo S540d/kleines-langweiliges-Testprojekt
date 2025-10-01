@@ -7,3 +7,7 @@
 
 # Logs
 *.log
+
+# Firebase (contains sensitive API keys)
+# Uncomment the line below if you want to keep your config private
+# firebase-config.js

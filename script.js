@@ -1,5 +1,5 @@
 // Task Management
-let tasks = JSON.parse(localStorage.getItem('eisenhauerTasks')) || {
+let tasks = {
     1: [],
     2: [],
     3: [],
@@ -77,7 +77,14 @@ function addTaskToSegment(taskText, segmentId) {
     };
 
     tasks[segmentId].push(task);
-    saveTasks();
+
+    // Save to Firestore if user is logged in
+    if (currentUser) {
+        saveTaskToFirestore(task);
+    } else {
+        saveTasks(); // Fallback to localStorage
+    }
+
     renderSegment(segmentId);
 }
 
@@ -139,7 +146,12 @@ function toggleTask(taskId, segmentId) {
         task.checked = true;
         tasks[5].push(task);
 
-        saveTasks();
+        if (currentUser) {
+            updateTaskInFirestore(task);
+        } else {
+            saveTasks();
+        }
+
         renderSegment(segmentId);
         renderSegment(5);
     }
@@ -148,7 +160,13 @@ function toggleTask(taskId, segmentId) {
 function deleteTask(taskId, segmentId) {
     if (confirm('Aufgabe wirklich löschen?')) {
         tasks[segmentId] = tasks[segmentId].filter(t => t.id !== taskId);
-        saveTasks();
+
+        if (currentUser) {
+            deleteTaskFromFirestore(taskId);
+        } else {
+            saveTasks();
+        }
+
         renderSegment(segmentId);
     }
 }
@@ -252,6 +270,7 @@ function closeModal() {
 }
 
 function saveTasks() {
+    // Fallback to localStorage when not logged in
     localStorage.setItem('eisenhauerTasks', JSON.stringify(tasks));
 }
 
@@ -328,7 +347,12 @@ function handleDrop(e) {
             }
             tasks[toSegment].push(task);
 
-            saveTasks();
+            if (currentUser) {
+                updateTaskInFirestore(task);
+            } else {
+                saveTasks();
+            }
+
             renderSegment(fromSegment);
             renderSegment(toSegment);
         }
