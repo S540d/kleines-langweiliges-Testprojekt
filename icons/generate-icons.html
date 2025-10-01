@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Icon Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            text-align: center;
+        }
+        canvas {
+            display: none;
+        }
+        .download-section {
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .preview {
+            margin: 20px;
+        }
+        .preview img {
+            margin: 10px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Eisenhauer Matrix Icon Generator</h1>
+    <p>Klicke auf "Generate Icons" um alle benötigten App-Icons zu erstellen</p>
+
+    <canvas id="canvas"></canvas>
+
+    <button onclick="generateIcons()">Generate Icons</button>
+
+    <div class="download-section" id="downloads"></div>
+    <div class="preview" id="preview"></div>
+
+    <script>
+        const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
+
+        function generateIcons() {
+            const canvas = document.getElementById('canvas');
+            const downloads = document.getElementById('downloads');
+            const preview = document.getElementById('preview');
+
+            downloads.innerHTML = '';
+            preview.innerHTML = '<h2>Preview:</h2>';
+
+            sizes.forEach(size => {
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext('2d');
+
+                // Gradient background
+                const gradient = ctx.createLinearGradient(0, 0, size, size);
+                gradient.addColorStop(0, '#667eea');
+                gradient.addColorStop(1, '#764ba2');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, size, size);
+
+                // White text "E"
+                ctx.fillStyle = 'white';
+                ctx.font = `bold ${size * 0.6}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('E', size / 2, size / 2);
+
+                // Create download link
+                canvas.toBlob(blob => {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `icon-${size}x${size}.png`;
+                    a.textContent = `Download ${size}x${size}`;
+                    a.style.display = 'block';
+                    a.style.margin = '5px';
+                    downloads.appendChild(a);
+
+                    // Preview
+                    const img = document.createElement('img');
+                    img.src = url;
+                    img.width = Math.min(size, 100);
+                    img.height = Math.min(size, 100);
+                    img.title = `${size}x${size}`;
+                    preview.appendChild(img);
+                });
+            });
+        }
+    </script>
+</body>
+</html>

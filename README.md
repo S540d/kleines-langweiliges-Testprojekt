@@ -45,6 +45,10 @@ Die App teilt den Bildschirm in 5 gleich große Segmente (je 20% der Höhe):
 - CSS3 (Flexbox, Grid, Mobile-First)
 - Vanilla JavaScript (ES6+)
 - LocalStorage API
+- **Progressive Web App (PWA)**
+  - Service Worker für Offline-Funktionalität
+  - Web App Manifest
+  - iOS-optimiert
 
 ## Browser-Kompatibilität
 
@@ -55,6 +59,8 @@ Die App teilt den Bildschirm in 5 gleich große Segmente (je 20% der Höhe):
 
 ## Installation
 
+### Als Web-App (Browser)
+
 Keine Installation erforderlich - einfach die Dateien öffnen:
 
 ```bash
@@ -63,6 +69,25 @@ cd kleines-langweiliges-Testprojekt
 ```
 
 Dann `index.html` im Browser öffnen.
+
+### Als iOS App (iPhone/iPad)
+
+Die App kann als Progressive Web App auf iOS installiert werden!
+
+**Schnellstart:**
+1. Icons generieren: Öffne `icons/generate-icons.html` und lade alle Icons herunter
+2. App auf GitHub Pages hosten (siehe [INSTALL.md](INSTALL.md))
+3. Im Safari öffnen → "Teilen" → "Zum Home-Bildschirm"
+4. Fertig! Die App läuft wie eine native iOS App
+
+📱 **Detaillierte Anleitung:** Siehe [INSTALL.md](INSTALL.md)
+
+### Features der iOS PWA
+
+- ✅ Vollbild-Modus ohne Browser-UI
+- ✅ Eigenes App-Icon auf dem Home-Bildschirm
+- ✅ Offline-Funktionalität
+- ✅ Wie eine native App verwenden
 
 ## Lizenz
 
