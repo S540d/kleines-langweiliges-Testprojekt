@@ -88,6 +88,33 @@ function addTaskToSegment(taskText, segmentId) {
     renderSegment(segmentId);
 }
 
+function moveTaskDown(taskId, fromSegment) {
+    const taskIndex = tasks[fromSegment].findIndex(t => t.id === taskId);
+    if (taskIndex === -1) return;
+
+    // Determine next segment: 1->2->3->4->5
+    const nextSegment = fromSegment < 4 ? fromSegment + 1 : 5;
+
+    const task = tasks[fromSegment][taskIndex];
+
+    // Remove from current segment
+    tasks[fromSegment].splice(taskIndex, 1);
+
+    // Add to next segment
+    task.segment = nextSegment;
+    task.checked = nextSegment === 5;
+    tasks[nextSegment].push(task);
+
+    if (currentUser) {
+        updateTaskInFirestore(task);
+    } else {
+        saveTasks();
+    }
+
+    renderSegment(fromSegment);
+    renderSegment(nextSegment);
+}
+
 function moveTask(taskId, fromSegment) {
     const taskIndex = tasks[fromSegment].findIndex(t => t.id === taskId);
     if (taskIndex === -1) return;
@@ -220,9 +247,10 @@ function createTaskElement(task) {
     if (task.segment !== 5) {
         const moveBtn = document.createElement('button');
         moveBtn.className = 'move-btn';
-        moveBtn.textContent = '↔';
+        moveBtn.textContent = '↓';
+        moveBtn.title = 'In nächste Kategorie verschieben';
         moveBtn.addEventListener('click', () => {
-            moveTask(task.id, task.segment);
+            moveTaskDown(task.id, task.segment);
         });
         actions.appendChild(moveBtn);
     }
@@ -272,12 +300,6 @@ function closeModal() {
 function saveTasks() {
     // Fallback to localStorage when not logged in
     localStorage.setItem('eisenhauerTasks', JSON.stringify(tasks));
-}
-
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
 }
 
 // Drag and Drop Functions

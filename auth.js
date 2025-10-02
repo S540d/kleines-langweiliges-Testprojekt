@@ -27,6 +27,8 @@ async function signInWithGoogle() {
     }
 
     isSigningIn = true;
+    const googleBtn = document.getElementById('googleSignInBtn');
+    if (googleBtn) googleBtn.disabled = true;
 
     try {
         const result = await auth.signInWithPopup(googleProvider);
@@ -41,6 +43,7 @@ async function signInWithGoogle() {
         }
     } finally {
         isSigningIn = false;
+        if (googleBtn) googleBtn.disabled = false;
     }
 }
 
