@@ -12,8 +12,16 @@ const firebaseConfig = {
     measurementId: "G-VY3618D2RT"
 };
 
+// Prüfen ob Firebase SDK geladen wurde
+if (typeof firebase === 'undefined') {
+    console.error('Firebase SDK not loaded!');
+} else {
+    console.log('Firebase SDK loaded successfully');
+}
+
 // Firebase initialisieren
 firebase.initializeApp(firebaseConfig);
+console.log('Firebase initialized');
 
 // Firebase Services
 const auth = firebase.auth();
@@ -21,6 +29,10 @@ const db = firebase.firestore();
 
 // Auth Provider
 const googleProvider = new firebase.auth.GoogleAuthProvider();
+googleProvider.setCustomParameters({
+    prompt: 'select_account'
+});
+
 const appleProvider = new firebase.auth.OAuthProvider('apple.com');
 
 // Optional: Offline-Persistenz aktivieren
