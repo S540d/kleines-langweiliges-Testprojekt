@@ -4,9 +4,35 @@
     box-sizing: border-box;
 }
 
+:root {
+    --bg-gradient-start: #667eea;
+    --bg-gradient-end: #764ba2;
+    --card-bg: white;
+    --text-primary: #1f2937;
+    --text-secondary: #6b7280;
+    --text-light: #9ca3af;
+    --border-color: #e5e7eb;
+    --task-bg: #f9fafb;
+    --input-border: #e0e0e0;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-gradient-start: #1e1b4b;
+        --bg-gradient-end: #312e81;
+        --card-bg: #1f2937;
+        --text-primary: #f9fafb;
+        --text-secondary: #d1d5db;
+        --text-light: #9ca3af;
+        --border-color: #374151;
+        --task-bg: #111827;
+        --input-border: #4b5563;
+    }
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
     min-height: 100vh;
     height: 100vh;
     overflow: hidden;
@@ -71,6 +97,16 @@ header h1 {
     background: rgba(255, 255, 255, 0.3);
 }
 
+.offline-indicator {
+    background: rgba(255, 152, 0, 0.9);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    margin-top: 8px;
+    display: inline-block;
+}
+
 /* Login Screen */
 .login-screen {
     display: flex;
@@ -81,7 +117,7 @@ header h1 {
 }
 
 .login-container {
-    background: white;
+    background: var(--card-bg);
     border-radius: 20px;
     padding: 40px 30px;
     max-width: 400px;
@@ -98,13 +134,13 @@ header h1 {
 }
 
 .login-container h1 {
-    color: #1f2937;
+    color: var(--text-primary);
     font-size: 2rem;
     margin-bottom: 10px;
 }
 
 .login-subtitle {
-    color: #6b7280;
+    color: var(--text-secondary);
     font-size: 1rem;
     margin-bottom: 30px;
 }
@@ -122,14 +158,19 @@ header h1 {
     justify-content: center;
     gap: 12px;
     padding: 14px 20px;
-    border: 2px solid #e5e7eb;
+    border: 2px solid var(--border-color);
     border-radius: 10px;
-    background: white;
-    color: #1f2937;
+    background: var(--card-bg);
+    color: var(--text-primary);
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
+}
+
+.login-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .login-btn:active {
@@ -160,7 +201,7 @@ header h1 {
 
 /* Add Task Section */
 .add-task-section {
-    background: white;
+    background: var(--card-bg);
     padding: 12px;
     margin: 0 10px 10px 10px;
     border-radius: 12px;
@@ -173,10 +214,12 @@ header h1 {
 #taskInput {
     flex: 1;
     padding: 12px 16px;
-    border: 2px solid #e0e0e0;
+    border: 2px solid var(--input-border);
     border-radius: 8px;
     font-size: 1rem;
     transition: border-color 0.3s;
+    background: var(--card-bg);
+    color: var(--text-primary);
 }
 
 #taskInput:focus {
@@ -214,10 +257,11 @@ header h1 {
     overflow-y: auto;
     gap: 10px;
     padding: 0 10px 10px 10px;
+    transition: transform 0.3s, opacity 0.3s;
 }
 
 .segment {
-    background: white;
+    background: var(--card-bg);
     border-radius: 12px;
     padding: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -242,7 +286,7 @@ header h1 {
 
 .segment-header h2 {
     font-size: 1rem;
-    color: #1f2937;
+    color: var(--text-primary);
     font-weight: 700;
 }
 
@@ -277,7 +321,7 @@ header h1 {
 }
 
 .task-item {
-    background: #f9fafb;
+    background: var(--task-bg);
     padding: 8px;
     border-radius: 8px;
     border-left: 3px solid;
@@ -286,6 +330,8 @@ header h1 {
     gap: 8px;
     transition: transform 0.2s, box-shadow 0.2s;
     flex-shrink: 0;
+    position: relative;
+    touch-action: pan-y;
 }
 
 .q1 .task-item { border-left-color: #ef4444; }
@@ -324,7 +370,7 @@ header h1 {
 }
 
 .task-text {
-    color: #1f2937;
+    color: var(--text-primary);
     font-size: 0.85rem;
     line-height: 1.3;
     word-wrap: break-word;
@@ -402,7 +448,7 @@ header h1 {
 }
 
 .modal-content {
-    background: white;
+    background: var(--card-bg);
     padding: 25px;
     border-radius: 12px;
     max-width: 400px;
@@ -413,7 +459,7 @@ header h1 {
 .modal-content h3 {
     margin-bottom: 20px;
     text-align: center;
-    color: #1f2937;
+    color: var(--text-primary);
     font-size: 1.3rem;
 }
 
@@ -428,7 +474,7 @@ header h1 {
     padding: 20px;
     border: 2px solid;
     border-radius: 8px;
-    background: white;
+    background: var(--card-bg);
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
     font-size: 1.1rem;

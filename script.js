@@ -20,6 +20,12 @@ const segmentBtns = document.querySelectorAll('.segment-btn');
 document.addEventListener('DOMContentLoaded', () => {
     renderAllTasks();
     setupDragAndDrop();
+    setupPullToRefresh();
+    updateOnlineStatus();
+
+    // Listen for online/offline events
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
 });
 
 // Add Task Button Click
@@ -273,6 +279,9 @@ function createTaskElement(task) {
     div.addEventListener('dragstart', handleDragStart);
     div.addEventListener('dragend', handleDragEnd);
 
+    // Swipe to Delete
+    setupSwipeToDelete(div, task);
+
     return div;
 }
 
@@ -393,4 +402,106 @@ function setupDragAndDrop() {
         list.addEventListener('dragleave', handleDragLeave, false);
         list.addEventListener('drop', handleDrop, false);
     });
+}
+
+// Swipe to Delete Functionality
+function setupSwipeToDelete(element, task) {
+    let startX = 0;
+    let currentX = 0;
+    let isSwiping = false;
+
+    element.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+        isSwiping = true;
+    }, { passive: true });
+
+    element.addEventListener('touchmove', (e) => {
+        if (!isSwiping) return;
+
+        currentX = e.touches[0].clientX;
+        const diff = currentX - startX;
+
+        // Only allow left swipe
+        if (diff < 0) {
+            element.style.transform = `translateX(${diff}px)`;
+            element.style.opacity = 1 + (diff / 300);
+        }
+    }, { passive: true });
+
+    element.addEventListener('touchend', () => {
+        if (!isSwiping) return;
+
+        const diff = currentX - startX;
+
+        // Delete if swiped more than 100px to the left
+        if (diff < -100) {
+            element.style.transform = 'translateX(-300px)';
+            element.style.opacity = '0';
+            setTimeout(() => {
+                deleteTask(task.id, task.segment);
+            }, 300);
+        } else {
+            // Reset
+            element.style.transform = '';
+            element.style.opacity = '';
+        }
+
+        isSwiping = false;
+        startX = 0;
+        currentX = 0;
+    });
+}
+
+// Pull to Refresh
+function setupPullToRefresh() {
+    const segments = document.querySelector('.segments');
+    if (!segments) return;
+
+    let startY = 0;
+    let pulling = false;
+
+    segments.addEventListener('touchstart', (e) => {
+        if (segments.scrollTop === 0) {
+            startY = e.touches[0].clientY;
+        }
+    }, { passive: true });
+
+    segments.addEventListener('touchmove', (e) => {
+        if (segments.scrollTop === 0) {
+            const currentY = e.touches[0].clientY;
+            const diff = currentY - startY;
+
+            if (diff > 0 && diff < 100) {
+                pulling = true;
+                segments.style.transform = `translateY(${diff / 2}px)`;
+                segments.style.opacity = 1 - (diff / 200);
+            }
+        }
+    }, { passive: true });
+
+    segments.addEventListener('touchend', async () => {
+        if (pulling) {
+            segments.style.transform = '';
+            segments.style.opacity = '';
+
+            // Reload tasks
+            if (currentUser) {
+                await loadUserTasks();
+            }
+
+            pulling = false;
+        }
+    });
+}
+
+// Online/Offline Status
+function updateOnlineStatus() {
+    const indicator = document.getElementById('offlineIndicator');
+    if (!indicator) return;
+
+    if (!navigator.onLine) {
+        indicator.style.display = 'block';
+    } else {
+        indicator.style.display = 'none';
+    }
 }
