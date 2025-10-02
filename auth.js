@@ -197,10 +197,25 @@ function showApp() {
     // Update user info
     if (currentUser) {
         const userInfo = document.getElementById('userInfo');
-        userInfo.innerHTML = `
-            <img src="${currentUser.photoURL || 'icons/icon-72x72.png'}" alt="User" class="user-avatar">
-            <span class="user-email">${currentUser.email || 'User'}</span>
-            <button onclick="signOut()" class="logout-btn">Abmelden</button>
-        `;
+        userInfo.textContent = ''; // Clear existing content
+
+        // Create elements safely (prevents XSS)
+        const avatar = document.createElement('img');
+        avatar.src = currentUser.photoURL || 'icons/icon-72x72.png';
+        avatar.alt = 'User';
+        avatar.className = 'user-avatar';
+
+        const email = document.createElement('span');
+        email.className = 'user-email';
+        email.textContent = currentUser.email || 'User';
+
+        const logoutBtn = document.createElement('button');
+        logoutBtn.className = 'logout-btn';
+        logoutBtn.textContent = 'Abmelden';
+        logoutBtn.onclick = signOut;
+
+        userInfo.appendChild(avatar);
+        userInfo.appendChild(email);
+        userInfo.appendChild(logoutBtn);
     }
 }

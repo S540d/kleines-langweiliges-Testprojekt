@@ -1,19 +1,29 @@
-// Firebase Configuration
-// WICHTIG: Ersetze diese Werte mit deinen eigenen Firebase-Projektwerten
-// Siehe FIREBASE-SETUP.md für Anleitung
+// Firebase Configuration Template
+// WICHTIG:
+// 1. Kopiere diese Datei zu "firebase-config.js"
+// 2. Ersetze die Platzhalter mit deinen echten Firebase-Werten
+// 3. firebase-config.js wird NICHT zu Git committed (in .gitignore)
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDVZh7wLZeFXpoxIqwKFtC8KsYj9zF6lBM",
-    authDomain: "eisenhauer-matrix.firebaseapp.com",
-    projectId: "eisenhauer-matrix",
-    storageBucket: "eisenhauer-matrix.firebasestorage.app",
-    messagingSenderId: "174175941071",
-    appId: "1:174175941071:web:80d5a25ed700b99809e2ba",
-    measurementId: "G-VY3618D2RT"
+    apiKey: "YOUR_API_KEY_HERE",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.firebasestorage.app",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID",
+    measurementId: "YOUR_MEASUREMENT_ID"
 };
+
+// Prüfen ob Firebase SDK geladen wurde
+if (typeof firebase === 'undefined') {
+    console.error('Firebase SDK not loaded!');
+} else {
+    console.log('Firebase SDK loaded successfully');
+}
 
 // Firebase initialisieren
 firebase.initializeApp(firebaseConfig);
+console.log('Firebase initialized');
 
 // Firebase Services
 const auth = firebase.auth();

@@ -8,6 +8,7 @@
 # Logs
 *.log
 
-# Firebase (contains sensitive API keys)
-# Uncomment the line below if you want to keep your config private
-# firebase-config.js
+# Firebase
+# Note: Firebase web API keys are safe to commit (security via rules & domain restrictions)
+.env
+.env.local
