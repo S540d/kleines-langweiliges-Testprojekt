@@ -275,9 +275,12 @@ function createTaskElement(task) {
     div.appendChild(checkbox);
     div.appendChild(content);
 
-    // Drag and Drop Events
+    // Drag and Drop Events (Desktop)
     div.addEventListener('dragstart', handleDragStart);
     div.addEventListener('dragend', handleDragEnd);
+
+    // Touch Drag and Drop (Mobile)
+    setupTouchDrag(div, task);
 
     // Swipe to Delete
     setupSwipeToDelete(div, task);
@@ -404,52 +407,160 @@ function setupDragAndDrop() {
     });
 }
 
-// Swipe to Delete Functionality
-function setupSwipeToDelete(element, task) {
-    let startX = 0;
-    let currentX = 0;
-    let isSwiping = false;
+// Touch Drag and Drop for Mobile
+function setupTouchDrag(element, task) {
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchCurrentX = 0;
+    let touchCurrentY = 0;
+    let isDragging = false;
+    let isSwipeDelete = false;
+    let dragClone = null;
+    let dropTarget = null;
 
     element.addEventListener('touchstart', (e) => {
-        startX = e.touches[0].clientX;
-        isSwiping = true;
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        isDragging = false;
+        isSwipeDelete = false;
     }, { passive: true });
 
     element.addEventListener('touchmove', (e) => {
-        if (!isSwiping) return;
+        touchCurrentX = e.touches[0].clientX;
+        touchCurrentY = e.touches[0].clientY;
 
-        currentX = e.touches[0].clientX;
-        const diff = currentX - startX;
+        const diffX = touchCurrentX - touchStartX;
+        const diffY = touchCurrentY - touchStartY;
 
-        // Only allow left swipe
-        if (diff < 0) {
-            element.style.transform = `translateX(${diff}px)`;
-            element.style.opacity = 1 + (diff / 300);
+        // Determine if this is a drag (vertical) or swipe delete (horizontal)
+        if (!isDragging && !isSwipeDelete) {
+            if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > 10) {
+                // Vertical movement - start dragging
+                isDragging = true;
+                e.preventDefault();
+
+                // Create visual clone for dragging
+                dragClone = element.cloneNode(true);
+                dragClone.style.position = 'fixed';
+                dragClone.style.width = element.offsetWidth + 'px';
+                dragClone.style.opacity = '0.8';
+                dragClone.style.zIndex = '1000';
+                dragClone.style.pointerEvents = 'none';
+                dragClone.style.transform = 'scale(1.05)';
+                document.body.appendChild(dragClone);
+
+                // Dim the original
+                element.style.opacity = '0.3';
+            } else if (Math.abs(diffX) > Math.abs(diffY) && diffX < 0 && Math.abs(diffX) > 10) {
+                // Horizontal left swipe - delete gesture
+                isSwipeDelete = true;
+            }
         }
-    }, { passive: true });
 
-    element.addEventListener('touchend', () => {
-        if (!isSwiping) return;
+        if (isDragging && dragClone) {
+            e.preventDefault();
 
-        const diff = currentX - startX;
+            // Update clone position
+            dragClone.style.left = (touchCurrentX - element.offsetWidth / 2) + 'px';
+            dragClone.style.top = (touchCurrentY - 30) + 'px';
 
-        // Delete if swiped more than 100px to the left
-        if (diff < -100) {
-            element.style.transform = 'translateX(-300px)';
-            element.style.opacity = '0';
-            setTimeout(() => {
-                deleteTask(task.id, task.segment);
-            }, 300);
-        } else {
-            // Reset
-            element.style.transform = '';
-            element.style.opacity = '';
+            // Find drop target
+            const elementsBelow = document.elementsFromPoint(touchCurrentX, touchCurrentY);
+            const taskListBelow = elementsBelow.find(el => el.classList.contains('task-list'));
+
+            // Remove previous highlights
+            document.querySelectorAll('.task-list').forEach(list => {
+                list.classList.remove('drag-over');
+            });
+
+            if (taskListBelow) {
+                dropTarget = taskListBelow;
+                taskListBelow.classList.add('drag-over');
+            }
+        } else if (isSwipeDelete) {
+            // Allow swipe delete to work (handled by setupSwipeToDelete)
+            element.style.transform = `translateX(${diffX}px)`;
+            element.style.opacity = 1 + (diffX / 300);
+        }
+    }, { passive: false });
+
+    element.addEventListener('touchend', (e) => {
+        if (isDragging && dragClone) {
+            e.preventDefault();
+
+            // Remove clone
+            document.body.removeChild(dragClone);
+            dragClone = null;
+
+            // Reset original opacity
+            element.style.opacity = '1';
+
+            // Handle drop
+            if (dropTarget) {
+                const toSegment = parseInt(dropTarget.dataset.segment);
+                const fromSegment = task.segment;
+
+                if (fromSegment !== toSegment) {
+                    // Move task
+                    const taskIndex = tasks[fromSegment].findIndex(t => t.id === task.id);
+                    if (taskIndex !== -1) {
+                        const movedTask = tasks[fromSegment][taskIndex];
+
+                        // Remove from old segment
+                        tasks[fromSegment].splice(taskIndex, 1);
+
+                        // Add to new segment
+                        movedTask.segment = toSegment;
+                        if (toSegment !== 5) {
+                            movedTask.checked = false;
+                        }
+                        tasks[toSegment].push(movedTask);
+
+                        if (currentUser) {
+                            updateTaskInFirestore(movedTask);
+                        } else {
+                            saveTasks();
+                        }
+
+                        renderSegment(fromSegment);
+                        renderSegment(toSegment);
+                    }
+                }
+
+                dropTarget.classList.remove('drag-over');
+                dropTarget = null;
+            }
+
+            // Remove all highlights
+            document.querySelectorAll('.task-list').forEach(list => {
+                list.classList.remove('drag-over');
+            });
+        } else if (isSwipeDelete) {
+            const diffX = touchCurrentX - touchStartX;
+
+            // Delete if swiped more than 100px to the left
+            if (diffX < -100) {
+                element.style.transform = 'translateX(-300px)';
+                element.style.opacity = '0';
+                setTimeout(() => {
+                    deleteTask(task.id, task.segment);
+                }, 300);
+            } else {
+                // Reset
+                element.style.transform = '';
+                element.style.opacity = '';
+            }
         }
 
-        isSwiping = false;
-        startX = 0;
-        currentX = 0;
+        isDragging = false;
+        isSwipeDelete = false;
     });
+}
+
+// Swipe to Delete Functionality (Simplified - now integrated with touch drag)
+function setupSwipeToDelete(element, task) {
+    // This is now handled in setupTouchDrag to avoid conflicts
+    // Keeping this function for compatibility but it's empty
 }
 
 // Pull to Refresh
