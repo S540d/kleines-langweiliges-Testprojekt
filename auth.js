@@ -18,7 +18,16 @@ auth.onAuthStateChanged(user => {
 });
 
 // Google Sign-In
+let isSigningIn = false;
+
 async function signInWithGoogle() {
+    if (isSigningIn) {
+        console.log('Sign-in already in progress');
+        return;
+    }
+
+    isSigningIn = true;
+
     try {
         const result = await auth.signInWithPopup(googleProvider);
         console.log('Google sign-in successful:', result.user.email);
@@ -27,7 +36,11 @@ async function signInWithGoogle() {
         await migrateLocalData(result.user.uid);
     } catch (error) {
         console.error('Google sign-in error:', error);
-        alert('Fehler beim Anmelden mit Google: ' + error.message);
+        if (error.code !== 'auth/cancelled-popup-request' && error.code !== 'auth/popup-closed-by-user') {
+            alert('Fehler beim Anmelden mit Google: ' + error.message);
+        }
+    } finally {
+        isSigningIn = false;
     }
 }
 
