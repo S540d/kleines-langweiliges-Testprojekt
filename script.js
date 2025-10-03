@@ -274,12 +274,10 @@ function toggleTask(taskId, segmentId) {
 
     const task = tasks[segmentId][taskIndex];
 
-    // Move to Done segment (5)
     if (!task.checked && segmentId !== 5) {
-        // Remove from current segment
+        // Move to Done segment (5)
         tasks[segmentId].splice(taskIndex, 1);
 
-        // Add to Done segment
         task.segment = 5;
         task.checked = true;
         tasks[5].push(task);
@@ -292,6 +290,22 @@ function toggleTask(taskId, segmentId) {
 
         renderSegment(segmentId);
         renderSegment(5);
+    } else if (task.checked && segmentId === 5) {
+        // Restore from Done segment to segment 1
+        tasks[segmentId].splice(taskIndex, 1);
+
+        task.segment = 1;
+        task.checked = false;
+        tasks[1].push(task);
+
+        if (currentUser) {
+            updateTaskInFirestore(task);
+        } else {
+            saveTasks();
+        }
+
+        renderSegment(5);
+        renderSegment(1);
     }
 }
 
@@ -332,17 +346,25 @@ function createTaskElement(task) {
     div.dataset.taskId = task.id;
     div.dataset.segmentId = task.segment;
 
+    // Set border color based on segment
+    const colors = {
+        1: '#ef4444',
+        2: '#10b981',
+        3: '#f59e0b',
+        4: '#6b7280',
+        5: '#8b5cf6'
+    };
+    div.style.borderLeftColor = colors[task.segment];
+
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     checkbox.className = 'task-checkbox';
     checkbox.checked = task.checked;
 
-    // Only enable checkbox for segments 1-4
-    if (task.segment !== 5) {
-        checkbox.addEventListener('change', () => {
-            toggleTask(task.id, task.segment);
-        });
-    }
+    // Checkbox event listener for all segments
+    checkbox.addEventListener('change', () => {
+        toggleTask(task.id, task.segment);
+    });
 
     const content = document.createElement('div');
     content.className = 'task-content';

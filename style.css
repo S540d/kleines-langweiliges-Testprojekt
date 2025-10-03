@@ -383,12 +383,6 @@ header h1 {
     touch-action: pan-y;
 }
 
-.q1 .task-item { border-left-color: #ef4444; }
-.q2 .task-item { border-left-color: #10b981; }
-.q3 .task-item { border-left-color: #f59e0b; }
-.q4 .task-item { border-left-color: #6b7280; }
-.q5 .task-item { border-left-color: #8b5cf6; }
-
 .task-item:active {
     transform: scale(0.98);
 }
@@ -398,7 +392,7 @@ header h1 {
 }
 
 .task-list.drag-over {
-    background: #e0e7ff;
+    background: rgba(156, 163, 175, 0.2);
     border-radius: 8px;
 }
 
@@ -435,10 +429,6 @@ header h1 {
 
 .q5 .task-text {
     text-decoration: line-through;
-}
-
-.q5 .task-checkbox {
-    pointer-events: none;
 }
 
 /* Modal */
