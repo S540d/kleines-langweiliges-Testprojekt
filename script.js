@@ -706,11 +706,16 @@ function updateOnlineStatus() {
 // Settings Modal Functions
 function openSettingsModal() {
     const settingsUserInfo = document.getElementById('settingsUserInfo');
+    const settingsVersion = document.getElementById('settingsVersion');
+
     if (currentUser) {
         settingsUserInfo.textContent = `Angemeldet als: ${currentUser.email}`;
     } else {
         settingsUserInfo.textContent = 'Nicht angemeldet (Lokaler Modus)';
     }
+
+    settingsVersion.textContent = `Version ${APP_VERSION}`;
+
     settingsModal.classList.add('active');
 }
 
