@@ -1,5 +1,5 @@
 // App Version
-const APP_VERSION = 'v1.0.0';
+const APP_VERSION = 'v1.1.0';
 
 // Task Management
 let tasks = {
@@ -22,6 +22,11 @@ const settingsBtn = document.getElementById('settingsBtn');
 const settingsModal = document.getElementById('settingsModal');
 const settingsCancelBtn = document.getElementById('settingsCancelBtn');
 const logoutBtn = document.getElementById('logoutBtn');
+const darkModeToggle = document.getElementById('darkModeToggle');
+const searchInput = document.getElementById('searchInput');
+const exportBtn = document.getElementById('exportBtn');
+const importBtn = document.getElementById('importBtn');
+const importFile = document.getElementById('importFile');
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
@@ -29,6 +34,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const versionElement = document.getElementById('versionNumber');
     if (versionElement) {
         versionElement.textContent = APP_VERSION;
+    }
+
+    // Load dark mode preference
+    const darkMode = localStorage.getItem('darkMode') === 'true';
+    if (darkMode) {
+        document.body.classList.add('dark-mode');
+        darkModeToggle.checked = true;
     }
 
     renderAllTasks();
@@ -95,6 +107,43 @@ logoutBtn.addEventListener('click', () => {
     if (confirm('Möchtest du dich wirklich abmelden?')) {
         signOut();
     }
+});
+
+// Dark Mode Toggle
+darkModeToggle.addEventListener('change', (e) => {
+    if (e.target.checked) {
+        document.body.classList.add('dark-mode');
+        localStorage.setItem('darkMode', 'true');
+    } else {
+        document.body.classList.remove('dark-mode');
+        localStorage.setItem('darkMode', 'false');
+    }
+});
+
+// Search Input
+searchInput.addEventListener('input', (e) => {
+    const searchTerm = e.target.value.toLowerCase().trim();
+    filterTasks(searchTerm);
+});
+
+// Export Button
+exportBtn.addEventListener('click', () => {
+    exportData();
+});
+
+// Import Button
+importBtn.addEventListener('click', () => {
+    importFile.click();
+});
+
+// Import File Handler
+importFile.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        importData(file);
+    }
+    // Reset file input
+    e.target.value = '';
 });
 
 // Functions
@@ -683,4 +732,115 @@ function signOut() {
         localStorage.clear();
         location.reload();
     }
+}
+
+// Export Data
+function exportData() {
+    const exportData = {
+        version: APP_VERSION,
+        exportDate: new Date().toISOString(),
+        tasks: tasks
+    };
+
+    const dataStr = JSON.stringify(exportData, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `eisenhauer-backup-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    alert('Daten erfolgreich exportiert!');
+}
+
+// Import Data
+function importData(file) {
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+        try {
+            const importedData = JSON.parse(e.target.result);
+
+            // Validate data structure
+            if (!importedData.tasks) {
+                throw new Error('Ungültiges Datenformat');
+            }
+
+            if (confirm('Möchtest du die importierten Daten mit den aktuellen Daten zusammenführen? (Abbrechen = Aktuelle Daten ersetzen)')) {
+                // Merge: Add imported tasks to existing ones
+                Object.keys(importedData.tasks).forEach(segmentId => {
+                    importedData.tasks[segmentId].forEach(task => {
+                        // Generate new ID to avoid conflicts
+                        task.id = Date.now() + Math.random();
+                        tasks[segmentId].push(task);
+                    });
+                });
+            } else {
+                // Replace: Overwrite existing tasks
+                tasks = importedData.tasks;
+            }
+
+            // Save and render
+            if (currentUser) {
+                // Save all tasks to Firestore
+                Object.keys(tasks).forEach(segmentId => {
+                    tasks[segmentId].forEach(task => {
+                        saveTaskToFirestore(task);
+                    });
+                });
+            } else {
+                saveTasks();
+            }
+
+            renderAllTasks();
+            alert('Daten erfolgreich importiert!');
+        } catch (error) {
+            console.error('Import Error:', error);
+            alert('Fehler beim Importieren: ' + error.message);
+        }
+    };
+
+    reader.readAsText(file);
+}
+
+// Filter Tasks (Search)
+function filterTasks(searchTerm) {
+    const allTaskElements = document.querySelectorAll('.task-item');
+
+    if (!searchTerm) {
+        // Show all tasks, remove highlights
+        allTaskElements.forEach(el => {
+            el.style.display = '';
+            const textSpan = el.querySelector('.task-text');
+            if (textSpan) {
+                // Remove highlights
+                textSpan.innerHTML = textSpan.textContent;
+            }
+        });
+        return;
+    }
+
+    allTaskElements.forEach(el => {
+        const textSpan = el.querySelector('.task-text');
+        if (!textSpan) return;
+
+        const taskText = textSpan.textContent.toLowerCase();
+
+        if (taskText.includes(searchTerm)) {
+            el.style.display = '';
+
+            // Highlight search term
+            const regex = new RegExp(`(${searchTerm})`, 'gi');
+            const highlightedText = textSpan.textContent.replace(regex, '<span class="search-highlight">$1</span>');
+            textSpan.innerHTML = highlightedText;
+        } else {
+            el.style.display = 'none';
+            // Remove highlights
+            textSpan.innerHTML = textSpan.textContent;
+        }
+    });
 }

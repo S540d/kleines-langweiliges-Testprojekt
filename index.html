@@ -156,7 +156,39 @@
             <h3>Einstellungen</h3>
             <div style="margin: 20px 0;">
                 <p id="settingsUserInfo" style="color: var(--text-secondary); margin-bottom: 20px;"></p>
-                <button id="logoutBtn" class="logout-btn-modal">Abmelden</button>
+
+                <!-- Dark Mode Toggle -->
+                <div class="settings-option">
+                    <label for="darkModeToggle" class="settings-label">
+                        <span>🌙 Dark Mode</span>
+                        <input type="checkbox" id="darkModeToggle" class="toggle-switch">
+                    </label>
+                </div>
+
+                <!-- Suche -->
+                <div class="settings-option">
+                    <label class="settings-label">
+                        <span>🔍 Suche</span>
+                    </label>
+                    <input type="text" id="searchInput" placeholder="Aufgaben durchsuchen..." class="search-input">
+                </div>
+
+                <!-- Export/Import -->
+                <div class="settings-option">
+                    <label class="settings-label">
+                        <span>💾 Daten</span>
+                    </label>
+                    <div style="display: flex; gap: 10px; margin-top: 8px;">
+                        <button id="exportBtn" class="settings-action-btn">Export JSON</button>
+                        <button id="importBtn" class="settings-action-btn">Import JSON</button>
+                    </div>
+                    <input type="file" id="importFile" accept=".json" style="display: none;">
+                </div>
+
+                <!-- Logout -->
+                <div class="settings-option">
+                    <button id="logoutBtn" class="logout-btn-modal">Abmelden</button>
+                </div>
             </div>
             <button id="settingsCancelBtn" class="cancel-btn">Schließen</button>
         </div>
