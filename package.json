@@ -1,0 +1,23 @@
+{
+  "name": "kleines-langweiliges-testprojekt",
+  "version": "1.0.0",
+  "description": "Eine moderne, mobile-first Progressive Web App zur Aufgabenverwaltung nach der Eisenhauer-Matrix-Methode.",
+  "main": "auth.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/S540d/kleines-langweiliges-Testprojekt.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/S540d/kleines-langweiliges-Testprojekt/issues"
+  },
+  "homepage": "https://github.com/S540d/kleines-langweiliges-Testprojekt#readme",
+  "devDependencies": {
+    "@bubblewrap/cli": "^1.24.1"
+  }
+}
