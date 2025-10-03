@@ -1,3 +1,6 @@
+// App Version
+const APP_VERSION = 'v1.0.0';
+
 // Task Management
 let tasks = {
     1: [],
@@ -15,9 +18,19 @@ const addTaskBtn = document.getElementById('addTaskBtn');
 const modal = document.getElementById('segmentModal');
 const cancelBtn = document.getElementById('cancelBtn');
 const segmentBtns = document.querySelectorAll('.segment-btn');
+const settingsBtn = document.getElementById('settingsBtn');
+const settingsModal = document.getElementById('settingsModal');
+const settingsCancelBtn = document.getElementById('settingsCancelBtn');
+const logoutBtn = document.getElementById('logoutBtn');
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
+    // Display version number
+    const versionElement = document.getElementById('versionNumber');
+    if (versionElement) {
+        versionElement.textContent = APP_VERSION;
+    }
+
     renderAllTasks();
     setupDragAndDrop();
     setupPullToRefresh();
@@ -57,6 +70,30 @@ segmentBtns.forEach(btn => {
 modal.addEventListener('click', (e) => {
     if (e.target === modal) {
         closeModal();
+    }
+});
+
+// Settings Button
+settingsBtn.addEventListener('click', () => {
+    openSettingsModal();
+});
+
+// Settings Cancel Button
+settingsCancelBtn.addEventListener('click', () => {
+    closeSettingsModal();
+});
+
+// Settings modal background click
+settingsModal.addEventListener('click', (e) => {
+    if (e.target === settingsModal) {
+        closeSettingsModal();
+    }
+});
+
+// Logout Button
+logoutBtn.addEventListener('click', () => {
+    if (confirm('Möchtest du dich wirklich abmelden?')) {
+        signOut();
     }
 });
 
@@ -614,5 +651,36 @@ function updateOnlineStatus() {
         indicator.style.display = 'block';
     } else {
         indicator.style.display = 'none';
+    }
+}
+
+// Settings Modal Functions
+function openSettingsModal() {
+    const settingsUserInfo = document.getElementById('settingsUserInfo');
+    if (currentUser) {
+        settingsUserInfo.textContent = `Angemeldet als: ${currentUser.email}`;
+    } else {
+        settingsUserInfo.textContent = 'Nicht angemeldet (Lokaler Modus)';
+    }
+    settingsModal.classList.add('active');
+}
+
+function closeSettingsModal() {
+    settingsModal.classList.remove('active');
+}
+
+// Sign Out Function
+function signOut() {
+    if (firebase.auth().currentUser) {
+        firebase.auth().signOut().then(() => {
+            location.reload();
+        }).catch((error) => {
+            console.error('Logout Error:', error);
+            alert('Fehler beim Abmelden: ' + error.message);
+        });
+    } else {
+        // Local mode: just clear localStorage and reload
+        localStorage.clear();
+        location.reload();
     }
 }

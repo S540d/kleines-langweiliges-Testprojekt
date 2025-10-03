@@ -5,34 +5,32 @@
 }
 
 :root {
-    --bg-gradient-start: #667eea;
-    --bg-gradient-end: #764ba2;
+    --bg-color: #f5f5f5;
     --card-bg: white;
     --text-primary: #1f2937;
     --text-secondary: #6b7280;
     --text-light: #9ca3af;
     --border-color: #e5e7eb;
-    --task-bg: #f9fafb;
+    --task-bg: #fafafa;
     --input-border: #e0e0e0;
 }
 
 @media (prefers-color-scheme: dark) {
     :root {
-        --bg-gradient-start: #1e1b4b;
-        --bg-gradient-end: #312e81;
-        --card-bg: #1f2937;
+        --bg-color: #1a1a1a;
+        --card-bg: #2a2a2a;
         --text-primary: #f9fafb;
         --text-secondary: #d1d5db;
         --text-light: #9ca3af;
-        --border-color: #374151;
-        --task-bg: #111827;
+        --border-color: #404040;
+        --task-bg: #1f1f1f;
         --input-border: #4b5563;
     }
 }
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+    background: var(--bg-color);
     min-height: 100vh;
     height: 100vh;
     overflow: hidden;
@@ -50,51 +48,45 @@ body {
 }
 
 header {
-    text-align: center;
-    color: white;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
     padding: 15px 20px;
     flex-shrink: 0;
 }
 
 header h1 {
-    font-size: 1.8rem;
-    font-weight: 700;
+    display: none;
 }
 
 /* User Info */
 .user-info {
+    display: none;
+}
+
+/* Settings Button */
+.settings-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    margin-top: 10px;
+    font-size: 20px;
+    transition: all 0.2s;
+    color: var(--text-primary);
 }
 
-.user-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 2px solid white;
+.settings-btn:hover {
+    background: var(--task-bg);
+    transform: rotate(45deg);
 }
 
-.user-email {
-    color: white;
-    font-size: 0.9rem;
-}
-
-.logout-btn {
-    padding: 6px 12px;
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    border: 1px solid white;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.85rem;
-    transition: background 0.2s;
-}
-
-.logout-btn:active {
-    background: rgba(255, 255, 255, 0.3);
+.settings-btn:active {
+    transform: rotate(45deg) scale(0.95);
 }
 
 .offline-indicator {
@@ -224,13 +216,13 @@ header h1 {
 
 #taskInput:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: var(--text-secondary);
 }
 
 #addTaskBtn {
     padding: 12px 20px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: var(--text-primary);
+    color: var(--card-bg);
     border: none;
     border-radius: 8px;
     font-size: 1.5rem;
@@ -242,7 +234,7 @@ header h1 {
 
 #addTaskBtn:hover {
     transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 #addTaskBtn:active {
@@ -257,6 +249,7 @@ header h1 {
     overflow-y: auto;
     gap: 10px;
     padding: 0 10px 10px 10px;
+    padding-bottom: 80px;
     transition: transform 0.3s, opacity 0.3s;
 }
 
@@ -278,11 +271,11 @@ header h1 {
     flex-shrink: 0;
 }
 
-.q1 .segment-header { border-color: #ef4444; }
-.q2 .segment-header { border-color: #10b981; }
-.q3 .segment-header { border-color: #f59e0b; }
-.q4 .segment-header { border-color: #6b7280; }
-.q5 .segment-header { border-color: #8b5cf6; }
+.q1 .segment-header { border-color: #1f2937; }
+.q2 .segment-header { border-color: #4b5563; }
+.q3 .segment-header { border-color: #6b7280; }
+.q4 .segment-header { border-color: #9ca3af; }
+.q5 .segment-header { border-color: #d1d5db; }
 
 .segment-header h2 {
     font-size: 1rem;
@@ -588,4 +581,38 @@ header h1 {
     .cancel-btn:hover {
         background: #d1d5db;
     }
+}
+
+/* Footer Styles */
+footer {
+    background: rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(10px);
+}
+
+footer a:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Logout Button in Settings Modal */
+.logout-btn-modal {
+    width: 100%;
+    padding: 12px 20px;
+    background: var(--text-primary);
+    color: var(--card-bg);
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.logout-btn-modal:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.logout-btn-modal:active {
+    transform: scale(0.98);
 }

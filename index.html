@@ -66,11 +66,12 @@
     <!-- App Screen -->
     <div id="appScreen" class="container" style="display: none;">
         <header>
-            <h1>Eisenhauer Matrix</h1>
+            <h1>Eisenhauer Matrix <span id="versionNumber" style="font-size: 0.5em; opacity: 0.6;"></span></h1>
             <div id="userInfo" class="user-info"></div>
             <div id="offlineIndicator" class="offline-indicator" style="display: none;">
                 📵 Offline-Modus
             </div>
+            <button id="settingsBtn" class="settings-btn" title="Einstellungen">⚙️</button>
         </header>
 
         <div class="add-task-section">
@@ -119,6 +120,12 @@
                 <div class="task-list" id="segment5" data-segment="5"></div>
             </div>
         </div>
+
+        <footer style="text-align: center; padding: 20px; margin-top: 20px;">
+            <a href="https://www.buymeacoffee.com/yourusername" target="_blank" rel="noopener noreferrer" style="display: inline-block; padding: 10px 20px; background: #FFDD00; color: #000; text-decoration: none; border-radius: 8px; font-weight: 600; transition: transform 0.2s;">
+                ☕ Buy me a coffee
+            </a>
+        </footer>
     </div>
 
     <!-- Modal für Segment-Auswahl -->
@@ -143,6 +150,18 @@
         </div>
     </div>
 
+    <!-- Modal für Einstellungen -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <h3>Einstellungen</h3>
+            <div style="margin: 20px 0;">
+                <p id="settingsUserInfo" style="color: var(--text-secondary); margin-bottom: 20px;"></p>
+                <button id="logoutBtn" class="logout-btn-modal">Abmelden</button>
+            </div>
+            <button id="settingsCancelBtn" class="cancel-btn">Schließen</button>
+        </div>
+    </div>
+
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
@@ -157,10 +176,25 @@
     <!-- Register Service Worker -->
     <script>
         if ('serviceWorker' in navigator) {
+            let refreshing = false;
+
+            // Reload page when new service worker takes over
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (!refreshing) {
+                    refreshing = true;
+                    window.location.reload();
+                }
+            });
+
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./service-worker.js')
                     .then(registration => {
                         console.log('ServiceWorker registered: ', registration);
+
+                        // Check for updates every 60 seconds
+                        setInterval(() => {
+                            registration.update();
+                        }, 60000);
                     })
                     .catch(error => {
                         console.log('ServiceWorker registration failed: ', error);

@@ -1,4 +1,5 @@
-const CACHE_NAME = 'eisenhauer-matrix-v1';
+const CACHE_VERSION = '1.0.0';
+const CACHE_NAME = `eisenhauer-matrix-v${CACHE_VERSION}`;
 const urlsToCache = [
   './',
   './index.html',
@@ -9,10 +10,13 @@ const urlsToCache = [
 
 // Install Service Worker
 self.addEventListener('install', event => {
+  // Force the waiting service worker to become the active service worker
+  self.skipWaiting();
+
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
-        console.log('Opened cache');
+        console.log('Opened cache:', CACHE_NAME);
         return cache.addAll(urlsToCache);
       })
   );
@@ -52,17 +56,21 @@ self.addEventListener('fetch', event => {
 
 // Activate - Clean up old caches
 self.addEventListener('activate', event => {
-  const cacheWhitelist = [CACHE_NAME];
-
+  // Take control of all pages immediately
   event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheWhitelist.indexOf(cacheName) === -1) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
+    Promise.all([
+      self.clients.claim(),
+      caches.keys().then(cacheNames => {
+        return Promise.all(
+          cacheNames.map(cacheName => {
+            // Delete all caches except the current one
+            if (cacheName !== CACHE_NAME) {
+              console.log('Deleting old cache:', cacheName);
+              return caches.delete(cacheName);
+            }
+          })
+        );
+      })
+    ])
   );
 });

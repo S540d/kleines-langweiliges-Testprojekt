@@ -1,6 +1,7 @@
 {
   "name": "Eisenhauer Matrix",
   "short_name": "Eisenhauer",
+  "version": "1.0.0",
   "description": "Task Management nach der Eisenhauer-Matrix-Methode",
   "start_url": "./index.html",
   "display": "standalone",
