@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.1.0';
+const CACHE_VERSION = '1.3.0';
 const CACHE_NAME = `eisenhauer-matrix-v${CACHE_VERSION}`;
 const urlsToCache = [
   './',
@@ -6,6 +6,13 @@ const urlsToCache = [
   './style.css',
   './script.js',
   './manifest.json'
+];
+
+// Files that should always be fetched from network first
+const networkFirstFiles = [
+  './index.html',
+  './style.css',
+  './script.js'
 ];
 
 // Install Service Worker
@@ -22,36 +29,62 @@ self.addEventListener('install', event => {
   );
 });
 
-// Fetch - Serve from cache, fallback to network
+// Fetch - Network First for important files, Cache First for others
 self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        // Cache hit - return response
-        if (response) {
-          return response;
-        }
+  const url = new URL(event.request.url);
+  const pathname = url.pathname;
 
-        return fetch(event.request).then(
-          response => {
+  // Check if this file should use network-first strategy
+  const isNetworkFirst = networkFirstFiles.some(file =>
+    pathname.endsWith(file) || pathname === '/' || pathname === '/index.html'
+  );
+
+  if (isNetworkFirst) {
+    // Network First Strategy - Always try network, fallback to cache
+    event.respondWith(
+      fetch(event.request)
+        .then(response => {
+          // Check if valid response
+          if (response && response.status === 200 && response.type === 'basic') {
+            // Clone and cache the response
+            const responseToCache = response.clone();
+            caches.open(CACHE_NAME).then(cache => {
+              cache.put(event.request, responseToCache);
+            });
+          }
+          return response;
+        })
+        .catch(() => {
+          // Network failed, try cache
+          return caches.match(event.request);
+        })
+    );
+  } else {
+    // Cache First Strategy - Try cache first, fallback to network
+    event.respondWith(
+      caches.match(event.request)
+        .then(response => {
+          if (response) {
+            return response;
+          }
+
+          return fetch(event.request).then(response => {
             // Check if valid response
             if (!response || response.status !== 200 || response.type !== 'basic') {
               return response;
             }
 
-            // Clone the response
+            // Clone and cache
             const responseToCache = response.clone();
-
-            caches.open(CACHE_NAME)
-              .then(cache => {
-                cache.put(event.request, responseToCache);
-              });
+            caches.open(CACHE_NAME).then(cache => {
+              cache.put(event.request, responseToCache);
+            });
 
             return response;
-          }
-        );
-      })
-  );
+          });
+        })
+    );
+  }
 });
 
 // Activate - Clean up old caches

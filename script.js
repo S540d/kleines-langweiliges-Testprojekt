@@ -1,5 +1,29 @@
 // App Version
-const APP_VERSION = 'v1.1.0';
+const APP_VERSION = 'v1.3.0';
+
+// Language translations
+const translations = {
+    de: {
+        segments: {
+            1: { title: 'Sofort!', subtitle: 'wichtig & dringend' },
+            2: { title: 'Planen!', subtitle: 'wichtig' },
+            3: { title: 'Abgeben!', subtitle: 'dringend' },
+            4: { title: 'Später!', subtitle: 'optional' },
+            5: { title: 'Fertig!', subtitle: '' }
+        }
+    },
+    en: {
+        segments: {
+            1: { title: 'Do!', subtitle: '' },
+            2: { title: 'Schedule!', subtitle: '' },
+            3: { title: 'Delegate!', subtitle: '' },
+            4: { title: 'Ignore!', subtitle: '' },
+            5: { title: 'Done!', subtitle: '' }
+        }
+    }
+};
+
+let currentLanguage = 'en';
 
 // Task Management
 let tasks = {
@@ -22,6 +46,7 @@ const settingsBtn = document.getElementById('settingsBtn');
 const settingsModal = document.getElementById('settingsModal');
 const settingsCancelBtn = document.getElementById('settingsCancelBtn');
 const logoutBtn = document.getElementById('logoutBtn');
+const languageToggle = document.getElementById('languageToggle');
 const darkModeToggle = document.getElementById('darkModeToggle');
 const searchInput = document.getElementById('searchInput');
 const exportBtn = document.getElementById('exportBtn');
@@ -29,7 +54,7 @@ const importBtn = document.getElementById('importBtn');
 const importFile = document.getElementById('importFile');
 
 // Initialize
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     // Display version number
     const versionElement = document.getElementById('versionNumber');
     if (versionElement) {
@@ -37,12 +62,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Load dark mode preference
-    localforage.getItem('darkMode').then(darkMode => {
-        if (darkMode === true) {
-            document.body.classList.add('dark-mode');
-            darkModeToggle.checked = true;
-        }
-    });
+    const darkMode = await localforage.getItem('darkMode');
+    if (darkMode === true) {
+        document.body.classList.add('dark-mode');
+        darkModeToggle.checked = true;
+    }
+
+    // Load language preference
+    const savedLanguage = await localforage.getItem('language');
+    if (savedLanguage) {
+        currentLanguage = savedLanguage;
+    }
+    languageToggle.value = currentLanguage;
+    updateLanguage();
+
+    // Show drag hint if not seen before
+    const dragHintSeen = await localforage.getItem('dragHintSeen');
+    if (!dragHintSeen) {
+        showDragHint();
+    }
 
     renderAllTasks();
     setupDragAndDrop();
@@ -108,6 +146,13 @@ logoutBtn.addEventListener('click', () => {
     if (confirm('Möchtest du dich wirklich abmelden?')) {
         signOut();
     }
+});
+
+// Language Toggle
+languageToggle.addEventListener('change', async (e) => {
+    currentLanguage = e.target.value;
+    await localforage.setItem('language', currentLanguage);
+    updateLanguage();
 });
 
 // Dark Mode Toggle
@@ -179,33 +224,6 @@ function addTaskToSegment(taskText, segmentId) {
     }
 
     renderSegment(segmentId);
-}
-
-function moveTaskDown(taskId, fromSegment) {
-    const taskIndex = tasks[fromSegment].findIndex(t => t.id === taskId);
-    if (taskIndex === -1) return;
-
-    // Determine next segment: 1->2->3->4->5
-    const nextSegment = fromSegment < 4 ? fromSegment + 1 : 5;
-
-    const task = tasks[fromSegment][taskIndex];
-
-    // Remove from current segment
-    tasks[fromSegment].splice(taskIndex, 1);
-
-    // Add to next segment
-    task.segment = nextSegment;
-    task.checked = nextSegment === 5;
-    tasks[nextSegment].push(task);
-
-    if (currentUser) {
-        updateTaskInFirestore(task);
-    } else {
-        saveTasks();
-    }
-
-    renderSegment(fromSegment);
-    renderSegment(nextSegment);
 }
 
 function moveTask(taskId, fromSegment) {
@@ -333,31 +351,7 @@ function createTaskElement(task) {
     textSpan.className = 'task-text';
     textSpan.textContent = task.text;
 
-    const actions = document.createElement('div');
-    actions.className = 'task-actions';
-
-    // Only show move button for segments 1-4
-    if (task.segment !== 5) {
-        const moveBtn = document.createElement('button');
-        moveBtn.className = 'move-btn';
-        moveBtn.textContent = '↓';
-        moveBtn.title = 'In nächste Kategorie verschieben';
-        moveBtn.addEventListener('click', () => {
-            moveTaskDown(task.id, task.segment);
-        });
-        actions.appendChild(moveBtn);
-    }
-
-    const deleteBtn = document.createElement('button');
-    deleteBtn.className = 'delete-btn';
-    deleteBtn.textContent = '✕';
-    deleteBtn.addEventListener('click', () => {
-        deleteTask(task.id, task.segment);
-    });
-    actions.appendChild(deleteBtn);
-
     content.appendChild(textSpan);
-    content.appendChild(actions);
 
     div.appendChild(checkbox);
     div.appendChild(content);
@@ -852,4 +846,63 @@ function filterTasks(searchTerm) {
             textSpan.innerHTML = textSpan.textContent;
         }
     });
+}
+
+// Update Language
+function updateLanguage() {
+    const lang = translations[currentLanguage];
+
+    // Update segment headers
+    for (let i = 1; i <= 5; i++) {
+        const segment = document.querySelector(`.segment[data-segment="${i}"]`);
+        if (segment) {
+            const header = segment.querySelector('.segment-header h2');
+            if (header) {
+                const segmentData = lang.segments[i];
+                if (segmentData.subtitle) {
+                    header.innerHTML = `${segmentData.title} <span style="font-size: 0.7em; opacity: 0.7; font-weight: 400;">${segmentData.subtitle}</span>`;
+                } else {
+                    header.textContent = segmentData.title;
+                }
+            }
+        }
+    }
+
+    // Update modal segment buttons
+    const segmentButtons = document.querySelectorAll('.segment-btn');
+    segmentButtons.forEach((btn, index) => {
+        const segmentId = parseInt(btn.dataset.segment);
+        const segmentData = lang.segments[segmentId];
+        if (segmentData.subtitle) {
+            btn.innerHTML = `<strong>${segmentData.title}</strong><br><span style="font-size: 0.8em; opacity: 0.8;">${segmentData.subtitle}</span>`;
+        } else {
+            btn.innerHTML = `<strong>${segmentData.title}</strong>`;
+        }
+    });
+
+    // Update drag hint text
+    const dragHint = document.getElementById('dragHint');
+    if (dragHint) {
+        const hintText = currentLanguage === 'de'
+            ? '💡 <strong>Tipp:</strong> Ziehe Aufgaben zwischen Kategorien, um sie zu verschieben. Wische nach links, um zu löschen.'
+            : '💡 <strong>Tip:</strong> Drag tasks between categories to move them. Swipe left to delete.';
+        dragHint.querySelector('p').innerHTML = hintText;
+
+        const btnText = currentLanguage === 'de' ? 'Verstanden' : 'Got it';
+        dragHint.querySelector('button').textContent = btnText;
+    }
+}
+
+// Show Drag Hint
+function showDragHint() {
+    const dragHint = document.getElementById('dragHint');
+    if (dragHint) {
+        dragHint.style.display = 'block';
+
+        const closeBtn = document.getElementById('closeDragHint');
+        closeBtn.addEventListener('click', async () => {
+            dragHint.style.display = 'none';
+            await localforage.setItem('dragHintSeen', true);
+        });
+    }
 }

@@ -81,6 +81,12 @@
             <button id="settingsBtn" class="settings-btn" title="Einstellungen">⚙️</button>
         </header>
 
+        <!-- Drag & Drop Hint -->
+        <div id="dragHint" class="drag-hint" style="display: none;">
+            <p>💡 <strong>Tipp:</strong> Ziehe Aufgaben zwischen Kategorien, um sie zu verschieben. Wische nach links, um zu löschen.</p>
+            <button id="closeDragHint" class="close-hint-btn">Verstanden</button>
+        </div>
+
         <div class="add-task-section">
             <input type="text" id="taskInput" placeholder="Neue Aufgabe (max. 140 Zeichen)" maxlength="140">
             <button id="addTaskBtn">+</button>
@@ -164,6 +170,17 @@
             <div style="margin: 20px 0;">
                 <p id="settingsUserInfo" style="color: var(--text-secondary); margin-bottom: 10px;"></p>
                 <p id="settingsVersion" style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 20px;"></p>
+
+                <!-- Language Toggle -->
+                <div class="settings-option">
+                    <label for="languageToggle" class="settings-label">
+                        <span>🌍 Sprache / Language</span>
+                        <select id="languageToggle" class="language-select">
+                            <option value="en">English</option>
+                            <option value="de">Deutsch</option>
+                        </select>
+                    </label>
+                </div>
 
                 <!-- Dark Mode Toggle -->
                 <div class="settings-option">
