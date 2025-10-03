@@ -37,11 +37,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Load dark mode preference
-    const darkMode = localStorage.getItem('darkMode') === 'true';
-    if (darkMode) {
-        document.body.classList.add('dark-mode');
-        darkModeToggle.checked = true;
-    }
+    localforage.getItem('darkMode').then(darkMode => {
+        if (darkMode === true) {
+            document.body.classList.add('dark-mode');
+            darkModeToggle.checked = true;
+        }
+    });
 
     renderAllTasks();
     setupDragAndDrop();
@@ -110,13 +111,13 @@ logoutBtn.addEventListener('click', () => {
 });
 
 // Dark Mode Toggle
-darkModeToggle.addEventListener('change', (e) => {
+darkModeToggle.addEventListener('change', async (e) => {
     if (e.target.checked) {
         document.body.classList.add('dark-mode');
-        localStorage.setItem('darkMode', 'true');
+        await localforage.setItem('darkMode', true);
     } else {
         document.body.classList.remove('dark-mode');
-        localStorage.setItem('darkMode', 'false');
+        await localforage.setItem('darkMode', false);
     }
 });
 
@@ -170,11 +171,11 @@ function addTaskToSegment(taskText, segmentId) {
 
     tasks[segmentId].push(task);
 
-    // Save to Firestore if user is logged in
+    // Save to Firestore if user is logged in, otherwise to localStorage
     if (currentUser) {
         saveTaskToFirestore(task);
     } else {
-        saveTasks(); // Fallback to localStorage
+        saveGuestTasks(); // Save to localStorage (guest mode)
     }
 
     renderSegment(segmentId);
@@ -396,8 +397,11 @@ function closeModal() {
 }
 
 function saveTasks() {
-    // Fallback to localStorage when not logged in
-    localStorage.setItem('eisenhauerTasks', JSON.stringify(tasks));
+    // Use guest mode saving if in guest mode (delegates to localForage)
+    if (typeof isGuestMode !== 'undefined' && isGuestMode) {
+        saveGuestTasks();
+    }
+    // If logged in, tasks are saved to Firestore automatically
 }
 
 // Drag and Drop Functions
@@ -724,7 +728,7 @@ function closeSettingsModal() {
 }
 
 // Sign Out Function
-function signOut() {
+async function signOut() {
     if (firebase.auth().currentUser) {
         firebase.auth().signOut().then(() => {
             location.reload();
@@ -733,8 +737,8 @@ function signOut() {
             alert('Fehler beim Abmelden: ' + error.message);
         });
     } else {
-        // Local mode: just clear localStorage and reload
-        localStorage.clear();
+        // Guest mode: clear IndexedDB and reload
+        await localforage.clear();
         location.reload();
     }
 }

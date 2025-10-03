@@ -23,9 +23,11 @@ Eine moderne, mobile-first Progressive Web App zur Aufgabenverwaltung nach der E
 
 ### Cloud & Sync
 - ✅ **Cloud-Synchronisation** mit Firebase
-- ✅ **Benutzer-Accounts** (Google & Apple Sign-In)
-- ✅ **Geräte-übergreifende Sync** (Daten auf allen Geräten verfügbar)
-- ✅ **Offline-Modus** mit localStorage Fallback
+- ✅ **Benutzer-Accounts** (Google Sign-In)
+- ✅ **Gastmodus** - Ohne Anmeldung testen mit lokalem Speicher
+- ✅ **Geräte-übergreifende Sync** (bei Cloud-Login)
+- ✅ **Persistente Speicherung** mit IndexedDB (größer & sicherer als localStorage)
+- ✅ **Persistent Storage API** verhindert automatisches Löschen durch Browser
 - ✅ **Offline-Indikator** zeigt Verbindungsstatus
 - ✅ **Pull-to-Refresh** für Datenaktualisierung (Mobile)
 
@@ -57,8 +59,12 @@ Eine moderne, mobile-first Progressive Web App zur Aufgabenverwaltung nach der E
 
 - **Frontend:** HTML5, CSS3 (Flexbox, Grid, CSS Variables)
 - **JavaScript:** Vanilla ES6+ (kein Framework)
+- **Storage:**
+  - **IndexedDB** via localForage (Gastmodus - ~50MB+ Speicher)
+  - **Persistent Storage API** (verhindert Datenverlust bei Cache-Löschung)
+  - Cloud Firestore (für angemeldete User)
 - **Backend:** Firebase
-  - Firebase Authentication (Google & Apple Sign-In)
+  - Firebase Authentication (Google Sign-In)
   - Cloud Firestore (Echtzeit-Datenbank mit Security Rules)
   - Offline-Persistenz
 - **PWA Features:**
@@ -112,13 +118,24 @@ Die App kann als Progressive Web App auf iOS installiert werden!
 - ✅ Safari (Desktop & iOS)
 - ✅ Mobile Browser (iOS Safari, Chrome Mobile)
 
-## Sicherheit
+## Datenspeicherung
 
-- ✅ Firebase Security Rules mit strikter Validierung
-- ✅ XSS-Schutz durch konsequente Verwendung von `textContent`
-- ✅ Authentifizierung erforderlich für Cloud-Daten
-- ✅ User können nur eigene Daten lesen/schreiben
-- ✅ Input-Validierung (max. 140 Zeichen, nur erlaubte Segmente)
+### Gastmodus (ohne Anmeldung)
+- **Speicherort:** IndexedDB (über localForage)
+- **Kapazität:** ~50MB+ (viel größer als localStorage)
+- **Persistenz:** Persistent Storage API verhindert automatisches Löschen
+- **Synchronisation:** Nur auf diesem Gerät verfügbar
+- **Sicherheit:** Lokal gespeichert, Same-Origin-Policy geschützt
+
+### Cloud-Modus (mit Anmeldung)
+- **Speicherort:** Firebase Cloud Firestore
+- **Synchronisation:** Automatisch auf allen Geräten
+- **Sicherheit:**
+  - Firebase Security Rules mit strikter Validierung
+  - XSS-Schutz durch konsequente Verwendung von `textContent`
+  - Authentifizierung erforderlich
+  - User können nur eigene Daten lesen/schreiben
+  - Input-Validierung (max. 140 Zeichen, nur erlaubte Segmente)
 
 ## Roadmap
 

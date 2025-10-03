@@ -2,18 +2,28 @@
 let currentUser = null;
 
 // Auth State Observer
-auth.onAuthStateChanged(user => {
+auth.onAuthStateChanged(async user => {
     currentUser = user;
 
     if (user) {
         // User is signed in
         console.log('User signed in:', user.email);
+        isGuestMode = false;
+        await localforage.removeItem('guestMode');
         showApp();
         loadUserTasks();
     } else {
-        // User is signed out
-        console.log('User signed out');
-        showLogin();
+        // Check if guest mode was active
+        const wasGuestMode = await localforage.getItem('guestMode');
+        if (wasGuestMode === 'true') {
+            isGuestMode = true;
+            showApp();
+            await loadGuestTasks();
+        } else {
+            // User is signed out
+            console.log('User signed out');
+            showLogin();
+        }
     }
 });
 
@@ -153,12 +163,20 @@ async function updateTaskInFirestore(task) {
 
 // Migrate local data to Firestore (one-time on first login)
 async function migrateLocalData(userId) {
-    const localTasks = localStorage.getItem('eisenhauerTasks');
-
-    if (!localTasks) return;
-
     try {
-        const tasksData = JSON.parse(localTasks);
+        // Try to get data from IndexedDB (new method)
+        let tasksData = await localforage.getItem('eisenhauerTasks');
+
+        // Fallback to old localStorage for migration
+        if (!tasksData) {
+            const localTasks = localStorage.getItem('eisenhauerTasks');
+            if (localTasks) {
+                tasksData = JSON.parse(localTasks);
+            }
+        }
+
+        if (!tasksData) return;
+
         const batch = db.batch();
 
         Object.keys(tasksData).forEach(segmentId => {
@@ -180,10 +198,53 @@ async function migrateLocalData(userId) {
         await batch.commit();
         console.log('Local data migrated to Firestore');
 
-        // Clear local storage after migration
+        // Clear both storage methods after migration
+        await localforage.removeItem('eisenhauerTasks');
         localStorage.removeItem('eisenhauerTasks');
     } catch (error) {
         console.error('Error migrating local data:', error);
+    }
+}
+
+// Guest Mode (IndexedDB via localForage)
+let isGuestMode = false;
+
+async function continueAsGuest() {
+    isGuestMode = true;
+    await localforage.setItem('guestMode', 'true');
+
+    // Request persistent storage to prevent data loss
+    if (navigator.storage && navigator.storage.persist) {
+        const isPersisted = await navigator.storage.persist();
+        console.log(`Persistent storage: ${isPersisted ? 'granted' : 'denied'}`);
+    }
+
+    showApp();
+    await loadGuestTasks();
+}
+
+async function loadGuestTasks() {
+    try {
+        const savedTasks = await localforage.getItem('eisenhauerTasks');
+        if (savedTasks) {
+            tasks = savedTasks;
+            renderAllTasks();
+        } else {
+            tasks = { 1: [], 2: [], 3: [], 4: [], 5: [] };
+        }
+    } catch (error) {
+        console.error('Error loading guest tasks:', error);
+        tasks = { 1: [], 2: [], 3: [], 4: [], 5: [] };
+    }
+}
+
+async function saveGuestTasks() {
+    if (isGuestMode) {
+        try {
+            await localforage.setItem('eisenhauerTasks', tasks);
+        } catch (error) {
+            console.error('Error saving guest tasks:', error);
+        }
     }
 }
 
@@ -219,6 +280,25 @@ function showApp() {
 
         userInfo.appendChild(avatar);
         userInfo.appendChild(email);
+        userInfo.appendChild(logoutBtn);
+    } else if (isGuestMode) {
+        const userInfo = document.getElementById('userInfo');
+        userInfo.textContent = ''; // Clear existing content
+
+        const guestLabel = document.createElement('span');
+        guestLabel.className = 'user-email';
+        guestLabel.textContent = 'Gastmodus (Lokal gespeichert)';
+
+        const logoutBtn = document.createElement('button');
+        logoutBtn.className = 'logout-btn';
+        logoutBtn.textContent = 'Beenden';
+        logoutBtn.onclick = async () => {
+            isGuestMode = false;
+            await localforage.removeItem('guestMode');
+            showLogin();
+        };
+
+        userInfo.appendChild(guestLabel);
         userInfo.appendChild(logoutBtn);
     }
 }

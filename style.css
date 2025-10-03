@@ -181,6 +181,14 @@ header h1 {
     border-color: #000000;
 }
 
+.guest-btn {
+    border-color: #9ca3af;
+}
+
+.guest-btn:active {
+    background: #f9fafb;
+}
+
 .apple-btn:active {
     background: #f9fafb;
 }
