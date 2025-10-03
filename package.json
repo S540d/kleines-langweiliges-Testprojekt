@@ -1,23 +1,20 @@
 {
-  "name": "kleines-langweiliges-testprojekt",
-  "version": "1.0.0",
+  "name": "eisenhauer-matrix",
+  "version": "1.1.0",
   "description": "Eine moderne, mobile-first Progressive Web App zur Aufgabenverwaltung nach der Eisenhauer-Matrix-Methode.",
-  "main": "auth.js",
+  "main": "index.html",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "python3 -m http.server 8000"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/S540d/kleines-langweiliges-Testprojekt.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ["eisenhauer", "matrix", "productivity", "todo", "task-management", "pwa"],
+  "author": "Sven-Uwe Strohkark",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/S540d/kleines-langweiliges-Testprojekt/issues"
   },
-  "homepage": "https://github.com/S540d/kleines-langweiliges-Testprojekt#readme",
-  "devDependencies": {
-    "@bubblewrap/cli": "^1.24.1"
-  }
+  "homepage": "https://s540d.github.io/kleines-langweiliges-Testprojekt/"
 }
