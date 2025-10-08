@@ -72,13 +72,12 @@
 
     <!-- App Screen -->
     <div id="appScreen" class="container" style="display: none;">
-        <header>
+        <header style="display: none;">
             <h1>Eisenhauer Matrix <span id="versionNumber" style="font-size: 0.5em; opacity: 0.6;"></span></h1>
             <div id="userInfo" class="user-info"></div>
             <div id="offlineIndicator" class="offline-indicator" style="display: none;">
                 📵 Offline-Modus
             </div>
-            <button id="settingsBtn" class="settings-btn" title="Einstellungen">⚙️</button>
         </header>
 
         <!-- Drag & Drop Hint -->
@@ -88,8 +87,9 @@
         </div>
 
         <div class="add-task-section">
-            <input type="text" id="taskInput" placeholder="Neue Aufgabe (max. 140 Zeichen)" maxlength="140">
+            <input type="text" id="taskInput" placeholder="Neue Aufgabe" maxlength="140">
             <button id="addTaskBtn">+</button>
+            <button id="settingsBtn" class="settings-btn" title="Einstellungen">⚙️</button>
         </div>
 
         <div class="segments">

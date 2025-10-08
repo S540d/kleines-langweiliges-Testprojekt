@@ -354,7 +354,7 @@ function createTaskElement(task) {
         4: '#6b7280',
         5: '#8b5cf6'
     };
-    div.style.borderLeftColor = colors[task.segment];
+    div.style.setProperty('--checkbox-color', colors[task.segment]);
 
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';

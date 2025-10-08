@@ -49,14 +49,18 @@ body {
 
 header {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
     padding: 15px 20px;
     flex-shrink: 0;
 }
 
 header h1 {
-    display: none;
+    display: block;
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    margin: 0;
+    text-decoration: line-through;
 }
 
 /* User Info */
@@ -66,18 +70,19 @@ header h1 {
 
 /* Settings Button */
 .settings-btn {
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
-    background: var(--card-bg);
+    background: transparent;
     border: 1px solid var(--border-color);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 20px;
+    font-size: 16px;
     transition: all 0.2s;
     color: var(--text-primary);
+    flex-shrink: 0;
 }
 
 .settings-btn:hover {
@@ -249,14 +254,14 @@ header h1 {
 
 /* Add Task Section */
 .add-task-section {
-    background: var(--card-bg);
-    padding: 12px;
+    background: transparent;
+    padding: 10px;
     margin: 0 10px 10px 10px;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
     display: flex;
-    gap: 10px;
+    gap: 8px;
     flex-shrink: 0;
+    align-items: center;
 }
 
 #taskInput {
@@ -266,7 +271,7 @@ header h1 {
     border-radius: 8px;
     font-size: 1rem;
     transition: border-color 0.3s;
-    background: var(--card-bg);
+    background: transparent;
     color: var(--text-primary);
 }
 
@@ -276,16 +281,17 @@ header h1 {
 }
 
 #addTaskBtn {
-    padding: 12px 20px;
+    padding: 8px 12px;
     background: var(--text-primary);
     color: var(--card-bg);
     border: none;
-    border-radius: 8px;
-    font-size: 1.5rem;
+    border-radius: 6px;
+    font-size: 1.2rem;
     font-weight: 700;
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
-    min-width: 50px;
+    min-width: 35px;
+    flex-shrink: 0;
 }
 
 #addTaskBtn:hover {
@@ -310,20 +316,17 @@ header h1 {
 }
 
 .segment {
-    background: var(--card-bg);
-    border-radius: 12px;
-    padding: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background: transparent;
+    border-radius: 10px;
+    padding: 10px;
     display: flex;
     flex-direction: column;
-    min-height: 150px;
-    max-height: 150px;
+    min-height: 140px;
+    max-height: 140px;
 }
 
 .segment-header {
     margin-bottom: 10px;
-    padding-bottom: 10px;
-    border-bottom: 3px solid;
     flex-shrink: 0;
 }
 
@@ -370,29 +373,32 @@ header h1 {
 }
 
 .task-item {
-    background: var(--task-bg);
+    background: rgba(255, 255, 255, 0.05);
     padding: 8px;
     border-radius: 8px;
-    border-left: 3px solid;
     display: flex;
     align-items: flex-start;
     gap: 8px;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
     flex-shrink: 0;
     position: relative;
     touch-action: pan-y;
+    cursor: grab;
 }
 
 .task-item:active {
     transform: scale(0.98);
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .task-item.dragging {
     opacity: 0.5;
+    background: rgba(255, 255, 255, 0.15);
 }
 
 .task-list.drag-over {
     background: rgba(156, 163, 175, 0.2);
+    border: 2px dashed var(--text-secondary);
     border-radius: 8px;
 }
 
@@ -403,6 +409,36 @@ header h1 {
     min-width: 20px;
     cursor: pointer;
     margin-top: 2px;
+    appearance: none;
+    -webkit-appearance: none;
+    border: 2px solid var(--checkbox-color, #6b7280);
+    border-radius: 4px;
+    background: transparent;
+    position: relative;
+    transition: all 0.2s;
+}
+
+/* Unchecked state - colored border */
+.task-checkbox:not(:checked) {
+    border-color: var(--checkbox-color, #6b7280);
+}
+
+/* Checked state - filled with color and checkmark */
+.task-checkbox:checked {
+    background-color: var(--checkbox-color, #6b7280);
+    border-color: var(--checkbox-color, #6b7280);
+}
+
+.task-checkbox:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1;
 }
 
 .task-content {
@@ -540,19 +576,19 @@ header h1 {
     }
 
     .add-task-section {
-        margin: 0 0 20px 0;
-        padding: 20px;
+        margin: 0 0 15px 0;
+        padding: 15px;
     }
 
     .segments {
         padding: 0;
-        gap: 15px;
+        gap: 12px;
     }
 
     .segment {
-        min-height: calc(20vh - 15px);
-        max-height: calc(20vh - 15px);
-        padding: 20px;
+        min-height: calc(20vh - 12px);
+        max-height: calc(20vh - 12px);
+        padding: 15px;
     }
 
     .segment-header h2 {
