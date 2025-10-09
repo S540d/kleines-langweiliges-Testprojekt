@@ -10,6 +10,12 @@ const translations = {
             3: { title: 'Abgeben!', subtitle: 'dringend' },
             4: { title: 'Später!', subtitle: 'optional' },
             5: { title: 'Fertig!', subtitle: '' }
+        },
+        dueDate: {
+            label: 'Fälligkeitsdatum (optional):',
+            due: 'Fällig:',
+            overdue: 'Überfällig:',
+            dueSoon: 'Fällig bald:'
         }
     },
     en: {
@@ -19,11 +25,26 @@ const translations = {
             3: { title: 'Delegate!', subtitle: '' },
             4: { title: 'Ignore!', subtitle: '' },
             5: { title: 'Done!', subtitle: '' }
+        },
+        dueDate: {
+            label: 'Due date (optional):',
+            due: 'Due:',
+            overdue: 'Overdue:',
+            dueSoon: 'Due soon:'
         }
     }
 };
 
 let currentLanguage = 'en';
+
+// Helper Functions
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}.${month}.${year}`;
+}
 
 // Task Management
 let tasks = {
@@ -52,6 +73,7 @@ const searchInput = document.getElementById('searchInput');
 const exportBtn = document.getElementById('exportBtn');
 const importBtn = document.getElementById('importBtn');
 const importFile = document.getElementById('importFile');
+const dueDateInput = document.getElementById('dueDateInput');
 
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
@@ -86,6 +108,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     setupDragAndDrop();
     setupPullToRefresh();
     updateOnlineStatus();
+    
+    // Check for task escalation on load
+    checkAndEscalateTasks();
+    
+    // Check for task escalation every hour
+    setInterval(checkAndEscalateTasks, 60 * 60 * 1000);
 
     // Listen for online/offline events
     window.addEventListener('online', updateOnlineStatus);
@@ -206,12 +234,13 @@ function addTask() {
     taskInput.value = '';
 }
 
-function addTaskToSegment(taskText, segmentId) {
+function addTaskToSegment(taskText, segmentId, dueDate = null) {
     const task = {
         id: Date.now(),
         text: taskText,
         segment: segmentId,
-        checked: false
+        checked: false,
+        dueDate: dueDate
     };
 
     tasks[segmentId].push(task);
@@ -339,6 +368,68 @@ function renderAllTasks() {
     }
 }
 
+// Automatic priority escalation based on due dates
+function checkAndEscalateTasks() {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    let tasksEscalated = false;
+    
+    // Check segments 2, 3, and 4 for tasks that need escalation
+    [2, 3, 4].forEach(segmentId => {
+        tasks[segmentId].forEach((task, index) => {
+            if (!task.dueDate) return;
+            
+            const dueDate = new Date(task.dueDate);
+            dueDate.setHours(0, 0, 0, 0);
+            
+            const diffTime = dueDate - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            // Escalate if due date is 2 days or less away
+            if (diffDays <= 2 && diffDays >= 0) {
+                let targetSegment = null;
+                
+                if (segmentId === 2) {
+                    // Schedule (Q2) → Do (Q1)
+                    targetSegment = 1;
+                } else if (segmentId === 3) {
+                    // Delegate (Q3) → Do (Q1)
+                    targetSegment = 1;
+                } else if (segmentId === 4) {
+                    // Ignore (Q4) → Delegate (Q3)
+                    targetSegment = 3;
+                }
+                
+                if (targetSegment !== null) {
+                    // Move task to target segment
+                    tasks[segmentId].splice(index, 1);
+                    task.segment = targetSegment;
+                    tasks[targetSegment].push(task);
+                    tasksEscalated = true;
+                }
+            }
+        });
+    });
+    
+    if (tasksEscalated) {
+        // Save changes
+        if (currentUser) {
+            // Update all affected tasks in Firestore
+            [1, 2, 3, 4].forEach(segmentId => {
+                tasks[segmentId].forEach(task => {
+                    updateTaskInFirestore(task);
+                });
+            });
+        } else {
+            saveGuestTasks();
+        }
+        
+        // Re-render affected segments
+        renderAllTasks();
+    }
+}
+
 function createTaskElement(task) {
     const div = document.createElement('div');
     div.className = 'task-item';
@@ -375,6 +466,34 @@ function createTaskElement(task) {
 
     content.appendChild(textSpan);
 
+    // Add due date display if it exists
+    if (task.dueDate) {
+        const dueDateSpan = document.createElement('span');
+        dueDateSpan.className = 'task-due-date';
+        
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const dueDate = new Date(task.dueDate);
+        dueDate.setHours(0, 0, 0, 0);
+        
+        const diffTime = dueDate - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        let dueDateText = translations[currentLanguage].dueDate.due;
+        
+        if (diffDays < 0) {
+            dueDateSpan.classList.add('overdue');
+            dueDateText = translations[currentLanguage].dueDate.overdue;
+            div.classList.add('overdue');
+        } else if (diffDays <= 2) {
+            dueDateSpan.classList.add('due-soon');
+            dueDateText = translations[currentLanguage].dueDate.dueSoon;
+        }
+        
+        dueDateSpan.textContent = `📅 ${dueDateText} ${formatDate(task.dueDate)}`;
+        content.appendChild(dueDateSpan);
+    }
+
     div.appendChild(checkbox);
     div.appendChild(content);
 
@@ -393,13 +512,17 @@ function createTaskElement(task) {
 
 function openModal() {
     modal.classList.add('active');
+    
+    // Reset due date input
+    dueDateInput.value = '';
 
     // Reset segment buttons to normal add functionality
     segmentBtns.forEach(btn => {
         const segmentId = parseInt(btn.dataset.segment);
         btn.onclick = () => {
             if (currentTask) {
-                addTaskToSegment(currentTask, segmentId);
+                const dueDate = dueDateInput.value || null;
+                addTaskToSegment(currentTask, segmentId, dueDate);
                 currentTask = null;
             }
             closeModal();
@@ -901,6 +1024,15 @@ function updateLanguage() {
             btn.innerHTML = `<strong>${segmentData.title}</strong>`;
         }
     });
+    
+    // Update due date label
+    const dueDateLabel = document.querySelector('.due-date-label');
+    if (dueDateLabel) {
+        dueDateLabel.textContent = lang.dueDate.label;
+    }
+    
+    // Re-render tasks to update due date display text
+    renderAllTasks();
 
     // Update drag hint text
     const dragHint = document.getElementById('dragHint');

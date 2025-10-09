@@ -121,6 +121,7 @@ async function saveTaskToFirestore(task) {
                 text: task.text,
                 segment: task.segment,
                 checked: task.checked,
+                dueDate: task.dueDate || null,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
     } catch (error) {
@@ -154,7 +155,8 @@ async function updateTaskInFirestore(task) {
             .doc(task.id.toString())
             .update({
                 segment: task.segment,
-                checked: task.checked
+                checked: task.checked,
+                dueDate: task.dueDate || null
             });
     } catch (error) {
         console.error('Error updating task:', error);
@@ -190,6 +192,7 @@ async function migrateLocalData(userId) {
                     text: task.text,
                     segment: task.segment,
                     checked: task.checked,
+                    dueDate: task.dueDate || null,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
             });
