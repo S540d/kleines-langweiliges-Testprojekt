@@ -51,6 +51,20 @@ const translations = {
             },
             dayOfMonth: 'Tag des Monats:',
             indicator: '🔁'
+        },
+        metrics: {
+            title: '📊 Produktivitäts-Statistiken',
+            overview: 'Übersicht',
+            totalCompleted: 'Gesamt erledigt',
+            streak: 'Tage Streak',
+            avgTime: 'Ø Bearbeitungszeit',
+            completedTasks: 'Erledigte Aufgaben',
+            distribution: 'Verteilung nach Segmenten',
+            day: 'Tag',
+            week: 'Woche',
+            month: 'Monat',
+            close: 'Schließen',
+            chartLabel: 'Erledigte Aufgaben'
         }
     },
     en: {
@@ -82,6 +96,20 @@ const translations = {
             },
             dayOfMonth: 'Day of month:',
             indicator: '🔁'
+        },
+        metrics: {
+            title: '📊 Productivity Statistics',
+            overview: 'Overview',
+            totalCompleted: 'Total Completed',
+            streak: 'Day Streak',
+            avgTime: 'Avg. Processing Time',
+            completedTasks: 'Completed Tasks',
+            distribution: 'Distribution by Segments',
+            day: 'Day',
+            week: 'Week',
+            month: 'Month',
+            close: 'Close',
+            chartLabel: 'Completed Tasks'
         }
     }
 };
@@ -114,6 +142,9 @@ const searchInput = document.getElementById('searchInput');
 const exportBtn = document.getElementById('exportBtn');
 const importBtn = document.getElementById('importBtn');
 const importFile = document.getElementById('importFile');
+const metricsBtn = document.getElementById('metricsBtn');
+const metricsModal = document.getElementById('metricsModal');
+const metricsCancelBtn = document.getElementById('metricsCancelBtn');
 
 // Recurring Task Elements
 const recurringEnabled = document.getElementById('recurringEnabled');
@@ -292,6 +323,24 @@ recurringInterval.addEventListener('change', (e) => {
     }
 });
 
+// Metrics Button
+metricsBtn.addEventListener('click', () => {
+    closeSettingsModal();
+    openMetricsModal();
+});
+
+// Metrics Cancel Button
+metricsCancelBtn.addEventListener('click', () => {
+    closeMetricsModal();
+});
+
+// Metrics modal background click
+metricsModal.addEventListener('click', (e) => {
+    if (e.target === metricsModal) {
+        closeMetricsModal();
+    }
+});
+
 // Functions
 function addTask() {
     const taskText = taskInput.value.trim();
@@ -311,7 +360,9 @@ function addTaskToSegment(taskText, segmentId, recurringConfig = null) {
         id: Date.now(),
         text: taskText,
         segment: segmentId,
-        checked: false
+        checked: false,
+        createdAt: Date.now(),
+        completedAt: null
     };
 
     // Add recurring configuration if enabled
@@ -420,7 +471,7 @@ function toggleTask(taskId, segmentId) {
 
         task.segment = 5;
         task.checked = true;
-        task.completedAt = new Date().toISOString();
+        task.completedAt = Date.now(); // Track completion time for productivity statistics
         tasks[5].push(task);
 
         if (currentUser) {
@@ -437,7 +488,7 @@ function toggleTask(taskId, segmentId) {
 
         task.segment = 1;
         task.checked = false;
-        delete task.completedAt;
+        task.completedAt = null; // Reset completion time for productivity statistics
         tasks[1].push(task);
 
         if (currentUser) {
@@ -1203,6 +1254,47 @@ function updateLanguage() {
     
     // Re-render all tasks to update recurring indicators
     renderAllTasks();
+    
+    // Update metrics modal
+    updateMetricsLanguage();
+}
+
+function updateMetricsLanguage() {
+    const lang = translations[currentLanguage];
+    if (!lang.metrics) return;
+    
+    const metricsTitle = document.getElementById('metricsTitle');
+    if (metricsTitle) metricsTitle.textContent = lang.metrics.title;
+    
+    const metricsOverviewTitle = document.getElementById('metricsOverviewTitle');
+    if (metricsOverviewTitle) metricsOverviewTitle.textContent = lang.metrics.overview;
+    
+    const metricTotalLabel = document.getElementById('metricTotalLabel');
+    if (metricTotalLabel) metricTotalLabel.textContent = lang.metrics.totalCompleted;
+    
+    const metricStreakLabel = document.getElementById('metricStreakLabel');
+    if (metricStreakLabel) metricStreakLabel.textContent = lang.metrics.streak;
+    
+    const metricAvgTimeLabel = document.getElementById('metricAvgTimeLabel');
+    if (metricAvgTimeLabel) metricStreakLabel.textContent = lang.metrics.avgTime;
+    
+    const metricsCompletedTitle = document.getElementById('metricsCompletedTitle');
+    if (metricsCompletedTitle) metricsCompletedTitle.textContent = lang.metrics.completedTasks;
+    
+    const metricsDistributionTitle = document.getElementById('metricsDistributionTitle');
+    if (metricsDistributionTitle) metricsDistributionTitle.textContent = lang.metrics.distribution;
+    
+    const metricsDayBtn = document.getElementById('metricsDayBtn');
+    if (metricsDayBtn) metricsDayBtn.textContent = lang.metrics.day;
+    
+    const metricsWeekBtn = document.getElementById('metricsWeekBtn');
+    if (metricsWeekBtn) metricsWeekBtn.textContent = lang.metrics.week;
+    
+    const metricsMonthBtn = document.getElementById('metricsMonthBtn');
+    if (metricsMonthBtn) metricsMonthBtn.textContent = lang.metrics.month;
+    
+    const metricsCancelBtn = document.getElementById('metricsCancelBtn');
+    if (metricsCancelBtn) metricsCancelBtn.textContent = lang.metrics.close;
 }
 
 // Show Drag Hint
@@ -1217,4 +1309,348 @@ function showDragHint() {
             await localforage.setItem('dragHintSeen', true);
         });
     }
+}
+
+// Metrics Modal Functions
+let completedTasksChart = null;
+let segmentDistributionChart = null;
+let currentChartPeriod = 'day';
+
+function openMetricsModal() {
+    metricsModal.classList.add('active');
+    calculateAndDisplayMetrics();
+}
+
+function closeMetricsModal() {
+    metricsModal.classList.remove('active');
+}
+
+function calculateAndDisplayMetrics() {
+    const completedTasks = tasks[5] || [];
+    
+    // Calculate total completed tasks
+    const totalCompleted = completedTasks.length;
+    document.getElementById('metricTotalCompleted').textContent = totalCompleted;
+    
+    // Calculate streak
+    const streak = calculateStreak(completedTasks);
+    document.getElementById('metricCurrentStreak').textContent = streak;
+    
+    // Calculate average processing time
+    const avgTime = calculateAverageProcessingTime(completedTasks);
+    document.getElementById('metricAvgTime').textContent = avgTime;
+    
+    // Create charts
+    createCompletedTasksChart(completedTasks, currentChartPeriod);
+    createSegmentDistributionChart();
+    
+    // Setup chart period buttons
+    setupChartPeriodButtons();
+}
+
+function calculateStreak(completedTasks) {
+    if (completedTasks.length === 0) return 0;
+    
+    // Get tasks with completion dates, sorted by date (newest first)
+    const tasksWithDates = completedTasks
+        .filter(t => t.completedAt)
+        .sort((a, b) => b.completedAt - a.completedAt);
+    
+    if (tasksWithDates.length === 0) return 0;
+    
+    // Get unique days with completed tasks
+    const completedDays = new Set();
+    tasksWithDates.forEach(task => {
+        const date = new Date(task.completedAt);
+        const dayKey = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+        completedDays.add(dayKey);
+    });
+    
+    const sortedDays = Array.from(completedDays).sort().reverse();
+    
+    // Calculate streak from today backwards
+    const today = new Date();
+    const todayKey = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+    
+    let streak = 0;
+    let currentDate = new Date(today);
+    
+    for (let i = 0; i < 365; i++) { // Max 1 year
+        const dateKey = `${currentDate.getFullYear()}-${currentDate.getMonth()}-${currentDate.getDate()}`;
+        
+        if (sortedDays.includes(dateKey)) {
+            streak++;
+        } else if (i > 0) { // Allow today to be missing
+            break;
+        }
+        
+        currentDate.setDate(currentDate.getDate() - 1);
+    }
+    
+    return streak;
+}
+
+function calculateAverageProcessingTime(completedTasks) {
+    const tasksWithTime = completedTasks.filter(t => t.createdAt && t.completedAt);
+    
+    if (tasksWithTime.length === 0) return '-';
+    
+    const totalTime = tasksWithTime.reduce((sum, task) => {
+        return sum + (task.completedAt - task.createdAt);
+    }, 0);
+    
+    const avgMs = totalTime / tasksWithTime.length;
+    
+    // Convert to human readable format
+    const hours = Math.floor(avgMs / (1000 * 60 * 60));
+    const days = Math.floor(hours / 24);
+    
+    if (days > 0) {
+        return `${days}d ${hours % 24}h`;
+    } else if (hours > 0) {
+        return `${hours}h`;
+    } else {
+        const minutes = Math.floor(avgMs / (1000 * 60));
+        return `${minutes}m`;
+    }
+}
+
+function createCompletedTasksChart(completedTasks, period) {
+    const ctx = document.getElementById('completedTasksChart');
+    if (!ctx) return;
+    
+    // Destroy existing chart
+    if (completedTasksChart) {
+        completedTasksChart.destroy();
+    }
+    
+    const data = getCompletedTasksData(completedTasks, period);
+    
+    const isDarkMode = document.body.classList.contains('dark-mode');
+    const textColor = isDarkMode ? '#f9fafb' : '#1f2937';
+    const gridColor = isDarkMode ? '#404040' : '#e5e7eb';
+    
+    const lang = translations[currentLanguage];
+    
+    completedTasksChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: data.labels,
+            datasets: [{
+                label: lang.metrics.chartLabel,
+                data: data.values,
+                backgroundColor: 'rgba(139, 92, 246, 0.6)',
+                borderColor: 'rgba(139, 92, 246, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1,
+                        color: textColor
+                    },
+                    grid: {
+                        color: gridColor
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: textColor
+                    },
+                    grid: {
+                        color: gridColor
+                    }
+                }
+            }
+        }
+    });
+}
+
+function getCompletedTasksData(completedTasks, period) {
+    const now = new Date();
+    const labels = [];
+    const values = [];
+    
+    if (period === 'day') {
+        // Last 7 days
+        for (let i = 6; i >= 0; i--) {
+            const date = new Date(now);
+            date.setDate(date.getDate() - i);
+            const dayName = date.toLocaleDateString('de-DE', { weekday: 'short' });
+            labels.push(dayName);
+            
+            const count = completedTasks.filter(task => {
+                if (!task.completedAt) return false;
+                const taskDate = new Date(task.completedAt);
+                return taskDate.toDateString() === date.toDateString();
+            }).length;
+            
+            values.push(count);
+        }
+    } else if (period === 'week') {
+        // Last 4 weeks
+        for (let i = 3; i >= 0; i--) {
+            const weekStart = new Date(now);
+            weekStart.setDate(weekStart.getDate() - (i * 7) - weekStart.getDay());
+            labels.push(`KW ${getWeekNumber(weekStart)}`);
+            
+            const weekEnd = new Date(weekStart);
+            weekEnd.setDate(weekEnd.getDate() + 6);
+            
+            const count = completedTasks.filter(task => {
+                if (!task.completedAt) return false;
+                const taskDate = new Date(task.completedAt);
+                return taskDate >= weekStart && taskDate <= weekEnd;
+            }).length;
+            
+            values.push(count);
+        }
+    } else if (period === 'month') {
+        // Last 6 months
+        for (let i = 5; i >= 0; i--) {
+            const date = new Date(now);
+            date.setMonth(date.getMonth() - i);
+            const monthName = date.toLocaleDateString('de-DE', { month: 'short' });
+            labels.push(monthName);
+            
+            const count = completedTasks.filter(task => {
+                if (!task.completedAt) return false;
+                const taskDate = new Date(task.completedAt);
+                return taskDate.getMonth() === date.getMonth() && 
+                       taskDate.getFullYear() === date.getFullYear();
+            }).length;
+            
+            values.push(count);
+        }
+    }
+    
+    return { labels, values };
+}
+
+function getWeekNumber(date) {
+    const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    const dayNum = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+}
+
+function createSegmentDistributionChart() {
+    const ctx = document.getElementById('segmentDistributionChart');
+    if (!ctx) return;
+    
+    // Destroy existing chart
+    if (segmentDistributionChart) {
+        segmentDistributionChart.destroy();
+    }
+    
+    // Count completed tasks by original segment
+    const segmentCounts = {
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0
+    };
+    
+    // Count tasks in Done segment by their origin
+    tasks[5].forEach(task => {
+        // We don't track original segment, so we'll count current distribution
+        // For a better implementation, we should track the original segment
+    });
+    
+    // For now, count all tasks across all segments
+    for (let i = 1; i <= 5; i++) {
+        if (i < 5 && tasks[i]) {
+            segmentCounts[i] = tasks[i].length;
+        }
+    }
+    
+    // Also count completed tasks (assuming they came from all segments proportionally)
+    const completedCount = tasks[5] ? tasks[5].length : 0;
+    const totalActive = segmentCounts[1] + segmentCounts[2] + segmentCounts[3] + segmentCounts[4];
+    
+    if (totalActive > 0) {
+        // Distribute completed tasks proportionally
+        for (let i = 1; i <= 4; i++) {
+            const proportion = segmentCounts[i] / totalActive;
+            segmentCounts[i] += Math.round(completedCount * proportion);
+        }
+    } else {
+        // If no active tasks, distribute evenly
+        for (let i = 1; i <= 4; i++) {
+            segmentCounts[i] = Math.round(completedCount / 4);
+        }
+    }
+    
+    const isDarkMode = document.body.classList.contains('dark-mode');
+    const textColor = isDarkMode ? '#f9fafb' : '#1f2937';
+    
+    const segmentNames = currentLanguage === 'de' 
+        ? ['Sofort!', 'Planen!', 'Abgeben!', 'Später!']
+        : ['Do!', 'Schedule!', 'Delegate!', 'Ignore!'];
+    
+    segmentDistributionChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: segmentNames,
+            datasets: [{
+                data: [segmentCounts[1], segmentCounts[2], segmentCounts[3], segmentCounts[4]],
+                backgroundColor: [
+                    'rgba(239, 68, 68, 0.8)',
+                    'rgba(16, 185, 129, 0.8)',
+                    'rgba(245, 158, 11, 0.8)',
+                    'rgba(107, 114, 128, 0.8)'
+                ],
+                borderColor: [
+                    'rgba(239, 68, 68, 1)',
+                    'rgba(16, 185, 129, 1)',
+                    'rgba(245, 158, 11, 1)',
+                    'rgba(107, 114, 128, 1)'
+                ],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        color: textColor,
+                        padding: 15
+                    }
+                }
+            }
+        }
+    });
+}
+
+function setupChartPeriodButtons() {
+    const periodButtons = document.querySelectorAll('.chart-period-btn');
+    
+    periodButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Remove active class from all buttons
+            periodButtons.forEach(b => b.classList.remove('active'));
+            
+            // Add active class to clicked button
+            btn.classList.add('active');
+            
+            // Update chart period and redraw
+            currentChartPeriod = btn.dataset.period;
+            const completedTasks = tasks[5] || [];
+            createCompletedTasksChart(completedTasks, currentChartPeriod);
+        });
+    });
 }

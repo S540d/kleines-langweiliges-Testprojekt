@@ -887,3 +887,88 @@ body.dark-mode {
 body.dark-mode .search-highlight {
     background: #ffc107;
 }
+
+/* Metrics Modal */
+.metrics-modal {
+    max-width: 700px;
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+.metrics-container {
+    margin: 20px 0;
+}
+
+.metrics-section {
+    margin-bottom: 30px;
+}
+
+.metrics-section h4 {
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.metric-card {
+    background: var(--task-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+}
+
+.metric-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.metric-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.chart-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    justify-content: center;
+}
+
+.chart-period-btn {
+    padding: 8px 16px;
+    background: var(--task-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.chart-period-btn:hover {
+    background: var(--border-color);
+}
+
+.chart-period-btn.active {
+    background: var(--text-primary);
+    color: var(--card-bg);
+    border-color: var(--text-primary);
+}
+
+.metrics-section canvas {
+    max-height: 300px;
+    background: var(--task-bg);
+    border-radius: 8px;
+    padding: 15px;
+}
