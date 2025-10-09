@@ -2,7 +2,7 @@
 
 Eine moderne, mobile-first Progressive Web App zur Aufgabenverwaltung nach der Eisenhauer-Matrix-Methode.
 
-🌐 **Live Demo:** [https://s540d.github.io/kleines-langweiliges-Testprojekt/](https://s540d.github.io/kleines-langweiliges-Testprojekt/)
+🌐 **Live Demo:** [https://s540d.github.io/Eisenhauer/](https://s540d.github.io/Eisenhauer/)
 
 ## Features
 
@@ -149,7 +149,7 @@ Die App kann als Progressive Web App auf iOS installiert werden!
 
 ## Roadmap
 
-Geplante Features (siehe [Issues](https://github.com/S540d/kleines-langweiliges-Testprojekt/issues)):
+Geplante Features (siehe [Issues](https://github.com/S540d/Eisenhauer/issues)):
 
 - [ ] Archiv für gelöschte Tasks
 - [ ] Weitere Authentifizierungs-Anbieter
@@ -176,7 +176,7 @@ Pull Requests sind willkommen! Für größere Änderungen bitte zuerst ein Issue
 
 ## Kontakt
 
-Bei Fragen oder Feedback: [GitHub Issues](https://github.com/S540d/kleines-langweiliges-Testprojekt/issues)
+Bei Fragen oder Feedback: [GitHub Issues](https://github.com/S540d/Eisenhauer/issues)
 
 ---
 
