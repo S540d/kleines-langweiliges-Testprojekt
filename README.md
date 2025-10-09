@@ -82,9 +82,12 @@ Eine moderne, mobile-first Progressive Web App zur Aufgabenverwaltung nach der E
 2. Erstelle ein kostenloses Firebase-Projekt
 3. Aktiviere Google & Apple Sign-In
 4. Richte Firestore Database ein
-5. Kopiere deine Firebase-Config in `firebase-config.js`
+5. Kopiere `firebase-config.example.js` zu `firebase-config.js`
+6. Trage deine Firebase-Credentials in `firebase-config.js` ein
 
 ⏱️ **Dauer:** ~10 Minuten | 💰 **Kosten:** Kostenlos (Firebase Spark Plan)
+
+**Hinweis:** `firebase-config.js` ist in `.gitignore` und wird nicht committed - deine Credentials bleiben privat!
 
 ### 2. Lokale Entwicklung
 
