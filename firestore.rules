@@ -1,0 +1,77 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions für bessere Lesbarkeit
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function validTaskText(text) {
+      return text is string
+             && text.size() > 0
+             && text.size() <= 140;
+    }
+
+    function validSegment(segment) {
+      return segment is int
+             && segment >= 1
+             && segment <= 5;
+    }
+
+    function validChecked(checked) {
+      return checked is bool;
+    }
+
+    function hasRequiredFields() {
+      return request.resource.data.keys().hasAll(['text', 'segment', 'checked', 'createdAt']);
+    }
+
+    function hasOnlyAllowedFields() {
+      return request.resource.data.keys().hasOnly(['text', 'segment', 'checked', 'createdAt']);
+    }
+
+    // User kann nur eigene Daten zugreifen
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow write: if false; // User-Dokument selbst kann nicht geändert werden
+
+      // Tasks Subcollection
+      match /tasks/{taskId} {
+
+        // Lesen: nur eigene Tasks
+        allow read: if isOwner(userId);
+
+        // Erstellen: strikte Validierung
+        allow create: if isOwner(userId)
+                      && hasRequiredFields()
+                      && hasOnlyAllowedFields()
+                      && validTaskText(request.resource.data.text)
+                      && validSegment(request.resource.data.segment)
+                      && validChecked(request.resource.data.checked)
+                      && request.resource.data.createdAt == request.time;
+
+        // Update: nur bestimmte Felder änderbar
+        allow update: if isOwner(userId)
+                      && hasOnlyAllowedFields()
+                      && validTaskText(request.resource.data.text)
+                      && validSegment(request.resource.data.segment)
+                      && validChecked(request.resource.data.checked)
+                      // createdAt darf nicht geändert werden
+                      && request.resource.data.createdAt == resource.data.createdAt;
+
+        // Löschen: nur eigene Tasks
+        allow delete: if isOwner(userId);
+      }
+    }
+
+    // Alles andere explizit verboten
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

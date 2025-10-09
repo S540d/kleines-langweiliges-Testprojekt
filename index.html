@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Eisenhauer Matrix</title>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- iOS Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Eisenhauer">
+
+    <!-- iOS Icons -->
+    <link rel="apple-touch-icon" href="icons/icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="icons/icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="96x96" href="icons/icon-96x96.png">
+    <link rel="apple-touch-icon" sizes="128x128" href="icons/icon-128x128.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="icons/icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192x192.png">
+    <link rel="apple-touch-icon" sizes="384x384" href="icons/icon-384x384.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="icons/icon-512x512.png">
+
+    <!-- iOS Splash Screen Color -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="#667eea">
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#667eea">
+
+    <link rel="stylesheet" href="style.css?v=1760026481348">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-container">
+            <img src="icons/icon-192x192.png" alt="Logo" class="login-logo">
+            <h1>Eisenhauer Matrix</h1>
+            <p class="login-subtitle">Organisiere deine Aufgaben effizient</p>
+
+            <div class="login-buttons">
+                <button id="googleSignInBtn" onclick="signInWithGoogle()" class="login-btn google-btn">
+                    <svg viewBox="0 0 24 24" width="20" height="20">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                    Mit Google anmelden
+                </button>
+
+                <button onclick="signInWithApple()" class="login-btn apple-btn" style="display: none;">
+                    <svg viewBox="0 0 24 24" width="20" height="20">
+                        <path fill="currentColor" d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+                    </svg>
+                    Mit Apple anmelden
+                </button>
+
+                <button id="guestModeBtn" onclick="continueAsGuest()" class="login-btn guest-btn">
+                    <svg viewBox="0 0 24 24" width="20" height="20">
+                        <path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                    </svg>
+                    Ohne Anmeldung testen
+                </button>
+            </div>
+
+            <p class="login-info">Melde dich an, um deine Daten in der Cloud zu speichern und auf allen Geräten zu synchronisieren. Im Gastmodus werden deine Daten lokal auf diesem Gerät gespeichert.</p>
+        </div>
+    </div>
+
+    <!-- App Screen -->
+    <div id="appScreen" class="container" style="display: none;">
+        <header style="display: none;">
+            <h1>Eisenhauer Matrix <span id="versionNumber" style="font-size: 0.5em; opacity: 0.6;"></span></h1>
+            <div id="userInfo" class="user-info"></div>
+            <div id="offlineIndicator" class="offline-indicator" style="display: none;">
+                📵 Offline-Modus
+            </div>
+        </header>
+
+        <!-- Drag & Drop Hint -->
+        <div id="dragHint" class="drag-hint" style="display: none;">
+            <p>💡 <strong>Tipp:</strong> Ziehe Aufgaben zwischen Kategorien, um sie zu verschieben. Wische nach links, um zu löschen.</p>
+            <button id="closeDragHint" class="close-hint-btn">Verstanden</button>
+        </div>
+
+        <div class="add-task-section">
+            <input type="text" id="taskInput" placeholder="Neue Aufgabe" maxlength="140">
+            <button id="settingsBtn" class="settings-btn" title="Einstellungen">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <circle cx="12" cy="5" r="2"></circle>
+                    <circle cx="12" cy="12" r="2"></circle>
+                    <circle cx="12" cy="19" r="2"></circle>
+                </svg>
+            </button>
+        </div>
+
+        <div class="segments">
+            <!-- Segment 1: Do! -->
+            <div class="segment q1" data-segment="1">
+                <div class="segment-header">
+                    <h2>Do!</h2>
+                </div>
+                <div class="task-list" id="segment1" data-segment="1"></div>
+            </div>
+
+            <!-- Segment 2: Schedule! -->
+            <div class="segment q2" data-segment="2">
+                <div class="segment-header">
+                    <h2>Schedule!</h2>
+                </div>
+                <div class="task-list" id="segment2" data-segment="2"></div>
+            </div>
+
+            <!-- Segment 3: Delegate! -->
+            <div class="segment q3" data-segment="3">
+                <div class="segment-header">
+                    <h2>Delegate!</h2>
+                </div>
+                <div class="task-list" id="segment3" data-segment="3"></div>
+            </div>
+
+            <!-- Segment 4: Ignore! -->
+            <div class="segment q4" data-segment="4">
+                <div class="segment-header">
+                    <h2>Ignore!</h2>
+                </div>
+                <div class="task-list" id="segment4" data-segment="4"></div>
+            </div>
+
+            <!-- Segment 5: Done! -->
+            <div class="segment q5" data-segment="5">
+                <div class="segment-header">
+                    <h2>Done!</h2>
+                </div>
+                <div class="task-list" id="segment5" data-segment="5"></div>
+            </div>
+        </div>
+
+        <footer style="text-align: center; padding: 20px; margin-top: 20px;">
+            <a href="https://buymeacoffee.com/sven4321" target="_blank" rel="noopener noreferrer" style="display: inline-block; padding: 10px 20px; background: #FFDD00; color: #000; text-decoration: none; border-radius: 8px; font-weight: 600; transition: transform 0.2s;">
+                ☕ Buy me a coffee
+            </a>
+        </footer>
+    </div>
+
+    <!-- Modal für Segment-Auswahl -->
+    <div id="segmentModal" class="modal">
+        <div class="modal-content">
+            <h3>Wähle ein Segment</h3>
+            <div class="segment-buttons">
+                <button class="segment-btn q1-btn" data-segment="1">
+                    <strong>Do!</strong>
+                </button>
+                <button class="segment-btn q2-btn" data-segment="2">
+                    <strong>Schedule!</strong>
+                </button>
+                <button class="segment-btn q3-btn" data-segment="3">
+                    <strong>Delegate!</strong>
+                </button>
+                <button class="segment-btn q4-btn" data-segment="4">
+                    <strong>Ignore!</strong>
+                </button>
+            </div>
+            
+            <!-- Recurring Task Configuration -->
+            <div class="recurring-config">
+                <label class="recurring-enable">
+                    <input type="checkbox" id="recurringEnabled">
+                    <span id="recurringEnableText">🔁 Als wiederkehrende Aufgabe</span>
+                </label>
+                
+                <div id="recurringOptions" class="recurring-options" style="display: none;">
+                    <label>
+                        <span id="recurringIntervalLabel">Intervall:</span>
+                        <select id="recurringInterval">
+                            <option value="daily">Täglich</option>
+                            <option value="weekly">Wöchentlich</option>
+                            <option value="monthly">Monatlich</option>
+                            <option value="custom">Benutzerdefiniert</option>
+                        </select>
+                    </label>
+                    
+                    <!-- Weekly: Day selection -->
+                    <div id="weeklyOptions" class="interval-options" style="display: none;">
+                        <div class="weekday-selector">
+                            <label><input type="checkbox" value="1"> <span id="weekday-monday">Mo</span></label>
+                            <label><input type="checkbox" value="2"> <span id="weekday-tuesday">Di</span></label>
+                            <label><input type="checkbox" value="3"> <span id="weekday-wednesday">Mi</span></label>
+                            <label><input type="checkbox" value="4"> <span id="weekday-thursday">Do</span></label>
+                            <label><input type="checkbox" value="5"> <span id="weekday-friday">Fr</span></label>
+                            <label><input type="checkbox" value="6"> <span id="weekday-saturday">Sa</span></label>
+                            <label><input type="checkbox" value="0"> <span id="weekday-sunday">So</span></label>
+                        </div>
+                    </div>
+                    
+                    <!-- Monthly: Day of month -->
+                    <div id="monthlyOptions" class="interval-options" style="display: none;">
+                        <label>
+                            <span id="dayOfMonthLabel">Tag des Monats:</span>
+                            <input type="number" id="dayOfMonth" min="1" max="31" value="1">
+                        </label>
+                    </div>
+                    
+                    <!-- Custom: Number of days -->
+                    <div id="customOptions" class="interval-options" style="display: none;">
+                        <label>
+                            <span id="customDaysLabel">Tage:</span>
+                            <input type="number" id="customDays" min="1" value="1">
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <button id="cancelBtn" class="cancel-btn">Abbrechen</button>
+        </div>
+    </div>
+
+    <!-- Modal für Einstellungen -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <h3>Einstellungen</h3>
+            <div style="margin: 20px 0;">
+                <p id="settingsUserInfo" style="color: var(--text-secondary); margin-bottom: 10px;"></p>
+                <p id="settingsVersion" style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 20px;"></p>
+
+                <!-- Language Toggle -->
+                <div class="settings-option">
+                    <label for="languageToggle" class="settings-label">
+                        <span>🌍 Sprache / Language</span>
+                        <select id="languageToggle" class="language-select">
+                            <option value="en">English</option>
+                            <option value="de">Deutsch</option>
+                        </select>
+                    </label>
+                </div>
+
+                <!-- Dark Mode Toggle -->
+                <div class="settings-option">
+                    <label for="darkModeToggle" class="settings-label">
+                        <span>🌙 Dark Mode</span>
+                        <input type="checkbox" id="darkModeToggle" class="toggle-switch">
+                    </label>
+                </div>
+
+                <!-- Suche -->
+                <div class="settings-option">
+                    <label class="settings-label">
+                        <span>🔍 Suche</span>
+                    </label>
+                    <input type="text" id="searchInput" placeholder="Aufgaben durchsuchen..." class="search-input">
+                </div>
+
+                <!-- Export/Import -->
+                <div class="settings-option">
+                    <label class="settings-label">
+                        <span>💾 Daten</span>
+                    </label>
+                    <div style="display: flex; gap: 10px; margin-top: 8px;">
+                        <button id="exportBtn" class="settings-action-btn">Export JSON</button>
+                        <button id="importBtn" class="settings-action-btn">Import JSON</button>
+                    </div>
+                    <input type="file" id="importFile" accept=".json" style="display: none;">
+                </div>
+
+                <!-- Metrics Link -->
+                <div class="settings-option">
+                    <label class="settings-label">
+                        <span>📊 Metriken</span>
+                    </label>
+                    <button id="metricsBtn" class="settings-action-btn" style="width: 100%; margin-top: 8px;">Statistiken anzeigen</button>
+                </div>
+
+                <!-- Logout -->
+                <div class="settings-option">
+                    <button id="logoutBtn" class="logout-btn-modal">Abmelden</button>
+                </div>
+            </div>
+            <button id="settingsCancelBtn" class="cancel-btn">Schließen</button>
+        </div>
+    </div>
+
+    <!-- Modal für Metriken -->
+    <div id="metricsModal" class="modal">
+        <div class="modal-content metrics-modal">
+            <h3 id="metricsTitle">📊 Produktivitäts-Statistiken</h3>
+            <div class="metrics-container">
+                <!-- Overview Stats -->
+                <div class="metrics-section">
+                    <h4 id="metricsOverviewTitle">Übersicht</h4>
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-value" id="metricTotalCompleted">0</div>
+                            <div class="metric-label" id="metricTotalLabel">Gesamt erledigt</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" id="metricCurrentStreak">0</div>
+                            <div class="metric-label" id="metricStreakLabel">Tage Streak</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" id="metricAvgTime">-</div>
+                            <div class="metric-label" id="metricAvgTimeLabel">Ø Bearbeitungszeit</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Completed Tasks Chart -->
+                <div class="metrics-section">
+                    <h4 id="metricsCompletedTitle">Erledigte Aufgaben</h4>
+                    <div class="chart-controls">
+                        <button class="chart-period-btn active" data-period="day" id="metricsDayBtn">Tag</button>
+                        <button class="chart-period-btn" data-period="week" id="metricsWeekBtn">Woche</button>
+                        <button class="chart-period-btn" data-period="month" id="metricsMonthBtn">Monat</button>
+                    </div>
+                    <canvas id="completedTasksChart"></canvas>
+                </div>
+
+                <!-- Segment Distribution Chart -->
+                <div class="metrics-section">
+                    <h4 id="metricsDistributionTitle">Verteilung nach Segmenten</h4>
+                    <canvas id="segmentDistributionChart"></canvas>
+                </div>
+            </div>
+            <button id="metricsCancelBtn" class="cancel-btn">Schließen</button>
+        </div>
+    </div>
+
+    <!-- localForage for better local storage -->
+    <script src="https://cdn.jsdelivr.net/npm/localforage@1.10.0/dist/localforage.min.js?v=1760026481348"></script>
+
+    <!-- Chart.js for metrics visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js?v=1760026481348"></script>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js?v=1760026481348"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js?v=1760026481348"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js?v=1760026481348"></script>
+
+    <!-- Firebase Config (Local-only mode without config) -->
+    <script>
+        // Local-only mode - Firebase stubs for offline functionality
+        console.log('Running in local-only mode - Firebase disabled');
+        
+        // Create minimal Firebase stubs
+        window.firebase = {
+            auth: () => ({
+                onAuthStateChanged: (callback) => {
+                    // Immediately call with null (no user) to trigger local mode
+                    setTimeout(() => callback(null), 100);
+                    return () => {}; // Return unsubscribe function
+                },
+                signInWithPopup: () => Promise.reject(new Error('Firebase not configured - local mode only')),
+                signOut: () => Promise.reject(new Error('Firebase not configured - local mode only'))
+            }),
+            firestore: () => ({
+                collection: () => ({
+                    doc: () => ({
+                        collection: () => ({
+                            get: () => Promise.reject(new Error('Firebase not configured - local mode only')),
+                            doc: () => ({
+                                set: () => Promise.reject(new Error('Firebase not configured - local mode only')),
+                                update: () => Promise.reject(new Error('Firebase not configured - local mode only')),
+                                delete: () => Promise.reject(new Error('Firebase not configured - local mode only'))
+                            })
+                        })
+                    })
+                }),
+                enablePersistence: () => Promise.reject(new Error('Firebase not configured - local mode only'))
+            })
+        };
+        
+        // Initialize Firebase stubs
+        window.auth = firebase.auth();
+        window.db = firebase.firestore();
+        window.googleProvider = { 
+            setCustomParameters: () => {},
+            addScope: () => {}
+        };
+        window.appleProvider = { 
+            setCustomParameters: () => {},
+            addScope: () => {}
+        };
+    </script>
+    <script src="auth.js?v=1760026481348"></script>
+
+    <script src="script.js?v=1760026481348"></script>
+
+    <!-- Register Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            let refreshing = false;
+
+            // Reload page when new service worker takes over
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (!refreshing) {
+                    refreshing = true;
+                    window.location.reload();
+                }
+            });
+
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registered: ', registration);
+
+                        // Force immediate update check on page load
+                        registration.update();
+
+                        // Check for updates every 10 seconds (aggressive)
+                        setInterval(() => {
+                            registration.update();
+                        }, 10000);
+
+                        // Listen for updates
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // New version available
+                                    console.log('New version available! Reloading...');
+                                    // Show update notification (optional)
+                                    if (confirm('Eine neue Version ist verfügbar! Jetzt aktualisieren?')) {
+                                        window.location.reload();
+                                    }
+                                }
+                            });
+                        });
+                    })
+                    .catch(error => {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
