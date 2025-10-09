@@ -3,13 +3,13 @@
 // Siehe FIREBASE-SETUP.md für Anleitung
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDVZh7wLZeFXpoxIqwKFtC8KsYj9zF6lBM",
-    authDomain: "eisenhauer-matrix.firebaseapp.com",
-    projectId: "eisenhauer-matrix",
-    storageBucket: "eisenhauer-matrix.firebasestorage.app",
-    messagingSenderId: "174175941071",
-    appId: "1:174175941071:web:80d5a25ed700b99809e2ba",
-    measurementId: "G-VY3618D2RT"
+    apiKey: "YOUR_API_KEY_HERE",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.firebasestorage.app",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID",
+    measurementId: "YOUR_MEASUREMENT_ID"
 };
 
 // Firebase initialisieren

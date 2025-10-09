@@ -152,7 +152,7 @@ Für kleine persönliche Apps ist Firebase **komplett kostenlos**!
 ## Nächste Schritte
 
 Nach erfolgreicher Einrichtung:
-1. Committe `firebase-config.js` **NICHT** zu Git (steht bereits in .gitignore)
+1. Die Datei `firebase-config.js` ist bereits in `.gitignore` und wird **NICHT** zu Git committed
 2. Deploye die App auf GitHub Pages
 3. Teste Login auf dem iPhone/iPad
 4. Genieße die Cloud-Synchronisation! 🎉
