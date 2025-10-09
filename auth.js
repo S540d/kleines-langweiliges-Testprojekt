@@ -3,8 +3,23 @@ let currentUser = null;
 let isGuestMode = false;
 
 // Initialize auth after DOM is ready
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     console.log('DOM loaded, initializing auth...');
+    
+    // Handle redirect result from Google sign-in
+    try {
+        const result = await auth.getRedirectResult();
+        if (result.user) {
+            console.log('Redirect sign-in successful:', result.user.email);
+            // Migrate local data on first login
+            await migrateLocalData(result.user.uid);
+        }
+    } catch (error) {
+        if (error.code && error.code !== 'auth/no-redirect-result') {
+            console.error('Redirect result error:', error);
+            alert('Fehler beim Anmelden: ' + error.message);
+        }
+    }
     
     // Auth State Observer
     auth.onAuthStateChanged(async user => {
@@ -56,7 +71,18 @@ async function signInWithGoogle() {
         await migrateLocalData(result.user.uid);
     } catch (error) {
         console.error('Google sign-in error:', error);
-        if (error.code !== 'auth/cancelled-popup-request' && error.code !== 'auth/popup-closed-by-user') {
+        
+        // Handle popup blocked - try redirect instead
+        if (error.code === 'auth/popup-blocked') {
+            console.log('Popup blocked, trying redirect method...');
+            try {
+                await auth.signInWithRedirect(googleProvider);
+                return; // Redirect will reload the page
+            } catch (redirectError) {
+                console.error('Redirect sign-in error:', redirectError);
+                alert('Fehler beim Anmelden mit Google: Bitte erlauben Sie Pop-ups für diese Seite oder versuchen Sie es erneut.');
+            }
+        } else if (error.code !== 'auth/cancelled-popup-request' && error.code !== 'auth/popup-closed-by-user') {
             alert('Fehler beim Anmelden mit Google: ' + error.message);
         }
     } finally {
