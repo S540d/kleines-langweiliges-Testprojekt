@@ -1,30 +1,38 @@
 // Authentication Logic
 let currentUser = null;
+let isGuestMode = false;
 
-// Auth State Observer
-auth.onAuthStateChanged(async user => {
-    currentUser = user;
+// Initialize auth after DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, initializing auth...');
+    
+    // Auth State Observer
+    auth.onAuthStateChanged(async user => {
+        console.log('Auth state changed:', user ? user.email : 'no user');
+        currentUser = user;
 
-    if (user) {
-        // User is signed in
-        console.log('User signed in:', user.email);
-        isGuestMode = false;
-        await localforage.removeItem('guestMode');
-        showApp();
-        loadUserTasks();
-    } else {
-        // Check if guest mode was active
-        const wasGuestMode = await localforage.getItem('guestMode');
-        if (wasGuestMode === 'true') {
-            isGuestMode = true;
+        if (user) {
+            // User is signed in
+            console.log('User signed in:', user.email);
+            isGuestMode = false;
+            await localforage.removeItem('guestMode');
             showApp();
-            await loadGuestTasks();
+            loadUserTasks();
         } else {
-            // User is signed out
-            console.log('User signed out');
-            showLogin();
+            // Check if guest mode was active
+            const wasGuestMode = await localforage.getItem('guestMode');
+            if (wasGuestMode === 'true') {
+                console.log('Continuing in guest mode');
+                isGuestMode = true;
+                showApp();
+                await loadGuestTasks();
+            } else {
+                // User is signed out
+                console.log('User signed out - showing login');
+                showLogin();
+            }
         }
-    }
+    });
 });
 
 // Google Sign-In
@@ -221,7 +229,7 @@ async function migrateLocalData(userId) {
 }
 
 // Guest Mode (IndexedDB via localForage)
-let isGuestMode = false;
+// isGuestMode already declared at top of file
 
 async function continueAsGuest() {
     isGuestMode = true;

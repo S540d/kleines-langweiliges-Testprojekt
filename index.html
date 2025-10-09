@@ -338,8 +338,51 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
-    <!-- Firebase Config & Auth -->
-    <script src="firebase-config.js?v=1.3.1"></script>
+    <!-- Firebase Config (Local-only mode without config) -->
+    <script>
+        // Local-only mode - Firebase stubs for offline functionality
+        console.log('Running in local-only mode - Firebase disabled');
+        
+        // Create minimal Firebase stubs
+        window.firebase = {
+            auth: () => ({
+                onAuthStateChanged: (callback) => {
+                    // Immediately call with null (no user) to trigger local mode
+                    setTimeout(() => callback(null), 100);
+                    return () => {}; // Return unsubscribe function
+                },
+                signInWithPopup: () => Promise.reject(new Error('Firebase not configured - local mode only')),
+                signOut: () => Promise.reject(new Error('Firebase not configured - local mode only'))
+            }),
+            firestore: () => ({
+                collection: () => ({
+                    doc: () => ({
+                        collection: () => ({
+                            get: () => Promise.reject(new Error('Firebase not configured - local mode only')),
+                            doc: () => ({
+                                set: () => Promise.reject(new Error('Firebase not configured - local mode only')),
+                                update: () => Promise.reject(new Error('Firebase not configured - local mode only')),
+                                delete: () => Promise.reject(new Error('Firebase not configured - local mode only'))
+                            })
+                        })
+                    })
+                }),
+                enablePersistence: () => Promise.reject(new Error('Firebase not configured - local mode only'))
+            })
+        };
+        
+        // Initialize Firebase stubs
+        window.auth = firebase.auth();
+        window.db = firebase.firestore();
+        window.googleProvider = { 
+            setCustomParameters: () => {},
+            addScope: () => {}
+        };
+        window.appleProvider = { 
+            setCustomParameters: () => {},
+            addScope: () => {}
+        };
+    </script>
     <script src="auth.js?v=1.3.1"></script>
 
     <script src="script.js?v=1.3.1"></script>
