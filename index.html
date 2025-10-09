@@ -165,6 +165,56 @@
                     <strong>Ignore!</strong>
                 </button>
             </div>
+            
+            <!-- Recurring Task Configuration -->
+            <div class="recurring-config">
+                <label class="recurring-enable">
+                    <input type="checkbox" id="recurringEnabled">
+                    <span id="recurringEnableText">🔁 Als wiederkehrende Aufgabe</span>
+                </label>
+                
+                <div id="recurringOptions" class="recurring-options" style="display: none;">
+                    <label>
+                        <span id="recurringIntervalLabel">Intervall:</span>
+                        <select id="recurringInterval">
+                            <option value="daily">Täglich</option>
+                            <option value="weekly">Wöchentlich</option>
+                            <option value="monthly">Monatlich</option>
+                            <option value="custom">Benutzerdefiniert</option>
+                        </select>
+                    </label>
+                    
+                    <!-- Weekly: Day selection -->
+                    <div id="weeklyOptions" class="interval-options" style="display: none;">
+                        <div class="weekday-selector">
+                            <label><input type="checkbox" value="1"> <span id="weekday-monday">Mo</span></label>
+                            <label><input type="checkbox" value="2"> <span id="weekday-tuesday">Di</span></label>
+                            <label><input type="checkbox" value="3"> <span id="weekday-wednesday">Mi</span></label>
+                            <label><input type="checkbox" value="4"> <span id="weekday-thursday">Do</span></label>
+                            <label><input type="checkbox" value="5"> <span id="weekday-friday">Fr</span></label>
+                            <label><input type="checkbox" value="6"> <span id="weekday-saturday">Sa</span></label>
+                            <label><input type="checkbox" value="0"> <span id="weekday-sunday">So</span></label>
+                        </div>
+                    </div>
+                    
+                    <!-- Monthly: Day of month -->
+                    <div id="monthlyOptions" class="interval-options" style="display: none;">
+                        <label>
+                            <span id="dayOfMonthLabel">Tag des Monats:</span>
+                            <input type="number" id="dayOfMonth" min="1" max="31" value="1">
+                        </label>
+                    </div>
+                    
+                    <!-- Custom: Number of days -->
+                    <div id="customOptions" class="interval-options" style="display: none;">
+                        <label>
+                            <span id="customDaysLabel">Tage:</span>
+                            <input type="number" id="customDays" min="1" value="1">
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
             <button id="cancelBtn" class="cancel-btn">Abbrechen</button>
         </div>
     </div>

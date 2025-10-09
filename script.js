@@ -10,6 +10,27 @@ const translations = {
             3: { title: 'Abgeben!', subtitle: 'dringend' },
             4: { title: 'Später!', subtitle: 'optional' },
             5: { title: 'Fertig!', subtitle: '' }
+        },
+        recurring: {
+            title: 'Wiederkehrende Aufgabe',
+            enableLabel: '🔁 Als wiederkehrende Aufgabe',
+            intervalLabel: 'Intervall:',
+            daily: 'Täglich',
+            weekly: 'Wöchentlich',
+            monthly: 'Monatlich',
+            custom: 'Benutzerdefiniert',
+            customDays: 'Tage:',
+            weekdays: {
+                monday: 'Montag',
+                tuesday: 'Dienstag',
+                wednesday: 'Mittwoch',
+                thursday: 'Donnerstag',
+                friday: 'Freitag',
+                saturday: 'Samstag',
+                sunday: 'Sonntag'
+            },
+            dayOfMonth: 'Tag des Monats:',
+            indicator: '🔁'
         }
     },
     en: {
@@ -19,6 +40,27 @@ const translations = {
             3: { title: 'Delegate!', subtitle: '' },
             4: { title: 'Ignore!', subtitle: '' },
             5: { title: 'Done!', subtitle: '' }
+        },
+        recurring: {
+            title: 'Recurring Task',
+            enableLabel: '🔁 Make recurring',
+            intervalLabel: 'Interval:',
+            daily: 'Daily',
+            weekly: 'Weekly',
+            monthly: 'Monthly',
+            custom: 'Custom',
+            customDays: 'Days:',
+            weekdays: {
+                monday: 'Monday',
+                tuesday: 'Tuesday',
+                wednesday: 'Wednesday',
+                thursday: 'Thursday',
+                friday: 'Friday',
+                saturday: 'Saturday',
+                sunday: 'Sunday'
+            },
+            dayOfMonth: 'Day of month:',
+            indicator: '🔁'
         }
     }
 };
@@ -52,6 +94,14 @@ const searchInput = document.getElementById('searchInput');
 const exportBtn = document.getElementById('exportBtn');
 const importBtn = document.getElementById('importBtn');
 const importFile = document.getElementById('importFile');
+
+// Recurring Task Elements
+const recurringEnabled = document.getElementById('recurringEnabled');
+const recurringOptions = document.getElementById('recurringOptions');
+const recurringInterval = document.getElementById('recurringInterval');
+const weeklyOptions = document.getElementById('weeklyOptions');
+const monthlyOptions = document.getElementById('monthlyOptions');
+const customOptions = document.getElementById('customOptions');
 
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
@@ -192,6 +242,31 @@ importFile.addEventListener('change', (e) => {
     e.target.value = '';
 });
 
+// Recurring Task Event Listeners
+recurringEnabled.addEventListener('change', (e) => {
+    recurringOptions.style.display = e.target.checked ? 'block' : 'none';
+});
+
+recurringInterval.addEventListener('change', (e) => {
+    // Hide all interval-specific options
+    weeklyOptions.style.display = 'none';
+    monthlyOptions.style.display = 'none';
+    customOptions.style.display = 'none';
+    
+    // Show relevant option based on selected interval
+    switch(e.target.value) {
+        case 'weekly':
+            weeklyOptions.style.display = 'block';
+            break;
+        case 'monthly':
+            monthlyOptions.style.display = 'block';
+            break;
+        case 'custom':
+            customOptions.style.display = 'block';
+            break;
+    }
+});
+
 // Functions
 function addTask() {
     const taskText = taskInput.value.trim();
@@ -206,13 +281,24 @@ function addTask() {
     taskInput.value = '';
 }
 
-function addTaskToSegment(taskText, segmentId) {
+function addTaskToSegment(taskText, segmentId, recurringConfig = null) {
     const task = {
         id: Date.now(),
         text: taskText,
         segment: segmentId,
         checked: false
     };
+
+    // Add recurring configuration if enabled
+    if (recurringConfig && recurringConfig.enabled) {
+        task.recurring = {
+            enabled: true,
+            interval: recurringConfig.interval,
+            weekdays: recurringConfig.weekdays || [],
+            dayOfMonth: recurringConfig.dayOfMonth || 1,
+            customDays: recurringConfig.customDays || 1
+        };
+    }
 
     tasks[segmentId].push(task);
 
@@ -275,6 +361,27 @@ function toggleTask(taskId, segmentId) {
     const task = tasks[segmentId][taskIndex];
 
     if (!task.checked && segmentId !== 5) {
+        // Check if this is a recurring task
+        if (task.recurring && task.recurring.enabled) {
+            // Create a new instance of the recurring task
+            const newTask = {
+                id: Date.now(),
+                text: task.text,
+                segment: task.segment,
+                checked: false,
+                recurring: { ...task.recurring }
+            };
+            
+            // Add the new task to the same segment
+            tasks[segmentId].push(newTask);
+            
+            if (currentUser) {
+                saveTaskToFirestore(newTask);
+            } else {
+                saveGuestTasks();
+            }
+        }
+        
         // Move to Done segment (5)
         tasks[segmentId].splice(taskIndex, 1);
 
@@ -371,7 +478,19 @@ function createTaskElement(task) {
 
     const textSpan = document.createElement('span');
     textSpan.className = 'task-text';
-    textSpan.textContent = task.text;
+    
+    // Create a text node for the task text
+    const textNode = document.createTextNode(task.text);
+    textSpan.appendChild(textNode);
+    
+    // Add recurring indicator if task is recurring
+    if (task.recurring && task.recurring.enabled) {
+        const recurringIndicator = document.createElement('span');
+        recurringIndicator.className = 'recurring-indicator';
+        recurringIndicator.textContent = ' ' + translations[currentLanguage].recurring.indicator;
+        recurringIndicator.title = getRecurringDescription(task.recurring);
+        textSpan.appendChild(recurringIndicator);
+    }
 
     content.appendChild(textSpan);
 
@@ -391,20 +510,78 @@ function createTaskElement(task) {
     return div;
 }
 
+function getRecurringDescription(recurring) {
+    const lang = translations[currentLanguage].recurring;
+    
+    switch(recurring.interval) {
+        case 'daily':
+            return lang.daily;
+        case 'weekly':
+            return lang.weekly;
+        case 'monthly':
+            return `${lang.monthly} (${lang.dayOfMonth} ${recurring.dayOfMonth})`;
+        case 'custom':
+            return `${lang.custom} (${recurring.customDays} ${lang.customDays})`;
+        default:
+            return lang.custom;
+    }
+}
+
 function openModal() {
     modal.classList.add('active');
+    
+    // Reset recurring task options
+    recurringEnabled.checked = false;
+    recurringOptions.style.display = 'none';
+    recurringInterval.value = 'daily';
+    weeklyOptions.style.display = 'none';
+    monthlyOptions.style.display = 'none';
+    customOptions.style.display = 'none';
+    
+    // Reset weekday checkboxes
+    const weekdayCheckboxes = weeklyOptions.querySelectorAll('input[type="checkbox"]');
+    weekdayCheckboxes.forEach(cb => cb.checked = false);
 
     // Reset segment buttons to normal add functionality
     segmentBtns.forEach(btn => {
         const segmentId = parseInt(btn.dataset.segment);
         btn.onclick = () => {
             if (currentTask) {
-                addTaskToSegment(currentTask, segmentId);
+                // Get recurring configuration if enabled
+                const recurringConfig = getRecurringConfig();
+                addTaskToSegment(currentTask, segmentId, recurringConfig);
                 currentTask = null;
             }
             closeModal();
         };
     });
+}
+
+function getRecurringConfig() {
+    if (!recurringEnabled.checked) {
+        return null;
+    }
+    
+    const config = {
+        enabled: true,
+        interval: recurringInterval.value
+    };
+    
+    // Get interval-specific configuration
+    switch(config.interval) {
+        case 'weekly':
+            const weekdayCheckboxes = weeklyOptions.querySelectorAll('input[type="checkbox"]:checked');
+            config.weekdays = Array.from(weekdayCheckboxes).map(cb => parseInt(cb.value));
+            break;
+        case 'monthly':
+            config.dayOfMonth = parseInt(document.getElementById('dayOfMonth').value);
+            break;
+        case 'custom':
+            config.customDays = parseInt(document.getElementById('customDays').value);
+            break;
+    }
+    
+    return config;
 }
 
 function closeModal() {
@@ -901,6 +1078,55 @@ function updateLanguage() {
             btn.innerHTML = `<strong>${segmentData.title}</strong>`;
         }
     });
+    
+    // Update recurring task UI translations
+    const recurringEnableText = document.getElementById('recurringEnableText');
+    if (recurringEnableText) {
+        recurringEnableText.textContent = lang.recurring.enableLabel;
+    }
+    
+    const recurringIntervalLabel = document.getElementById('recurringIntervalLabel');
+    if (recurringIntervalLabel) {
+        recurringIntervalLabel.textContent = lang.recurring.intervalLabel;
+    }
+    
+    // Update interval select options
+    if (recurringInterval) {
+        recurringInterval.querySelector('option[value="daily"]').textContent = lang.recurring.daily;
+        recurringInterval.querySelector('option[value="weekly"]').textContent = lang.recurring.weekly;
+        recurringInterval.querySelector('option[value="monthly"]').textContent = lang.recurring.monthly;
+        recurringInterval.querySelector('option[value="custom"]').textContent = lang.recurring.custom;
+    }
+    
+    // Update weekday labels
+    const weekdayMap = {
+        'weekday-monday': 'monday',
+        'weekday-tuesday': 'tuesday',
+        'weekday-wednesday': 'wednesday',
+        'weekday-thursday': 'thursday',
+        'weekday-friday': 'friday',
+        'weekday-saturday': 'saturday',
+        'weekday-sunday': 'sunday'
+    };
+    
+    Object.entries(weekdayMap).forEach(([id, key]) => {
+        const elem = document.getElementById(id);
+        if (elem) {
+            elem.textContent = currentLanguage === 'de' 
+                ? lang.recurring.weekdays[key].substring(0, 2)
+                : lang.recurring.weekdays[key].substring(0, 3);
+        }
+    });
+    
+    const dayOfMonthLabel = document.getElementById('dayOfMonthLabel');
+    if (dayOfMonthLabel) {
+        dayOfMonthLabel.textContent = lang.recurring.dayOfMonth;
+    }
+    
+    const customDaysLabel = document.getElementById('customDaysLabel');
+    if (customDaysLabel) {
+        customDaysLabel.textContent = lang.recurring.customDays;
+    }
 
     // Update drag hint text
     const dragHint = document.getElementById('dragHint');
@@ -913,6 +1139,9 @@ function updateLanguage() {
         const btnText = currentLanguage === 'de' ? 'Verstanden' : 'Got it';
         dragHint.querySelector('button').textContent = btnText;
     }
+    
+    // Re-render all tasks to update recurring indicators
+    renderAllTasks();
 }
 
 // Show Drag Hint

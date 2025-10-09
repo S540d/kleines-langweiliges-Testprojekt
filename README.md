@@ -15,6 +15,9 @@ Eine moderne, mobile-first Progressive Web App zur Aufgabenverwaltung nach der E
 
 ### Kernfunktionen
 - ✅ Aufgaben mit max. 140 Zeichen erstellen
+- ✅ **Wiederkehrende Aufgaben** - Automatische Neuerstellung nach Abschluss
+  - Täglich, Wöchentlich, Monatlich oder Benutzerdefiniert
+  - Flexible Intervall-Konfiguration
 - ✅ Automatisches Weiterschieben in nächste Kategorie (↓ Button)
 - ✅ Checkboxen zum Abhaken (verschiebt automatisch zu "Done!")
 - ✅ Drag & Drop zwischen Segmenten
@@ -44,11 +47,18 @@ Eine moderne, mobile-first Progressive Web App zur Aufgabenverwaltung nach der E
 ### Desktop/Browser
 1. Neue Aufgabe eingeben und auf "+" klicken
 2. Segment auswählen
-3. Aufgaben verwalten:
-   - **Checkbox anklicken** → Aufgabe wandert zu "Done!"
+3. **Optional:** Wiederkehrende Aufgabe konfigurieren
+   - Checkbox "🔁 Als wiederkehrende Aufgabe" aktivieren
+   - Intervall auswählen (Täglich, Wöchentlich, Monatlich, Benutzerdefiniert)
+   - Bei Wöchentlich: Wochentage auswählen
+   - Bei Monatlich: Tag des Monats festlegen (1-31)
+   - Bei Benutzerdefiniert: Anzahl Tage angeben
+4. Aufgaben verwalten:
+   - **Checkbox anklicken** → Aufgabe wandert zu "Done!" (bei wiederkehrenden Aufgaben wird automatisch eine neue erstellt)
    - **Drag & Drop** → Aufgabe in anderes Segment ziehen
    - **↓ Button** → Aufgabe in nächste Kategorie verschieben
    - **✕ Button** → Aufgabe löschen (mit Bestätigung)
+   - **🔁 Symbol** → Zeigt an, dass es sich um eine wiederkehrende Aufgabe handelt
 
 ### Mobile (Touch)
 - **Swipe links** auf Task → Löschen
