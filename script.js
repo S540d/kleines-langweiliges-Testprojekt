@@ -1,5 +1,6 @@
 // App Version
-const APP_VERSION = 'v1.3.0';
+const APP_VERSION = 'v1.3.1';
+const BUILD_DATE = '2025-01-08'; // Version creation date
 
 // Language translations
 const translations = {
@@ -878,46 +879,10 @@ function setupSwipeToDelete(element, task) {
     // Keeping this function for compatibility but it's empty
 }
 
-// Pull to Refresh
+// Pull to Refresh - DISABLED due to interference with operation
 function setupPullToRefresh() {
-    const segments = document.querySelector('.segments');
-    if (!segments) return;
-
-    let startY = 0;
-    let pulling = false;
-
-    segments.addEventListener('touchstart', (e) => {
-        if (segments.scrollTop === 0) {
-            startY = e.touches[0].clientY;
-        }
-    }, { passive: true });
-
-    segments.addEventListener('touchmove', (e) => {
-        if (segments.scrollTop === 0) {
-            const currentY = e.touches[0].clientY;
-            const diff = currentY - startY;
-
-            if (diff > 0 && diff < 100) {
-                pulling = true;
-                segments.style.transform = `translateY(${diff / 2}px)`;
-                segments.style.opacity = 1 - (diff / 200);
-            }
-        }
-    }, { passive: true });
-
-    segments.addEventListener('touchend', async () => {
-        if (pulling) {
-            segments.style.transform = '';
-            segments.style.opacity = '';
-
-            // Reload tasks
-            if (currentUser) {
-                await loadUserTasks();
-            }
-
-            pulling = false;
-        }
-    });
+    // Functionality disabled as it interferes with normal operation
+    // Users can refresh manually using browser refresh
 }
 
 // Online/Offline Status
@@ -943,7 +908,7 @@ function openSettingsModal() {
         settingsUserInfo.textContent = 'Nicht angemeldet (Lokaler Modus)';
     }
 
-    settingsVersion.textContent = `Version ${APP_VERSION}`;
+    settingsVersion.textContent = `Version ${APP_VERSION} (${BUILD_DATE})`;
 
     settingsModal.classList.add('active');
 }

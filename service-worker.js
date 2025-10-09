@@ -1,5 +1,6 @@
-const CACHE_VERSION = '1.3.0';
-const CACHE_NAME = `eisenhauer-matrix-v${CACHE_VERSION}`;
+const CACHE_VERSION = '1.3.1';
+const BUILD_DATE = '2025-01-08'; // Cache busting - update on each version
+const CACHE_NAME = `eisenhauer-matrix-v${CACHE_VERSION}-${BUILD_DATE}`;
 const urlsToCache = [
   './',
   './index.html',
@@ -9,10 +10,12 @@ const urlsToCache = [
 ];
 
 // Files that should always be fetched from network first
+// Expanded to ensure latest version is always loaded
 const networkFirstFiles = [
   './index.html',
   './style.css',
-  './script.js'
+  './script.js',
+  './manifest.json'
 ];
 
 // Install Service Worker
@@ -40,9 +43,11 @@ self.addEventListener('fetch', event => {
   );
 
   if (isNetworkFirst) {
-    // Network First Strategy - Always try network, fallback to cache
+    // Network First Strategy - Always try network with cache-busting, fallback to cache
     event.respondWith(
-      fetch(event.request)
+      fetch(event.request, {
+        cache: 'no-cache' // Force revalidation with server
+      })
         .then(response => {
           // Check if valid response
           if (response && response.status === 200 && response.type === 'basic') {
