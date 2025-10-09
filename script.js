@@ -1041,6 +1041,20 @@ function importData(file) {
     reader.readAsText(file);
 }
 
+// Escape HTML utility to prevent XSS when dynamically setting innerHTML
+function escapeHTML(str) {
+    return str.replace(/[&<>"']/g, function (m) {
+        switch (m) {
+            case '&': return '&amp;';
+            case '<': return '&lt;';
+            case '>': return '&gt;';
+            case '"': return '&quot;';
+            case "'": return '&#39;';
+            default: return m;
+        }
+    });
+}
+
 // Filter Tasks (Search)
 function filterTasks(searchTerm) {
     const allTaskElements = document.querySelectorAll('.task-item');
@@ -1069,7 +1083,20 @@ function filterTasks(searchTerm) {
 
             // Highlight search term
             const regex = new RegExp(`(${searchTerm})`, 'gi');
-            const highlightedText = textSpan.textContent.replace(regex, '<span class="search-highlight">$1</span>');
+            // Escape HTML and highlight search term
+            const originalText = textSpan.textContent;
+            let highlightedText = '';
+            let lastIndex = 0;
+            let match;
+            while ((match = regex.exec(originalText)) !== null) {
+                // Escape preceding text
+                highlightedText += escapeHTML(originalText.substring(lastIndex, match.index));
+                // Escape and wrap the matched text
+                highlightedText += `<span class="search-highlight">${escapeHTML(match[0])}</span>`;
+                lastIndex = regex.lastIndex;
+            }
+            // Escape remaining text after the last match
+            highlightedText += escapeHTML(originalText.substring(lastIndex));
             textSpan.innerHTML = highlightedText;
         } else {
             el.style.display = 'none';
