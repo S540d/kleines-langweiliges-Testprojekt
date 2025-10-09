@@ -4,7 +4,10 @@
   "description": "Eine moderne, mobile-first Progressive Web App zur Aufgabenverwaltung nach der Eisenhauer-Matrix-Methode.",
   "main": "index.html",
   "scripts": {
-    "start": "python3 -m http.server 8000"
+    "start": "python3 -m http.server 8000",
+    "build": "node build-config.js",
+    "prebuild": "echo '🔧 Building Firebase configuration from .env...'",
+    "postbuild": "echo '✅ Build complete! Ready to deploy.'"
   },
   "repository": {
     "type": "git",

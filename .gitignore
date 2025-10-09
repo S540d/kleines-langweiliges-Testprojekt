@@ -8,10 +8,15 @@
 # Logs
 *.log
 
-# Firebase
+# Firebase Configuration
 # Note: Firebase web API keys are safe to commit (security via rules & domain restrictions)
+# See SECURITY.md for details
 .env
 .env.local
+.env.*.local
+
+# Optional: Uncomment if you want to keep firebase-config.js out of git
+# firebase-config.js
 
 # Node.js
 node_modules/
