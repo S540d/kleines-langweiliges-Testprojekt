@@ -10,7 +10,7 @@
     - Abgemeldet als...
     - **Theme-Toggle** zwischen "System" (folgt Betriebssystem) und "Dunkel" (immer dunkel) - NICHT Hell/Dunkel/System! Toggle-Switch verwenden, nicht Dropdown.
     - im gleichen Stil: Toogle für deutsch/englisch
-    - Toggle zum umschalten auf "Metrik"
+    - im gleichen Stil: Toggle zum umschalten auf "Metrik"
     - Möglichkeit zum Export als JSON, nicht als CSV
     - "SChließen" Taste
     - Lizenz, wenn Daten von Dritten verwendet werden
