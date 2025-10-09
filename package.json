@@ -8,13 +8,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/S540d/kleines-langweiliges-Testprojekt.git"
+    "url": "git+https://github.com/S540d/Eisenhauer.git"
   },
   "keywords": ["eisenhauer", "matrix", "productivity", "todo", "task-management", "pwa"],
   "author": "Sven-Uwe Strohkark",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/S540d/kleines-langweiliges-Testprojekt/issues"
+    "url": "https://github.com/S540d/Eisenhauer/issues"
   },
-  "homepage": "https://s540d.github.io/kleines-langweiliges-Testprojekt/"
+  "homepage": "https://s540d.github.io/Eisenhauer/"
 }
