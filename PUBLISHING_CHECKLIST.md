@@ -2,7 +2,7 @@
 
 ## Optische Vorgaben
 - in allen Projekten soll es unter Settings einen Toggle geben, mit dem man zur Unterseite "Metrik" wechseln kann. dort sind dann typische Zahlen zu erfüllten Todos oder Durchschnittspreisen genannt. je nach Projekt
-- minimalistisches Design: Hintergrund in weiß, diesgeamme und Textblöcke abgesetzt in hellem Grau. Diagramme in Ampel:Farblogik. Tasten wenn nötig in Kästchen mit abgerundeten Ecken. 
+- minimalistisches Design: Hintergrund in weiß oder schwarz (dark Mode), Diagramme und Textblöcke sind nicht abgesetzt. Diagramme in Ampel:Farblogik (grün gut, rot schlechte). Tasten wenn nötig in Kästchen mit abgerundeten Ecken. 
 - responsives Design, das auf kleinen Displays z. B. Die Auflösung des Kalenders reduziert 
 - über alle Apps einheitliche Schriftgrösse (noch zu definieren)
 - Einstellungen oben Rechts mit **drei vertikalen Punkten (⋮)** als SVG-Icon (NICHT Zahnrad-Emoji); möglichst zusammen mit anderen Symbolen im Header - also nicht zwei Header übereinander: Die Einstellungen schließen ein: 
