@@ -35,7 +35,8 @@ jobs:
     - name: Build with cache-busting
       run: |
         echo "Build Date: $(date)" >> BUILD_INFO.txt
-        npm run build
+        node update-cache-version.js
+        echo "✅ Cache version updated (skipping firebase-config.js build - already committed)"
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
