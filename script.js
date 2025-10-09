@@ -134,16 +134,8 @@ taskInput.addEventListener('keypress', (e) => {
 cancelBtn.addEventListener('click', closeModal);
 
 // Segment Selection Buttons
-segmentBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        const segmentId = parseInt(btn.dataset.segment);
-        if (currentTask) {
-            addTaskToSegment(currentTask, segmentId);
-            currentTask = null;
-        }
-        closeModal();
-    });
-});
+// Segment buttons are set up dynamically in openModal() to include due date
+// No need for initial event listeners here
 
 // Close modal on background click
 modal.addEventListener('click', (e) => {
