@@ -550,6 +550,98 @@ header h1 {
     background: #d1d5db;
 }
 
+/* Recurring Task Configuration */
+.recurring-config {
+    margin: 20px 0;
+    padding: 15px;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.recurring-enable {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+
+.recurring-enable input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.recurring-options {
+    margin-top: 15px;
+    padding: 10px;
+    background: var(--task-bg);
+    border-radius: 8px;
+}
+
+.recurring-options label {
+    display: block;
+    margin-bottom: 10px;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.recurring-options select,
+.recurring-options input[type="number"] {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--card-bg);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.interval-options {
+    margin-top: 10px;
+    padding: 10px;
+    background: var(--card-bg);
+    border-radius: 6px;
+}
+
+.weekday-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.weekday-selector label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 10px;
+    background: var(--task-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background 0.2s;
+}
+
+.weekday-selector label:hover {
+    background: var(--border-color);
+}
+
+.weekday-selector input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.recurring-indicator {
+    display: inline-block;
+    margin-left: 5px;
+    opacity: 0.7;
+    font-size: 0.9em;
+}
+
 /* Empty State */
 .task-list:empty::before {
     content: "";
