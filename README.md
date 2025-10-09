@@ -42,6 +42,13 @@ Eine moderne, mobile-first Progressive Web App zur Aufgabenverwaltung nach der E
 - ✅ **Progressive Web App (PWA)** - Als App installierbar
 - ✅ **iOS-optimiert** mit speziellen Meta-Tags
 
+### Datenmanagement
+- ✅ **Export/Import** - Daten als JSON exportieren und importieren
+  - Download-Button in Einstellungen
+  - Import mit Merge/Replace Optionen
+  - Backup-Dateien mit Versionsinformation und Datum
+- ✅ **Suche** - Aufgaben durchsuchen über Einstellungsmenü
+
 ## Verwendung
 
 ### Desktop/Browser
@@ -64,6 +71,15 @@ Eine moderne, mobile-first Progressive Web App zur Aufgabenverwaltung nach der E
 - **Swipe links** auf Task → Löschen
 - **Pull down** auf Task-Liste → Aktualisieren
 - **Tap & Hold** → Drag & Drop
+
+### Export/Import
+1. **Einstellungen öffnen** (⋮ Icon oben rechts)
+2. **Export JSON** → Lädt Backup-Datei herunter (`eisenhauer-backup-YYYY-MM-DD.json`)
+   - Enthält alle Aufgaben, Versionsnummer und Exportdatum
+3. **Import JSON** → Datei auswählen
+   - **Merge-Option:** Importierte Aufgaben zu bestehenden hinzufügen
+   - **Replace-Option:** Bestehende Aufgaben komplett ersetzen
+   - Automatische Validierung des Datenformats
 
 ## Technologien
 
@@ -153,7 +169,8 @@ Geplante Features (siehe [Issues](https://github.com/S540d/Eisenhauer/issues)):
 
 - [ ] Archiv für gelöschte Tasks
 - [ ] Weitere Authentifizierungs-Anbieter
-- [ ] Export/Import von Tasks
+- [ ] CSV Export (für Excel/Sheets)
+- [ ] PDF Export (für Druck)
 - [ ] Kategorien/Tags
 - [ ] Fälligkeitsdaten
 - [ ] Erinnerungen/Benachrichtigungen
