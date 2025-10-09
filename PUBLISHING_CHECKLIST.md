@@ -1,6 +1,7 @@
 # 📋 Publishing Checklist für GitHub Pages PWAs
 
 ## Optische Vorgaben
+- in allen Projekten soll es unter Settings einen Toggle geben, mit dem man zur Unterseite "Metrik" wechseln kann. dort sind dann typische Zahlen zu erfüllten Todos oder Durchschnittspreisen genannt. je nach Projekt
 - minimalistisches Design: Hintergrund in weiß, diesgeamme und Textblöcke abgesetzt in hellem Grau. Diagramme in Ampel:Farblogik. Tasten wenn nötig in Kästchen mit abgerundeten Ecken. 
 - responsives Design, das auf kleinen Displays z. B. Die Auflösung des Kalenders reduziert 
 - über alle Apps einheitliche Schriftgrösse (noch zu definieren)
