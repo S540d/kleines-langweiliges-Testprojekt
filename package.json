@@ -8,8 +8,9 @@
     "build": "node build-config.js",
     "prebuild": "echo '🔧 Building Firebase configuration from .env...'",
     "postbuild": "echo '✅ Build complete! Ready to deploy.'",
-    "version:update": "node update-version.js",
-    "deploy": "npm run version:update && npm run build && echo '🚀 Ready to deploy! Run: git add . && git commit && git push'"
+    "deploy": "npm run build && git checkout gh-pages && git merge main --no-edit && git push origin gh-pages && git checkout main",
+    "deploy:force": "npm run build && git checkout gh-pages && git reset --hard main && git push origin gh-pages --force && git checkout main",
+    "version:update": "node update-version.js"
   },
   "repository": {
     "type": "git",
