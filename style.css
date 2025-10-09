@@ -500,10 +500,10 @@ header h1 {
 }
 
 .modal-content h3 {
-    margin-bottom: 12px;
+    margin-bottom: 20px;
     text-align: center;
     color: var(--text-primary);
-    font-size: 1.2rem;
+    font-size: 1.3rem;
 }
 
 .segment-buttons {
@@ -896,61 +896,61 @@ body.dark-mode .search-highlight {
 }
 
 .metrics-container {
-    margin: 12px 0;
+    margin: 20px 0;
 }
 
 .metrics-section {
-    margin-bottom: 16px;
+    margin-bottom: 30px;
 }
 
 .metrics-section h4 {
     color: var(--text-primary);
     font-size: 1.1rem;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     font-weight: 600;
 }
 
 .metrics-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 10px;
-    margin-bottom: 12px;
+    gap: 15px;
+    margin-bottom: 20px;
 }
 
 .metric-card {
     background: var(--task-bg);
     border: 1px solid var(--border-color);
     border-radius: 8px;
-    padding: 12px;
+    padding: 20px;
     text-align: center;
 }
 
 .metric-value {
-    font-size: 1.8rem;
+    font-size: 2rem;
     font-weight: bold;
     color: var(--text-primary);
-    margin-bottom: 4px;
+    margin-bottom: 8px;
 }
 
 .metric-label {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     color: var(--text-secondary);
 }
 
 .chart-controls {
     display: flex;
-    gap: 8px;
-    margin-bottom: 10px;
+    gap: 10px;
+    margin-bottom: 15px;
     justify-content: center;
 }
 
 .chart-period-btn {
-    padding: 6px 12px;
+    padding: 8px 16px;
     background: var(--task-bg);
     color: var(--text-primary);
     border: 1px solid var(--border-color);
     border-radius: 6px;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s;
@@ -967,8 +967,8 @@ body.dark-mode .search-highlight {
 }
 
 .metrics-section canvas {
-    max-height: 250px;
+    max-height: 300px;
     background: var(--task-bg);
     border-radius: 8px;
-    padding: 10px;
+    padding: 15px;
 }
