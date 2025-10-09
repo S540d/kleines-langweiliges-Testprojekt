@@ -29,7 +29,12 @@ jobs:
       run: npm ci
 
     - name: Build Firebase config (if needed)
-      run: npm run build
+      run: |
+        if [ -f .env ]; then
+          npm run build
+        else
+          echo "No .env file found - skipping Firebase config build"
+        fi
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
