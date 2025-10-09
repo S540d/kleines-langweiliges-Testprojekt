@@ -444,9 +444,9 @@ header h1 {
 .task-content {
     flex: 1;
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 8px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
 }
 
 .task-text {
@@ -455,6 +455,13 @@ header h1 {
     font-size: 0.85rem;
     line-height: 1.3;
     word-wrap: break-word;
+}
+
+.task-timestamp {
+    color: var(--text-secondary);
+    font-size: 0.7rem;
+    opacity: 0.8;
+    font-style: italic;
 }
 
 

@@ -113,16 +113,22 @@ async function saveTaskToFirestore(task) {
     if (!currentUser) return;
 
     try {
+        const taskData = {
+            text: task.text,
+            segment: task.segment,
+            checked: task.checked,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        
+        if (task.completedAt) {
+            taskData.completedAt = task.completedAt;
+        }
+        
         await db.collection('users')
             .doc(currentUser.uid)
             .collection('tasks')
             .doc(task.id.toString())
-            .set({
-                text: task.text,
-                segment: task.segment,
-                checked: task.checked,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
+            .set(taskData);
     } catch (error) {
         console.error('Error saving task:', error);
     }
@@ -148,14 +154,22 @@ async function updateTaskInFirestore(task) {
     if (!currentUser) return;
 
     try {
+        const updateData = {
+            segment: task.segment,
+            checked: task.checked
+        };
+        
+        if (task.completedAt) {
+            updateData.completedAt = task.completedAt;
+        } else {
+            updateData.completedAt = firebase.firestore.FieldValue.delete();
+        }
+        
         await db.collection('users')
             .doc(currentUser.uid)
             .collection('tasks')
             .doc(task.id.toString())
-            .update({
-                segment: task.segment,
-                checked: task.checked
-            });
+            .update(updateData);
     } catch (error) {
         console.error('Error updating task:', error);
     }

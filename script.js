@@ -342,6 +342,14 @@ function openModalForMove() {
                     segment: segmentId,
                     checked: false
                 };
+                
+                // Clear completedAt when moving away from Done segment
+                if (currentTask.fromSegment === 5) {
+                    // Don't include completedAt
+                } else if (currentTask.completedAt) {
+                    task.completedAt = currentTask.completedAt;
+                }
+                
                 tasks[segmentId].push(task);
 
                 saveTasks();
@@ -387,6 +395,7 @@ function toggleTask(taskId, segmentId) {
 
         task.segment = 5;
         task.checked = true;
+        task.completedAt = new Date().toISOString();
         tasks[5].push(task);
 
         if (currentUser) {
@@ -403,6 +412,7 @@ function toggleTask(taskId, segmentId) {
 
         task.segment = 1;
         task.checked = false;
+        delete task.completedAt;
         tasks[1].push(task);
 
         if (currentUser) {
@@ -493,6 +503,24 @@ function createTaskElement(task) {
     }
 
     content.appendChild(textSpan);
+
+    // Add completion timestamp for Done! segment
+    if (task.segment === 5 && task.completedAt) {
+        const timestampSpan = document.createElement('span');
+        timestampSpan.className = 'task-timestamp';
+        const date = new Date(task.completedAt);
+        const formattedDate = date.toLocaleDateString(currentLanguage === 'de' ? 'de-DE' : 'en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+        const formattedTime = date.toLocaleTimeString(currentLanguage === 'de' ? 'de-DE' : 'en-US', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        timestampSpan.textContent = `${formattedDate} ${formattedTime}`;
+        content.appendChild(timestampSpan);
+    }
 
     div.appendChild(checkbox);
     div.appendChild(content);
@@ -661,6 +689,10 @@ function handleDrop(e) {
             // Reset checked status when moving to segments 1-4
             if (toSegment !== 5) {
                 task.checked = false;
+                delete task.completedAt;
+            } else if (toSegment === 5 && !task.completedAt) {
+                // Set completion time when moving to Done segment
+                task.completedAt = new Date().toISOString();
             }
             tasks[toSegment].push(task);
 
