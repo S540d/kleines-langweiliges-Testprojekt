@@ -201,3 +201,5 @@ Bei Fragen oder Feedback: [GitHub Issues](https://github.com/S540d/Eisenhauer/is
 ---
 
 Made with ❤️ and [Claude Code](https://claude.com/claude-code)
+
+Last updated: 2025-10-09
