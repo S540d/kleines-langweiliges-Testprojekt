@@ -321,8 +321,7 @@ header h1 {
     padding: 10px;
     display: flex;
     flex-direction: column;
-    min-height: 140px;
-    max-height: 140px;
+    height: auto;
 }
 
 .segment-header {
@@ -344,13 +343,13 @@ header h1 {
 
 /* Task List */
 .task-list {
-    flex: 1;
-    overflow-y: auto;
+    overflow-y: visible;
     overflow-x: hidden;
     display: flex;
     flex-direction: column;
     gap: 8px;
     padding-right: 5px;
+    align-content: flex-start;
 }
 
 /* Custom Scrollbar */
@@ -377,7 +376,7 @@ header h1 {
     padding: 8px;
     border-radius: 8px;
     display: flex;
-    align-items: flex-start;
+    align-items: flex-end;
     gap: 8px;
     transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
     flex-shrink: 0;
@@ -396,10 +395,9 @@ header h1 {
     background: rgba(255, 255, 255, 0.15);
 }
 
+/* Drag over feedback */
 .task-list.drag-over {
-    background: rgba(156, 163, 175, 0.2);
-    border: 2px dashed var(--text-secondary);
-    border-radius: 8px;
+    background: rgba(102, 126, 234, 0.15);
 }
 
 /* Checkbox */
@@ -408,7 +406,6 @@ header h1 {
     height: 20px;
     min-width: 20px;
     cursor: pointer;
-    margin-top: 2px;
     appearance: none;
     -webkit-appearance: none;
     border: 2px solid var(--checkbox-color, #6b7280);
@@ -416,6 +413,7 @@ header h1 {
     background: transparent;
     position: relative;
     transition: all 0.2s;
+    flex-shrink: 0;
 }
 
 /* Unchecked state - colored border */
@@ -681,12 +679,11 @@ header h1 {
 
     .segments {
         padding: 0;
-        gap: 12px;
+        gap: 8px;
     }
 
     .segment {
-        min-height: calc(20vh - 12px);
-        max-height: calc(20vh - 12px);
+        height: auto;
         padding: 15px;
     }
 
@@ -696,10 +693,6 @@ header h1 {
 
     .task-text {
         font-size: 1rem;
-    }
-
-    #addTaskBtn:hover {
-        transform: scale(1.1);
     }
 
     .segment-btn:hover {
@@ -714,6 +707,16 @@ header h1 {
 
     .cancel-btn:hover {
         background: #d1d5db;
+    }
+}
+
+/* Two-column layout for tasks on large screens */
+@media (min-width: 1024px) {
+    .task-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        min-height: 60px; /* Ensure drop zone is always available */
     }
 }
 

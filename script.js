@@ -1,10 +1,29 @@
-// App Version
-const APP_VERSION = 'v1.3.1';
-const BUILD_DATE = '2025-01-08'; // Version creation date
+// App Version - loaded from package.json
+let APP_VERSION = 'v1.3.1'; // Fallback version
+const BUILD_DATE = new Date().toISOString().split('T')[0]; // Auto-generated build date
+
+// Fetch version from package.json
+fetch('./package.json')
+    .then(response => response.json())
+    .then(data => {
+        APP_VERSION = 'v' + data.version;
+        const versionElement = document.getElementById('versionNumber');
+        if (versionElement) {
+            versionElement.textContent = APP_VERSION;
+        }
+        const settingsVersion = document.getElementById('settingsVersion');
+        if (settingsVersion) {
+            settingsVersion.textContent = `Version: ${APP_VERSION}`;
+        }
+    })
+    .catch(error => {
+        console.warn('Could not load version from package.json:', error);
+    });
 
 // Language translations
 const translations = {
     de: {
+        taskInputPlaceholder: 'Neue Aufgabe',
         segments: {
             1: { title: 'Sofort!', subtitle: 'wichtig & dringend' },
             2: { title: 'Planen!', subtitle: 'wichtig' },
@@ -35,6 +54,7 @@ const translations = {
         }
     },
     en: {
+        taskInputPlaceholder: 'New task',
         segments: {
             1: { title: 'Do!', subtitle: '' },
             2: { title: 'Schedule!', subtitle: '' },
@@ -81,7 +101,6 @@ let currentTask = null;
 
 // DOM Elements
 const taskInput = document.getElementById('taskInput');
-const addTaskBtn = document.getElementById('addTaskBtn');
 const modal = document.getElementById('segmentModal');
 const cancelBtn = document.getElementById('cancelBtn');
 const segmentBtns = document.querySelectorAll('.segment-btn');
@@ -143,9 +162,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.addEventListener('offline', updateOnlineStatus);
 });
 
-// Add Task Button Click
-addTaskBtn.addEventListener('click', addTask);
-
 // Enter Key in Input
 taskInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
@@ -176,28 +192,36 @@ modal.addEventListener('click', (e) => {
 });
 
 // Settings Button
-settingsBtn.addEventListener('click', () => {
-    openSettingsModal();
-});
+if (settingsBtn) {
+    settingsBtn.addEventListener('click', () => {
+        openSettingsModal();
+    });
+}
 
 // Settings Cancel Button
-settingsCancelBtn.addEventListener('click', () => {
-    closeSettingsModal();
-});
+if (settingsCancelBtn) {
+    settingsCancelBtn.addEventListener('click', () => {
+        closeSettingsModal();
+    });
+}
 
 // Settings modal background click
-settingsModal.addEventListener('click', (e) => {
-    if (e.target === settingsModal) {
-        closeSettingsModal();
-    }
-});
+if (settingsModal) {
+    settingsModal.addEventListener('click', (e) => {
+        if (e.target === settingsModal) {
+            closeSettingsModal();
+        }
+    });
+}
 
 // Logout Button
-logoutBtn.addEventListener('click', () => {
-    if (confirm('Möchtest du dich wirklich abmelden?')) {
-        signOut();
-    }
-});
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+        if (confirm('Möchtest du dich wirklich abmelden?')) {
+            signOut();
+        }
+    });
+}
 
 // Language Toggle
 languageToggle.addEventListener('change', async (e) => {
@@ -643,6 +667,9 @@ function handleDragEnd(e) {
     document.querySelectorAll('.task-list').forEach(list => {
         list.classList.remove('drag-over');
     });
+
+    // Reset dragged element
+    draggedElement = null;
 }
 
 function handleDragOver(e) {
@@ -666,11 +693,16 @@ function handleDragLeave(e) {
 }
 
 function handleDrop(e) {
+    if (e.preventDefault) {
+        e.preventDefault();
+    }
     if (e.stopPropagation) {
         e.stopPropagation();
     }
 
-    if (!draggedElement) return false;
+    if (!draggedElement) {
+        return false;
+    }
 
     const taskId = parseInt(draggedElement.dataset.taskId);
     const fromSegment = parseInt(draggedElement.dataset.segmentId);
@@ -1150,6 +1182,11 @@ function updateLanguage() {
     const customDaysLabel = document.getElementById('customDaysLabel');
     if (customDaysLabel) {
         customDaysLabel.textContent = lang.recurring.customDays;
+    }
+
+    // Update task input placeholder
+    if (taskInput) {
+        taskInput.placeholder = lang.taskInputPlaceholder;
     }
 
     // Update drag hint text

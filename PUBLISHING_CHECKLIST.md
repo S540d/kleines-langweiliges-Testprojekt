@@ -5,12 +5,15 @@
 - minimalistisches Design: Hintergrund in weiß oder schwarz (dark Mode), Diagramme und Textblöcke sind nicht abgesetzt. Diagramme in Ampel:Farblogik (grün gut, rot schlechte). Tasten wenn nötig in Kästchen mit abgerundeten Ecken. 
 - responsives Design, das auf kleinen Displays z. B. Die Auflösung des Kalenders reduziert 
 - über alle Apps einheitliche Schriftgrösse (noch zu definieren)
-- Einstellungen oben Rechts mit **drei vertikalen Punkten (⋮)** als SVG-Icon (NICHT Zahnrad-Emoji); möglichst zusammen mit anderen Symbolen im Header - also nicht zwei Header übereinander: Die Einstellungen schließen ein: 
-    - Umschalter zwsichen deutsch und englisch sein. Die App muss also entsprechend lokalisiert sein
+- Einstellungen oben Rechts mit **drei vertikalen Punkten (⋮)** als SVG-Icon (NICHT Zahnrad-Emoji); möglichst zusammen mit anderen Symbolen im Header - also nicht zwei Header übereinander: Die Einstellungen stehen dann in folgender Reihenfolge: 
+    - App Name, Version oder Datum, Feedback:devsven@posteo.de
+    - Abgemeldet als...
+    - **Theme-Toggle** zwischen "System" (folgt Betriebssystem) und "Dunkel" (immer dunkel) - NICHT Hell/Dunkel/System! Toggle-Switch verwenden, nicht Dropdown.
+    - im gleichen Stil: Toogle für deutsch/englisch
+    - Toggle zum umschalten auf "Metrik"
+    - Möglichkeit zum Export als JSON, nicht als CSV
     - "SChließen" Taste
     - Lizenz, wenn Daten von Dritten verwendet werden
-    - **Theme-Toggle** zwischen "System" (folgt Betriebssystem) und "Dunkel" (immer dunkel) - NICHT Hell/Dunkel/System! Toggle-Switch verwenden, nicht Dropdown.
-    - Angabe der foglenden Mailadresse für Feedback devsven@posteo.de. Es soll kein Button "Feedback senden" geben, bei dem die Mailadresse hinterlegt ist. Denn das wird von machen Browsern blockiert
 - bymeacoffee- Link in die Fusszeile der Hauptseite: support me: https://buymeacoffee.com/sven4321 (kaffeetassensymbol + „Support me“ als Link) in gelbem Kasten, Die Fußzeile soll immer sichtbar sein, egal wie gescrollt wird
 - **App-Name**: NICHT im Header anzeigen, sondern nur in den Settings-Modal oben als erste Zeile
 - **Settings-Modal**: Kompakte Darstellung mit moderaten Abständen zwischen Elementen (nicht zu eng, aber auch nicht zu weit) 
