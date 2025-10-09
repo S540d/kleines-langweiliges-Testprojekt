@@ -32,11 +32,18 @@ const firebaseConfig = {
 };
 ```
 
-**Öffne die Datei `firebase-config.js` und ersetze die Werte:**
+**Erstelle deine persönliche Konfigurationsdatei:**
+
+1. Kopiere die Datei `firebase-config.example.js` zu `firebase-config.js`:
+   ```bash
+   cp firebase-config.example.js firebase-config.js
+   ```
+
+2. Öffne `firebase-config.js` und ersetze die Platzhalter mit deinen echten Werten von Firebase:
 
 ```javascript
 const firebaseConfig = {
-    apiKey: "DEIN_API_KEY_HIER",
+    apiKey: "DEIN_API_KEY_HIER",  // z.B. "AIzaSyXXXXXXXXXXXXXXXX..."
     authDomain: "DEIN_PROJECT_ID.firebaseapp.com",
     projectId: "DEIN_PROJECT_ID",
     storageBucket: "DEIN_PROJECT_ID.appspot.com",
@@ -44,6 +51,8 @@ const firebaseConfig = {
     appId: "DEINE_APP_ID"
 };
 ```
+
+**Wichtig:** Die Datei `firebase-config.js` ist bereits in `.gitignore` und wird niemals zu Git committed. Deine Credentials bleiben privat!
 
 ## Schritt 4: Google Sign-In aktivieren
 
@@ -152,7 +161,7 @@ Für kleine persönliche Apps ist Firebase **komplett kostenlos**!
 ## Nächste Schritte
 
 Nach erfolgreicher Einrichtung:
-1. Committe `firebase-config.js` **NICHT** zu Git (steht bereits in .gitignore)
+1. Die Datei `firebase-config.js` ist bereits in `.gitignore` und wird **NICHT** zu Git committed
 2. Deploye die App auf GitHub Pages
 3. Teste Login auf dem iPhone/iPad
 4. Genieße die Cloud-Synchronisation! 🎉

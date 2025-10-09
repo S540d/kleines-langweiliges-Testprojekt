@@ -8,9 +8,9 @@
 # Logs
 *.log
 
-# Firebase Configuration
-# Note: Firebase web API keys are safe to commit (security via rules & domain restrictions)
-# See SECURITY.md for details
+# Firebase
+# Note: Keep firebase-config.js private - use firebase-config.example.js as template
+firebase-config.js
 .env
 .env.local
 .env.*.local
