@@ -216,6 +216,14 @@
                     <input type="file" id="importFile" accept=".json" style="display: none;">
                 </div>
 
+                <!-- Metrics Link -->
+                <div class="settings-option">
+                    <label class="settings-label">
+                        <span>📊 Metriken</span>
+                    </label>
+                    <button id="metricsBtn" class="settings-action-btn" style="width: 100%; margin-top: 8px;">Statistiken anzeigen</button>
+                </div>
+
                 <!-- Logout -->
                 <div class="settings-option">
                     <button id="logoutBtn" class="logout-btn-modal">Abmelden</button>
@@ -225,8 +233,56 @@
         </div>
     </div>
 
+    <!-- Modal für Metriken -->
+    <div id="metricsModal" class="modal">
+        <div class="modal-content metrics-modal">
+            <h3 id="metricsTitle">📊 Produktivitäts-Statistiken</h3>
+            <div class="metrics-container">
+                <!-- Overview Stats -->
+                <div class="metrics-section">
+                    <h4 id="metricsOverviewTitle">Übersicht</h4>
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-value" id="metricTotalCompleted">0</div>
+                            <div class="metric-label" id="metricTotalLabel">Gesamt erledigt</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" id="metricCurrentStreak">0</div>
+                            <div class="metric-label" id="metricStreakLabel">Tage Streak</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" id="metricAvgTime">-</div>
+                            <div class="metric-label" id="metricAvgTimeLabel">Ø Bearbeitungszeit</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Completed Tasks Chart -->
+                <div class="metrics-section">
+                    <h4 id="metricsCompletedTitle">Erledigte Aufgaben</h4>
+                    <div class="chart-controls">
+                        <button class="chart-period-btn active" data-period="day" id="metricsDayBtn">Tag</button>
+                        <button class="chart-period-btn" data-period="week" id="metricsWeekBtn">Woche</button>
+                        <button class="chart-period-btn" data-period="month" id="metricsMonthBtn">Monat</button>
+                    </div>
+                    <canvas id="completedTasksChart"></canvas>
+                </div>
+
+                <!-- Segment Distribution Chart -->
+                <div class="metrics-section">
+                    <h4 id="metricsDistributionTitle">Verteilung nach Segmenten</h4>
+                    <canvas id="segmentDistributionChart"></canvas>
+                </div>
+            </div>
+            <button id="metricsCancelBtn" class="cancel-btn">Schließen</button>
+        </div>
+    </div>
+
     <!-- localForage for better local storage -->
     <script src="https://cdn.jsdelivr.net/npm/localforage@1.10.0/dist/localforage.min.js"></script>
+
+    <!-- Chart.js for metrics visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
