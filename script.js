@@ -478,13 +478,16 @@ function createTaskElement(task) {
 
     const textSpan = document.createElement('span');
     textSpan.className = 'task-text';
-    textSpan.textContent = task.text;
+    
+    // Create a text node for the task text
+    const textNode = document.createTextNode(task.text);
+    textSpan.appendChild(textNode);
     
     // Add recurring indicator if task is recurring
     if (task.recurring && task.recurring.enabled) {
         const recurringIndicator = document.createElement('span');
         recurringIndicator.className = 'recurring-indicator';
-        recurringIndicator.textContent = translations[currentLanguage].recurring.indicator;
+        recurringIndicator.textContent = ' ' + translations[currentLanguage].recurring.indicator;
         recurringIndicator.title = getRecurringDescription(task.recurring);
         textSpan.appendChild(recurringIndicator);
     }
