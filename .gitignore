@@ -9,14 +9,11 @@
 *.log
 
 # Firebase
-# Note: Keep firebase-config.js private - use firebase-config.example.js as template
-firebase-config.js
+# Note: Firebase API keys are safe to commit (client-side keys, security via Firebase Rules)
+# firebase-config.js is now tracked in git for deployment
 .env
 .env.local
 .env.*.local
-
-# Optional: Uncomment if you want to keep firebase-config.js out of git
-# firebase-config.js
 
 # Node.js
 node_modules/
