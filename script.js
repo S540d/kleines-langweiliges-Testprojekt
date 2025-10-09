@@ -843,7 +843,7 @@ function filterTasks(searchTerm) {
             const textSpan = el.querySelector('.task-text');
             if (textSpan) {
                 // Remove highlights
-                textSpan.innerHTML = textSpan.textContent;
+                textSpan.textContent = textSpan.textContent;
             }
         });
         return;
@@ -865,7 +865,7 @@ function filterTasks(searchTerm) {
         } else {
             el.style.display = 'none';
             // Remove highlights
-            textSpan.innerHTML = textSpan.textContent;
+            textSpan.textContent = textSpan.textContent;
         }
     });
 }
