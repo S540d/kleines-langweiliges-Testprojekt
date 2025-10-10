@@ -138,7 +138,7 @@ const settingsCancelBtn = document.getElementById('settingsCancelBtn');
 const logoutBtn = document.getElementById('logoutBtn');
 const languageToggle = document.getElementById('languageToggle');
 const darkModeToggle = document.getElementById('darkModeToggle');
-const searchInput = document.getElementById('searchInput');
+// const searchInput = document.getElementById('searchInput'); // Removed from UI
 const exportBtn = document.getElementById('exportBtn');
 const importBtn = document.getElementById('importBtn');
 const importFile = document.getElementById('importFile');
@@ -272,11 +272,11 @@ darkModeToggle.addEventListener('change', async (e) => {
     }
 });
 
-// Search Input
-searchInput.addEventListener('input', (e) => {
-    const searchTerm = e.target.value.toLowerCase().trim();
-    filterTasks(searchTerm);
-});
+// Search Input - Removed from UI
+// searchInput.addEventListener('input', (e) => {
+//     const searchTerm = e.target.value.toLowerCase().trim();
+//     filterTasks(searchTerm);
+// });
 
 // Export Button
 exportBtn.addEventListener('click', () => {
@@ -822,7 +822,7 @@ function setupTouchDrag(element, task) {
         touchStartY = e.touches[0].clientY;
         isDragging = false;
         isSwipeDelete = false;
-    }, { passive: true });
+    }, { passive: false });
 
     element.addEventListener('touchmove', (e) => {
         touchCurrentX = e.touches[0].clientX;
