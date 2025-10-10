@@ -22,13 +22,13 @@
 // 🔒 Security Rules: https://firebase.google.com/docs/rules
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDVZh7wLZeFXpoxIqwKFtC8KsYj9zF6lBM",
+    apiKey: "AIzaSyCV10ZrEZCd314UrpMKixQ98uOKHChSYPU",
     authDomain: "eisenhauer-matrix.firebaseapp.com",
     projectId: "eisenhauer-matrix",
     storageBucket: "eisenhauer-matrix.firebasestorage.app",
     messagingSenderId: "174175941071",
-    appId: "1:174175941071:web:80d5a25ed700b99809e2ba",
-    measurementId: "G-VY3618D2RT"
+    appId: "1:174175941071:web:b7f9da773b12266009e2ba",
+    measurementId: "G-XS1SF0G6K5"
 };
 
 // Firebase initialisieren
