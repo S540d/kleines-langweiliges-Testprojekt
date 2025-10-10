@@ -7,10 +7,11 @@
 - über alle Apps einheitliche Schriftgrösse (noch zu definieren)
 - Einstellungen oben Rechts mit **drei vertikalen Punkten (⋮)** als SVG-Icon (NICHT Zahnrad-Emoji); möglichst zusammen mit anderen Symbolen im Header - also nicht zwei Header übereinander: Die Einstellungen stehen dann in folgender Reihenfolge: 
     - App Name, Version oder Datum, Feedback:devsven@posteo.de
-    - Abgemeldet als...
+    - Wenn relevant: Abgemeldet als...
     - **Theme-Toggle** zwischen "System" (folgt Betriebssystem) und "Dunkel" (immer dunkel) - NICHT Hell/Dunkel/System! Toggle-Switch verwenden, nicht Dropdown.
     - im gleichen Stil: Toogle für deutsch/englisch
     - im gleichen Stil: Toggle zum umschalten auf "Metrik"
+    - wenn relevant: Legende(n)
     - Möglichkeit zum Export als JSON, nicht als CSV
     - "SChließen" Taste
     - Lizenz, wenn Daten von Dritten verwendet werden

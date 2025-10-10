@@ -30,7 +30,7 @@
     <!-- Theme Color -->
     <meta name="theme-color" content="#667eea">
 
-    <link rel="stylesheet" href="style.css?v=1760026481348">
+    <link rel="stylesheet" href="style.css?v=1760127939680">
 </head>
 <body>
     <!-- Login Screen -->
@@ -328,64 +328,21 @@
     </div>
 
     <!-- localForage for better local storage -->
-    <script src="https://cdn.jsdelivr.net/npm/localforage@1.10.0/dist/localforage.min.js?v=1760026481348"></script>
+    <script src="https://cdn.jsdelivr.net/npm/localforage@1.10.0/dist/localforage.min.js?v=1760127939680"></script>
 
     <!-- Chart.js for metrics visualization -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js?v=1760026481348"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js?v=1760127939680"></script>
 
     <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js?v=1760026481348"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js?v=1760026481348"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js?v=1760026481348"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js?v=1760127939680"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js?v=1760127939680"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js?v=1760127939680"></script>
 
-    <!-- Firebase Config (Local-only mode without config) -->
-    <script>
-        // Local-only mode - Firebase stubs for offline functionality
-        console.log('Running in local-only mode - Firebase disabled');
-        
-        // Create minimal Firebase stubs
-        window.firebase = {
-            auth: () => ({
-                onAuthStateChanged: (callback) => {
-                    // Immediately call with null (no user) to trigger local mode
-                    setTimeout(() => callback(null), 100);
-                    return () => {}; // Return unsubscribe function
-                },
-                signInWithPopup: () => Promise.reject(new Error('Firebase not configured - local mode only')),
-                signOut: () => Promise.reject(new Error('Firebase not configured - local mode only'))
-            }),
-            firestore: () => ({
-                collection: () => ({
-                    doc: () => ({
-                        collection: () => ({
-                            get: () => Promise.reject(new Error('Firebase not configured - local mode only')),
-                            doc: () => ({
-                                set: () => Promise.reject(new Error('Firebase not configured - local mode only')),
-                                update: () => Promise.reject(new Error('Firebase not configured - local mode only')),
-                                delete: () => Promise.reject(new Error('Firebase not configured - local mode only'))
-                            })
-                        })
-                    })
-                }),
-                enablePersistence: () => Promise.reject(new Error('Firebase not configured - local mode only'))
-            })
-        };
-        
-        // Initialize Firebase stubs
-        window.auth = firebase.auth();
-        window.db = firebase.firestore();
-        window.googleProvider = { 
-            setCustomParameters: () => {},
-            addScope: () => {}
-        };
-        window.appleProvider = { 
-            setCustomParameters: () => {},
-            addScope: () => {}
-        };
-    </script>
-    <script src="auth.js?v=1760026481348"></script>
+    <!-- Firebase Config -->
+    <script src="firebase-config.js?v=1760127939680"></script>
+    <script src="auth.js?v=1760127939680"></script>
 
-    <script src="script.js?v=1760026481348"></script>
+    <script src="script.js?v=1760127939680"></script>
 
     <!-- Register Service Worker -->
     <script>
