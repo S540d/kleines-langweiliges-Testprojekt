@@ -1,21 +1,22 @@
 ---
-# UX-Vorgaben
+# UX-Vorgaben (für kleine Projekte)
 
 ## Barrierefreiheit (Accessibility)
-- **Farben und Kontraste:** Verwende die Farbpaletten aus der `.design-tokens`-Datei, um die WCAG 2.1 AA-Standards (Kontrastverhältnis ≥ 4,5:1) einzuhalten.
-- **Tastaturnavigation:** Alle interaktiven Elemente müssen mit der Tastatur erreichbar sein. Fokuszustände müssen sichtbar und klar definiert sein.
-- **Screenreader-Unterstützung:** Nutze semantisches HTML und ARIA-Attribute nur, wenn unbedingt nötig (z. B. `aria-label` für Buttons ohne Text).
-- **Barrierefreie Labels:** Alle Buttons, Links und Formulare benötigen beschreibende Labels.
+- **Kontraste:** Nutze Farben mit ausreichendem Kontrast (mindestens 4,5:1). Dies kann mit Tools wie [Accessible Colors](https://accessible-colors.com/) überprüft werden.
+- **Tastaturnavigation:** Stelle sicher, dass die wichtigsten Funktionen (Navigation, Buttons, Formulare) per Tastatur bedienbar sind.
+- **Labels:** Alle interaktiven Elemente (z. B. Buttons, Links) müssen klare Beschriftungen haben.
 
 ## Internationalisierung (i18n)
-- **Standardsprache:** Die Standardsprache ist Deutsch (`lang="de"`). Stelle sicher, dass die Sprache korrekt im HTML-Tag definiert ist.
-- **Übersetzungen:** Inhalte müssen mit einem Framework wie **i18next** übersetzt werden. Übersetzungsdateien liegen als `de.json`, `en.json` usw. vor.
-- **RTL-Unterstützung:** Stelle sicher, dass das Layout auch für Sprachen mit Rechts-nach-Links-Schreibweise (z. B. Arabisch) funktioniert.
+- **Standardsprache:** Definiere die Standardsprache der Anwendung, z. B. Deutsch (`lang="de"` im HTML-Tag).
+- **Mehrsprachigkeit:** Für kleine Projekte reicht es, die wichtigsten Texte in einer separaten Datei (`translations.json`) zu organisieren.
 
 ## Interaktionsdesign
-- **Konsistenz:** Nutze UI-Komponenten aus der zentralen Storybook-Bibliothek. Jede Komponente muss dokumentiert und getestet sein.
-- **Feedback:** Jede Benutzeraktion muss ein visuelles Feedback (z. B. Ladeindikator) liefern.
-- **Fehlerhandling:** Fehlermeldungen sollen klar und hilfreich sein, z. B. „Bitte E-Mail-Adresse eingeben“ statt „Ungültig“.
+- **Konsistenz:** Verwende ähnliche Designs für ähnliche Funktionen, z. B. gleiche Button-Styles für alle Aktionen.
+- **Feedback:** Zeige bei Benutzeraktionen einfaches Feedback, z. B. eine Erfolgsmeldung oder einen Lade-Spinner.
+- **Fehlerhandling:** Fehlermeldungen sollen klar und direkt sein, z. B. „Bitte gib eine gültige E-Mail-Adresse ein“.
 
-## Design-Richtlinien
-- **Komponentenbibliothek
+## Responsive Design
+- **Mobile First:** Entwickle zunächst für Mobilgeräte und erweitere dann für größere Bildschirme.
+- **Basistests:** Teste das Design auf Mobil-, Tablet- und Desktop-Bildschirmen.
+
+---
