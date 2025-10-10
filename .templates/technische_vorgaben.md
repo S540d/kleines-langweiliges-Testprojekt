@@ -2,33 +2,29 @@
 # Technische Vorgaben
 
 ## Code-Qualität
-- **Prettier** ist verpflichtend für den gesamten Code. Alle Dateien müssen vor einem Commit mit Prettier formatiert werden.
-- Verwenden von **ESLint** mit einer zentral definierten Konfiguration, um konsistente Code-Standards sicherzustellen.
-- Entfernen von `console.log`-Statements und ungenutztem Code vor jedem Deployment.
-- **SonarQube** wird für Code-Qualitätsanalysen genutzt, um technische Schulden zu identifizieren und zu reduzieren.
+- **Prettier:** Prettier ist verpflichtend. Code muss vor jedem Commit formatiert werden.
+- **ESLint:** Nutze die zentrale ESLint-Konfiguration `eslint-config-standard`. Fehler und Warnungen sind nicht erlaubt.
+- **SonarQube:** SonarQube wird für die Code-Qualitätsanalyse genutzt. Ziel: Technische Schulden < 5%.
 
 ## Testing
-- **Jest** wird für Unit-Tests verwendet. Alle Kernfunktionen sollten durch Tests abgedeckt werden.
-- End-to-End-Tests werden mit **Cypress** durchgeführt, um die Benutzeroberfläche und Workflows zu validieren.
-- Ziel: Mindestens 90% Testabdeckung für kritische Module.
-- Automatisierte Tests müssen Teil der CI/CD-Pipeline sein und vor jedem Merge erfolgreich abgeschlossen werden.
+- **Jest:** Schreibe Unit-Tests mit Jest für jede neue Funktion. Kritische Module müssen eine Testabdeckung von 100% erreichen.
+- **Cypress:** End-to-End-Tests werden mit Cypress durchgeführt. Diese müssen vor jedem Release erfolgreich sein.
+- **Snapshots:** Nutze Storyshots (Storybook-Addon), um visuelle Regressionen zu identifizieren.
 
 ## CI/CD-Pipelines
-- **GitHub Actions** wird für Build-, Test- und Deployment-Prozesse verwendet. Beispiele:
-  - Automatischer Linting-Check mit Prettier und ESLint bei jedem Push.
-  - Automatischer Testlauf mit Jest und Cypress.
-- Sicherheits- und Abhängigkeitsprüfungen erfolgen über **Dependabot** und **npm audit**.
+- **GitHub Actions:** Automatisiere Linter- und Testläufe bei jedem Commit. PRs mit fehlgeschlagenen Checks werden blockiert.
+- **Deployment:** Deployments erfolgen automatisch auf Staging nach einem Merge in `main`.
+- **Dependabot:** Sicherheits- und Abhängigkeitsprüfungen werden automatisch durch Dependabot durchgeführt.
 
 ## Versionskontrolle
-- Befolgen einer **trunk-based Development-Strategie**:
-  - Feature-Branches für neue Funktionen, die regelmäßig in den Haupt-Branch (main) gemerged werden.
-  - Kurze Lebensdauer von Branches (maximal 2-3 Tage).
-- Commit-Nachrichten müssen prägnant und beschreibend sein (z. B. "Fix: Button-Styling in der Navigation").
+- **Branch-Strategie:** Nutze trunk-based Development:
+  - Feature-Branches dürfen maximal 2-3 Tage bestehen.
+  - Regelmäßiges Mergen in `main`, um Konﬂikte zu vermeiden.
+- **Commit-Nachrichten:** Nachrichten müssen prägnant und beschreibend sein (z. B. „Fix: Button-Styling in Navigation“).
 
 ## Sicherheit
-- API-Schlüssel und sensible Daten dürfen nicht im Code enthalten sein. Stattdessen müssen `.env`-Dateien genutzt werden.
-- `.env`-Dateien müssen in `.gitignore` eingetragen sein.
-- Regelmäßige Sicherheitsaudits mit **npm audit** und **Snyk**, um Schwachstellen zu identifizieren.
-- Schutz vor Cross-Site-Scripting (XSS) durch escaping von Benutzereingaben und Vermeidung von `innerHTML`.
+- **Umgebungsvariablen:** API-Schlüssel und Tokens müssen in `.env`-Dateien gespeichert werden. Diese Dateien müssen in `.gitignore` stehen.
+- **XSS-Schutz:** Escape alle Benutzereingaben und nutze Sicherheitsmechanismen von Frameworks (z. B. Reacts `dangerouslySetInnerHTML` vermeiden).
+- **Sicherheitsaudits:** Nutze Tools wie **Snyk** und **npm audit**, um Schwachstellen regelmäßig zu überprüfen.
 
 ---
