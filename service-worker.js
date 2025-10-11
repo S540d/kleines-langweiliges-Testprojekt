@@ -1,5 +1,5 @@
-const CACHE_VERSION = '1.3.1';
-const BUILD_DATE = '2025-10-10'; // Cache busting - updated 2025-10-09T14:30:03.247Z
+const CACHE_VERSION = '1.4.0';
+const BUILD_DATE = '2025-10-11'; // Cache busting - updated 2025-10-09T14:30:03.247Z
 const CACHE_NAME = `eisenhauer-matrix-v${CACHE_VERSION}-${BUILD_DATE}`;
 const urlsToCache = [
   './',

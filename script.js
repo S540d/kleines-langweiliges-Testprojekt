@@ -138,7 +138,7 @@ const settingsCancelBtn = document.getElementById('settingsCancelBtn');
 const logoutBtn = document.getElementById('logoutBtn');
 const languageToggle = document.getElementById('languageToggle');
 const darkModeToggle = document.getElementById('darkModeToggle');
-const searchInput = document.getElementById('searchInput');
+// const searchInput = document.getElementById('searchInput'); // Removed from UI
 const exportBtn = document.getElementById('exportBtn');
 const importBtn = document.getElementById('importBtn');
 const importFile = document.getElementById('importFile');
@@ -185,7 +185,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     renderAllTasks();
     setupDragAndDrop();
-    setupPullToRefresh();
     updateOnlineStatus();
 
     // Listen for online/offline events
@@ -272,11 +271,11 @@ darkModeToggle.addEventListener('change', async (e) => {
     }
 });
 
-// Search Input
-searchInput.addEventListener('input', (e) => {
-    const searchTerm = e.target.value.toLowerCase().trim();
-    filterTasks(searchTerm);
-});
+// Search Input - Removed from UI
+// searchInput.addEventListener('input', (e) => {
+//     const searchTerm = e.target.value.toLowerCase().trim();
+//     filterTasks(searchTerm);
+// });
 
 // Export Button
 exportBtn.addEventListener('click', () => {
@@ -962,11 +961,7 @@ function setupSwipeToDelete(element, task) {
     // Keeping this function for compatibility but it's empty
 }
 
-// Pull to Refresh - DISABLED due to interference with operation
-function setupPullToRefresh() {
-    // Functionality disabled as it interferes with normal operation
-    // Users can refresh manually using browser refresh
-}
+// Pull to Refresh removed - users can refresh manually using browser refresh
 
 // Online/Offline Status
 function updateOnlineStatus() {
