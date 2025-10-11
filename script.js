@@ -185,7 +185,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     renderAllTasks();
     setupDragAndDrop();
-    setupPullToRefresh();
     updateOnlineStatus();
 
     // Listen for online/offline events
@@ -822,7 +821,7 @@ function setupTouchDrag(element, task) {
         touchStartY = e.touches[0].clientY;
         isDragging = false;
         isSwipeDelete = false;
-    }, { passive: false });
+    }, { passive: true });
 
     element.addEventListener('touchmove', (e) => {
         touchCurrentX = e.touches[0].clientX;
@@ -962,11 +961,7 @@ function setupSwipeToDelete(element, task) {
     // Keeping this function for compatibility but it's empty
 }
 
-// Pull to Refresh - DISABLED due to interference with operation
-function setupPullToRefresh() {
-    // Functionality disabled as it interferes with normal operation
-    // Users can refresh manually using browser refresh
-}
+// Pull to Refresh removed - users can refresh manually using browser refresh
 
 // Online/Offline Status
 function updateOnlineStatus() {
