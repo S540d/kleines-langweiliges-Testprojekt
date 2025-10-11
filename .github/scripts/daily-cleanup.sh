@@ -320,10 +320,98 @@ fi
 echo ""
 
 # ============================================================================
-# 9. BACKUP REMINDER
+# 9. TESTING DEPLOY
 # ============================================================================
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo -e "${CYAN}💾 9. Backup Reminder${NC}"
+echo -e "${CYAN}🧪 9. Testing Deploy${NC}"
+echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo ""
+
+# Prüfe ob testing Branch existiert
+if git show-ref --verify --quiet refs/heads/testing; then
+    echo -e "${MAGENTA}Synchronisiere testing Branch mit main...${NC}"
+
+    # Wechsle zu testing
+    git checkout testing
+
+    # Merge main in testing
+    if git merge main --no-edit; then
+        echo -e "${GREEN}✅ Testing Branch mit main synchronisiert${NC}"
+
+        # Push testing Branch
+        echo ""
+        echo -e "${MAGENTA}Pushe testing Branch → Triggert automatisches Deploy...${NC}"
+        git push origin testing
+
+        echo ""
+        echo -e "${GREEN}✅ Testing Deploy triggered!${NC}"
+        echo -e "${CYAN}📍 Testing URL: https://s540d.github.io/Eisenhauer-testing/${NC}"
+        echo ""
+
+        # Warte kurz und prüfe Deploy Status
+        if command -v gh &> /dev/null; then
+            echo -e "${MAGENTA}Warte auf Deploy-Start (10 Sekunden)...${NC}"
+            sleep 10
+
+            echo ""
+            echo -e "${MAGENTA}Testing Deploy Status:${NC}"
+            gh run list --workflow=deploy-testing.yml --limit 1 --json status,conclusion,displayTitle,createdAt --jq '.[] | "  Status: \(.status)\n  Titel: \(.displayTitle)\n  Zeit: \(.createdAt | split("T")[0])"'
+
+            DEPLOY_STATUS=$(gh run list --workflow=deploy-testing.yml --limit 1 --json status --jq '.[0].status')
+
+            if [ "$DEPLOY_STATUS" = "in_progress" ] || [ "$DEPLOY_STATUS" = "queued" ]; then
+                echo ""
+                echo -e "${YELLOW}⏳ Deploy läuft... Prüfe Status mit:${NC}"
+                echo -e "   ${CYAN}gh run watch${NC}"
+            elif [ "$DEPLOY_STATUS" = "completed" ]; then
+                echo ""
+                echo -e "${GREEN}✅ Deploy abgeschlossen!${NC}"
+            fi
+        fi
+
+    else
+        echo -e "${RED}❌ Merge Konflikt!${NC}"
+        echo -e "${YELLOW}Bitte manuell lösen:${NC}"
+        echo "  1. Konflikte in den Dateien lösen"
+        echo "  2. git add <files>"
+        echo "  3. git commit"
+        echo "  4. git push origin testing"
+        WARNINGS=$((WARNINGS + 1))
+        git merge --abort
+    fi
+
+    # Zurück zum ursprünglichen Branch
+    git checkout "$CURRENT_BRANCH"
+
+else
+    echo -e "${YELLOW}⚠️  Testing Branch existiert nicht!${NC}"
+    echo ""
+    echo -e "${CYAN}Erstelle testing Branch:${NC}"
+    read -p "Testing Branch erstellen und deployen? (y/n) " -n 1 -r
+    echo ""
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        git checkout -b testing
+        git push -u origin testing
+        echo -e "${GREEN}✅ Testing Branch erstellt und gepusht${NC}"
+        echo -e "${CYAN}📍 Testing URL: https://s540d.github.io/Eisenhauer-testing/${NC}"
+        echo ""
+        echo -e "${YELLOW}⚠️  WICHTIG: GitHub Pages für testing aktivieren:${NC}"
+        echo "   → https://github.com/S540d/Eisenhauer/settings/pages"
+        echo "   → 'Add another branch' → 'gh-pages-testing'"
+        git checkout "$CURRENT_BRANCH"
+    else
+        echo -e "${YELLOW}⚠️  Testing Deploy übersprungen${NC}"
+        WARNINGS=$((WARNINGS + 1))
+    fi
+fi
+
+echo ""
+
+# ============================================================================
+# 10. BACKUP REMINDER
+# ============================================================================
+echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo -e "${CYAN}💾 10. Backup Reminder${NC}"
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""
 
@@ -349,10 +437,10 @@ fi
 echo ""
 
 # ============================================================================
-# 10. SUMMARY
+# 11. SUMMARY
 # ============================================================================
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo -e "${CYAN}📊 10. Zusammenfassung${NC}"
+echo -e "${CYAN}📊 11. Zusammenfassung${NC}"
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""
 

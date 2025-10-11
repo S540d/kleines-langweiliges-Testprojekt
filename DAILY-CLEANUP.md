@@ -23,8 +23,9 @@ oder auf Englisch:
 ```
 
 **Was passiert:**
-- Claude führt alle 10 Cleanup-Schritte interaktiv durch
+- Claude führt alle 11 Cleanup-Schritte interaktiv durch
 - Du wirst bei wichtigen Entscheidungen gefragt
+- **Automatischer Deploy auf Testing-URL** für Partner-Tests
 - Am Ende bekommst du eine Zusammenfassung
 
 ---
@@ -79,14 +80,23 @@ Führe das Script direkt aus:
    - Holt neueste Änderungen
    - Zeigt Status
 
-9. **Backup Reminder** 💾
-   - Erinnert an JSON Export
-   - Zeigt letztes Backup Datum
-   - Warnt wenn >7 Tage alt
+9. **Testing Deploy** 🧪 **← NEU!**
+   - Synchronisiert testing Branch mit main
+   - Pusht testing Branch automatisch
+   - Triggert GitHub Action Deploy
+   - Deployed auf: https://s540d.github.io/Eisenhauer-testing/
+   - Wartet auf Deploy-Status (10 Sekunden)
+   - **Partner kann direkt testen!**
 
-10. **Zusammenfassung** 📊
+10. **Backup Reminder** 💾
+    - Erinnert an JSON Export
+    - Zeigt letztes Backup Datum
+    - Warnt wenn >7 Tage alt
+
+11. **Zusammenfassung** 📊
     - Anzahl gelöschter Branches
     - Anzahl gepushter Commits
+    - Testing Deploy Status
     - Warnings
     - Nächste TODOs
 
@@ -133,6 +143,24 @@ Lokale Feature Branches:
 
 Merged Branches löschen? (y/n) y
 ✅ 1 Branches gelöscht
+
+...
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🧪 9. Testing Deploy
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Synchronisiere testing Branch mit main...
+✅ Testing Branch mit main synchronisiert
+
+Pushe testing Branch → Triggert automatisches Deploy...
+✅ Testing Deploy triggered!
+📍 Testing URL: https://s540d.github.io/Eisenhauer-testing/
+
+Warte auf Deploy-Start (10 Sekunden)...
+Testing Deploy Status:
+  Status: in_progress
+⏳ Deploy läuft... Prüfe Status mit: gh run watch
 
 ...
 
