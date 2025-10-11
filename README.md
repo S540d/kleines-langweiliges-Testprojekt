@@ -194,6 +194,34 @@ Siehe [LICENSE](LICENSE) für Details.
 
 Pull Requests sind willkommen! Für größere Änderungen bitte zuerst ein Issue öffnen.
 
+### 🧪 Testing Workflow (Issue #74)
+
+Dieses Projekt nutzt einen automatisierten Testing-Workflow für sicheres Deployment:
+
+**Environments:**
+- 🧪 **Testing:** [https://s540d.github.io/Eisenhauer-testing/](https://s540d.github.io/Eisenhauer-testing/)
+- 🚀 **Production:** [https://s540d.github.io/Eisenhauer/](https://s540d.github.io/Eisenhauer/)
+
+**Workflow:**
+1. Feature Branch erstellen und PR gegen `main` öffnen
+2. In `testing` Branch mergen → Automatischer Deploy auf Testing URL
+3. Partner testet und approved den PR
+4. Nach Approval: Merge in `main` → Automatischer Production Deploy
+
+**Einmalige Einrichtung:**
+```bash
+./.github/scripts/quick-setup.sh
+```
+
+**Detaillierte Dokumentation:** Siehe [TESTING-WORKFLOW.md](TESTING-WORKFLOW.md)
+
+**Features:**
+- ✅ Branch Protection (Require PR approval)
+- ✅ Separate Testing Environment
+- ✅ Automatisierte Deployments
+- ✅ PR Template mit Checkliste
+- ❌ Kein versehentlicher Production Deploy möglich
+
 ## Kontakt
 
 Bei Fragen oder Feedback: [GitHub Issues](https://github.com/S540d/Eisenhauer/issues)
