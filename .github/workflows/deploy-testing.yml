@@ -1,0 +1,62 @@
+name: Deploy to Testing Environment
+
+on:
+  push:
+    branches:
+      - testing
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deploy-testing:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Install dependencies
+      run: |
+        if [ -f package-lock.json ]; then
+          npm ci
+        else
+          npm install
+        fi
+
+    - name: Build with cache-busting (Testing)
+      run: |
+        echo "🧪 TESTING BUILD - $(date)" >> BUILD_INFO.txt
+        echo "This is a TESTING deployment" >> BUILD_INFO.txt
+        node update-cache-version.js
+        echo "✅ Cache version updated for testing environment"
+
+    - name: Add testing indicator
+      run: |
+        # Add a visible testing indicator to index.html
+        sed -i 's/<body>/<body data-environment="testing">/' index.html || true
+        echo "⚠️ Testing environment marker added"
+
+    - name: Deploy to Testing GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./
+        publish_branch: gh-pages-testing
+        allow_empty_commit: false
+        keep_files: false
+        commit_message: '🧪 Testing deployment from ${{ github.sha }}'
+
+    - name: Comment deployment URL
+      run: |
+        echo "🧪 Testing deployment successful!"
+        echo "Testing URL: https://${{ github.repository_owner }}.github.io/Eisenhauer-testing/"
+        echo "Branch: gh-pages-testing"
