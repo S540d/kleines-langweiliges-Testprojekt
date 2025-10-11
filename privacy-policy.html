@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datenschutzerklärung - Eisenhauer Matrix</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+
+        h1 {
+            color: #1f2937;
+            border-bottom: 3px solid #1f2937;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: #4b5563;
+            margin-top: 30px;
+        }
+
+        .last-updated {
+            color: #666;
+            font-style: italic;
+            margin-bottom: 30px;
+        }
+
+        ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        li {
+            margin: 5px 0;
+        }
+
+        a {
+            color: #1f2937;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .contact {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Datenschutzerklärung</h1>
+    <p class="last-updated">Stand: <span id="date"></span></p>
+
+    <h2>1. Verantwortlicher</h2>
+    <div class="contact">
+        <p>Verantwortlich für die Datenverarbeitung ist:</p>
+        <p>
+            Sven-Uwe Strohkark<br>
+            Meisenstrasse 14612 Falkensee<br>
+            E-Mail: DevSven@posteo.de
+        </p>
+    </div>
+
+    <h2>2. Allgemeine Informationen</h2>
+    <p>
+        Die Eisenhauer Matrix App ("die App") ermöglicht es Nutzern, Aufgaben nach der Eisenhauer-Matrix-Methode
+        zu organisieren und zu verwalten. Diese Datenschutzerklärung informiert Sie über die Art, den Umfang und
+        Zweck der Verarbeitung personenbezogener Daten in unserer App.
+    </p>
+
+    <h2>3. Erhobene Daten</h2>
+    <p>Wir erheben und verarbeiten folgende Daten:</p>
+
+    <h3>3.1 Authentifizierungsdaten</h3>
+    <ul>
+        <li>Google-Konto-Informationen (Name, E-Mail-Adresse, Profilbild) bei Anmeldung über Google</li>
+        <li>Apple-ID-Informationen (Name, E-Mail-Adresse) bei Anmeldung über Apple</li>
+        <li>Eindeutige Benutzer-ID (von Firebase Authentication generiert)</li>
+    </ul>
+
+    <h3>3.2 Nutzerdaten</h3>
+    <ul>
+        <li>Von Ihnen erstellte Aufgaben und deren Inhalte</li>
+        <li>Zuordnung der Aufgaben zu Segmenten (Do, Schedule, Delegate, Ignore, Done)</li>
+        <li>Zeitstempel der Aufgabenerstellung und -änderung</li>
+    </ul>
+
+    <h3>3.3 Technische Daten</h3>
+    <ul>
+        <li>Gerätetyp und Betriebssystem</li>
+        <li>Browser-Typ und -Version</li>
+        <li>IP-Adresse (anonymisiert)</li>
+        <li>Datum und Uhrzeit des Zugriffs</li>
+    </ul>
+
+    <h2>4. Zweck der Datenverarbeitung</h2>
+    <p>Die Verarbeitung Ihrer Daten erfolgt zu folgenden Zwecken:</p>
+    <ul>
+        <li><strong>Bereitstellung der App-Funktionen:</strong> Speicherung und Synchronisation Ihrer Aufgaben über mehrere Geräte</li>
+        <li><strong>Authentifizierung:</strong> Sichere Anmeldung und Zugriffskontrolle auf Ihre Daten</li>
+        <li><strong>Offline-Funktionalität:</strong> Lokale Speicherung für Nutzung ohne Internetverbindung</li>
+        <li><strong>Technische Sicherheit:</strong> Schutz vor Missbrauch und unbefugtem Zugriff</li>
+    </ul>
+
+    <h2>5. Rechtsgrundlage</h2>
+    <p>Die Verarbeitung Ihrer personenbezogenen Daten erfolgt auf Grundlage von:</p>
+    <ul>
+        <li><strong>Art. 6 Abs. 1 lit. b DSGVO:</strong> Verarbeitung zur Erfüllung eines Vertrags (Nutzung der App)</li>
+        <li><strong>Art. 6 Abs. 1 lit. f DSGVO:</strong> Berechtigtes Interesse an der Bereitstellung und Verbesserung der App</li>
+    </ul>
+
+    <h2>6. Datenspeicherung und -weitergabe</h2>
+
+    <h3>6.1 Speicherort</h3>
+    <p>Ihre Daten werden gespeichert:</p>
+    <ul>
+        <li><strong>Cloud-Speicherung:</strong> Firebase Firestore (Google Cloud, Server in der EU)</li>
+        <li><strong>Lokal auf Ihrem Gerät:</strong> Für Offline-Nutzung (über Browser-Cache und IndexedDB)</li>
+    </ul>
+
+    <h3>6.2 Drittanbieter-Dienste</h3>
+    <p>Die App nutzt folgende Drittanbieter-Dienste:</p>
+    <ul>
+        <li>
+            <strong>Firebase (Google LLC):</strong> Authentication, Firestore Database<br>
+            Datenschutzerklärung: <a href="https://firebase.google.com/support/privacy" target="_blank">https://firebase.google.com/support/privacy</a>
+        </li>
+        <li>
+            <strong>Google Sign-In:</strong> Authentifizierung über Google-Konto<br>
+            Datenschutzerklärung: <a href="https://policies.google.com/privacy" target="_blank">https://policies.google.com/privacy</a>
+        </li>
+        <li>
+            <strong>Sign in with Apple:</strong> Authentifizierung über Apple-ID<br>
+            Datenschutzerklärung: <a href="https://www.apple.com/legal/privacy/" target="_blank">https://www.apple.com/legal/privacy/</a>
+        </li>
+    </ul>
+
+    <h3>6.3 Keine Weitergabe an Dritte</h3>
+    <p>
+        Ihre Aufgaben und persönlichen Daten werden nicht an Dritte verkauft, vermietet oder weitergegeben,
+        außer wenn dies gesetzlich vorgeschrieben ist oder zur Bereitstellung der App-Funktionen erforderlich ist
+        (wie oben beschrieben).
+    </p>
+
+    <h2>7. Speicherdauer</h2>
+    <p>Ihre Daten werden gespeichert:</p>
+    <ul>
+        <li><strong>Aufgaben:</strong> So lange Sie die App nutzen und nicht selbst löschen</li>
+        <li><strong>Authentifizierungsdaten:</strong> Bis zur Löschung Ihres Accounts</li>
+        <li><strong>Technische Logs:</strong> Maximal 30 Tage</li>
+    </ul>
+
+    <h2>8. Ihre Rechte</h2>
+    <p>Sie haben folgende Rechte bezüglich Ihrer personenbezogenen Daten:</p>
+    <ul>
+        <li><strong>Auskunftsrecht (Art. 15 DSGVO):</strong> Sie können Auskunft über Ihre gespeicherten Daten verlangen</li>
+        <li><strong>Berichtigungsrecht (Art. 16 DSGVO):</strong> Sie können die Berichtigung unrichtiger Daten verlangen</li>
+        <li><strong>Löschungsrecht (Art. 17 DSGVO):</strong> Sie können die Löschung Ihrer Daten verlangen</li>
+        <li><strong>Einschränkung der Verarbeitung (Art. 18 DSGVO):</strong> Sie können die Einschränkung der Verarbeitung verlangen</li>
+        <li><strong>Datenübertragbarkeit (Art. 20 DSGVO):</strong> Sie können Ihre Daten in einem strukturierten Format erhalten</li>
+        <li><strong>Widerspruchsrecht (Art. 21 DSGVO):</strong> Sie können der Verarbeitung widersprechen</li>
+    </ul>
+
+    <h3>8.1 Daten löschen</h3>
+    <p>Sie können Ihre Daten jederzeit selbst löschen:</p>
+    <ul>
+        <li><strong>Einzelne Aufgaben:</strong> In der App direkt löschen</li>
+        <li><strong>Gesamten Account:</strong> Kontaktieren Sie uns per E-Mail (siehe Kontaktdaten oben)</li>
+    </ul>
+
+    <h2>9. Datensicherheit</h2>
+    <p>Wir setzen technische und organisatorische Sicherheitsmaßnahmen ein, um Ihre Daten zu schützen:</p>
+    <ul>
+        <li>Verschlüsselte Datenübertragung (HTTPS/TLS)</li>
+        <li>Firebase Security Rules zum Schutz vor unbefugtem Zugriff</li>
+        <li>Authentifizierung erforderlich für Datenzugriff</li>
+        <li>Regelmäßige Sicherheitsupdates</li>
+    </ul>
+
+    <h2>10. Cookies und lokale Speicherung</h2>
+    <p>Die App verwendet:</p>
+    <ul>
+        <li><strong>Service Worker:</strong> Für Offline-Funktionalität und Performance</li>
+        <li><strong>IndexedDB:</strong> Lokale Speicherung von Aufgaben für Offline-Nutzung</li>
+        <li><strong>Session Storage:</strong> Temporäre Speicherung der Anmeldeinformationen</li>
+    </ul>
+    <p>Diese Technologien sind für die Funktionalität der App erforderlich und können nicht deaktiviert werden.</p>
+
+    <h2>11. Änderungen dieser Datenschutzerklärung</h2>
+    <p>
+        Wir behalten uns vor, diese Datenschutzerklärung anzupassen, um sie an geänderte Rechtslage oder
+        Änderungen der App anzupassen. Die aktuelle Version ist stets unter dieser URL abrufbar.
+    </p>
+
+    <h2>12. Kontakt</h2>
+    <div class="contact">
+        <p>Bei Fragen zur Verarbeitung Ihrer personenbezogenen Daten können Sie sich an uns wenden:</p>
+        <p>
+            E-Mail: DevSven@posteo.de
+        </p>
+    </div>
+
+    <h2>13. Beschwerderecht</h2>
+    <p>
+        Sie haben das Recht, sich bei einer Datenschutz-Aufsichtsbehörde zu beschweren,
+        wenn Sie der Ansicht sind, dass die Verarbeitung Ihrer personenbezogenen Daten gegen die DSGVO verstößt.
+    </p>
+    <p>
+        Zuständige Aufsichtsbehörde in Deutschland:<br>
+        Die Bundesbeauftragte für den Datenschutz und die Informationsfreiheit (BfDI)<br>
+        Website: <a href="https://www.bfdi.bund.de" target="_blank">https://www.bfdi.bund.de</a>
+    </p>
+
+    <script>
+        // Set current date
+        const today = new Date();
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('date').textContent = today.toLocaleDateString('de-DE', options);
+    </script>
+</body>
+</html>

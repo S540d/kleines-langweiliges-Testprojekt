@@ -1,0 +1,27 @@
+{
+  "name": "eisenhauer-matrix",
+  "version": "1.4.0",
+  "description": "Eine moderne, mobile-first Progressive Web App zur Aufgabenverwaltung nach der Eisenhauer-Matrix-Methode.",
+  "main": "index.html",
+  "scripts": {
+    "start": "python3 -m http.server 8000",
+    "build": "node update-cache-version.js && node build-config.js",
+    "prebuild": "echo '🔧 Building with cache-busting and Firebase configuration...'",
+    "postbuild": "echo '✅ Build complete with cache-busting! Ready to deploy.'",
+    "deploy": "npm run build && git add -A && git commit -m 'build: update cache versions' || true && git checkout gh-pages && git merge main --no-edit && git push origin gh-pages && git checkout main",
+    "deploy:force": "npm run build && git add -A && git commit -m 'build: force cache update' || true && git checkout gh-pages && git reset --hard main && git push origin gh-pages --force && git checkout main",
+    "cache:update": "node update-cache-version.js",
+    "version:update": "node update-version.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/S540d/Eisenhauer.git"
+  },
+  "keywords": ["eisenhauer", "matrix", "productivity", "todo", "task-management", "pwa"],
+  "author": "Sven-Uwe Strohkark",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/S540d/Eisenhauer/issues"
+  },
+  "homepage": "https://s540d.github.io/Eisenhauer/"
+}
