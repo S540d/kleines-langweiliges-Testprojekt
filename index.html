@@ -30,7 +30,7 @@
     <!-- Theme Color -->
     <meta name="theme-color" content="#667eea">
 
-    <link rel="stylesheet" href="style.css?v=1760159420936">
+    <link rel="stylesheet" href="style.css?v=1760171768">
 </head>
 <body>
     <!-- Login Screen -->
@@ -102,6 +102,7 @@
             <div class="segment q1" data-segment="1">
                 <div class="segment-header">
                     <h2>Do!</h2>
+                    <button class="segment-add-btn" data-segment="1" title="Add task">+</button>
                 </div>
                 <div class="task-list" id="segment1" data-segment="1"></div>
             </div>
@@ -110,6 +111,7 @@
             <div class="segment q2" data-segment="2">
                 <div class="segment-header">
                     <h2>Schedule!</h2>
+                    <button class="segment-add-btn" data-segment="2" title="Add task">+</button>
                 </div>
                 <div class="task-list" id="segment2" data-segment="2"></div>
             </div>
@@ -118,6 +120,7 @@
             <div class="segment q3" data-segment="3">
                 <div class="segment-header">
                     <h2>Delegate!</h2>
+                    <button class="segment-add-btn" data-segment="3" title="Add task">+</button>
                 </div>
                 <div class="task-list" id="segment3" data-segment="3"></div>
             </div>
@@ -126,6 +129,7 @@
             <div class="segment q4" data-segment="4">
                 <div class="segment-header">
                     <h2>Ignore!</h2>
+                    <button class="segment-add-btn" data-segment="4" title="Add task">+</button>
                 </div>
                 <div class="task-list" id="segment4" data-segment="4"></div>
             </div>
@@ -134,20 +138,100 @@
             <div class="segment q5" data-segment="5">
                 <div class="segment-header">
                     <h2>Done!</h2>
+                    <button class="segment-add-btn" data-segment="5" title="Add task">+</button>
                 </div>
                 <div class="task-list" id="segment5" data-segment="5"></div>
             </div>
         </div>
 
-        <footer style="text-align: center; padding: 20px; margin-top: 20px;">
-            <a href="https://buymeacoffee.com/sven4321" target="_blank" rel="noopener noreferrer" style="display: inline-block; padding: 10px 20px; background: #FFDD00; color: #000; text-decoration: none; border-radius: 8px; font-weight: 600; transition: transform 0.2s;">
+        <footer class="app-footer">
+            <a href="https://buymeacoffee.com/sven4321" target="_blank" rel="noopener noreferrer" class="coffee-btn">
                 ☕ Buy me a coffee
             </a>
+            <button id="settingsBtnFooter" class="settings-btn-footer" title="Einstellungen">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <circle cx="12" cy="5" r="2"></circle>
+                    <circle cx="12" cy="12" r="2"></circle>
+                    <circle cx="12" cy="19" r="2"></circle>
+                </svg>
+            </button>
         </footer>
     </div>
 
-    <!-- Modal für Segment-Auswahl -->
-    <div id="segmentModal" class="modal">
+    <!-- Quick Add Task Modal (v1.4.5+) -->
+    <div id="quickAddModal" class="modal">
+        <div class="modal-content quick-add-modal">
+            <h3 id="quickAddTitle">Neue Aufgabe</h3>
+            <p id="quickAddCategory" class="quick-add-category"></p>
+
+            <div class="quick-add-input-wrapper">
+                <input type="text"
+                       id="quickAddInput"
+                       placeholder="Was möchtest du erledigen?"
+                       maxlength="140"
+                       autocomplete="off">
+                <span id="quickAddCharCount" class="char-counter">0/140</span>
+            </div>
+
+            <!-- Recurring Task Configuration -->
+            <div class="recurring-config-quick">
+                <label class="recurring-enable">
+                    <input type="checkbox" id="quickRecurringEnabled">
+                    <span id="quickRecurringEnableText">🔁 Als wiederkehrende Aufgabe</span>
+                </label>
+
+                <div id="quickRecurringOptions" class="recurring-options" style="display: none;">
+                    <div class="recurring-option">
+                        <label>
+                            <input type="radio" name="quickRecurringType" value="daily" checked>
+                            <span id="quickRecurringDaily">Täglich</span>
+                        </label>
+                    </div>
+                    <div class="recurring-option">
+                        <label>
+                            <input type="radio" name="quickRecurringType" value="weekly">
+                            <span id="quickRecurringWeekly">Wöchentlich</span>
+                        </label>
+                        <div id="quickWeekdaysContainer" class="weekdays-container" style="display: none;">
+                            <label><input type="checkbox" class="weekday-check" value="1"> <span id="quickMon">Mo</span></label>
+                            <label><input type="checkbox" class="weekday-check" value="2"> <span id="quickTue">Di</span></label>
+                            <label><input type="checkbox" class="weekday-check" value="3"> <span id="quickWed">Mi</span></label>
+                            <label><input type="checkbox" class="weekday-check" value="4"> <span id="quickThu">Do</span></label>
+                            <label><input type="checkbox" class="weekday-check" value="5"> <span id="quickFri">Fr</span></label>
+                            <label><input type="checkbox" class="weekday-check" value="6"> <span id="quickSat">Sa</span></label>
+                            <label><input type="checkbox" class="weekday-check" value="0"> <span id="quickSun">So</span></label>
+                        </div>
+                    </div>
+                    <div class="recurring-option">
+                        <label>
+                            <input type="radio" name="quickRecurringType" value="monthly">
+                            <span id="quickRecurringMonthly">Monatlich</span>
+                        </label>
+                        <div id="quickMonthDayContainer" style="display: none;">
+                            <input type="number" id="quickMonthDay" min="1" max="31" value="1" placeholder="Tag (1-31)">
+                        </div>
+                    </div>
+                    <div class="recurring-option">
+                        <label>
+                            <input type="radio" name="quickRecurringType" value="custom">
+                            <span id="quickRecurringCustom">Benutzerdefiniert</span>
+                        </label>
+                        <div id="quickCustomDaysContainer" style="display: none;">
+                            <input type="number" id="quickCustomDays" min="1" value="1" placeholder="Tage">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-buttons">
+                <button id="quickAddCancelBtn" class="cancel-btn">Abbrechen</button>
+                <button id="quickAddSubmitBtn" class="submit-btn">Hinzufügen</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal für Segment-Auswahl (legacy, kept for compatibility) -->
+    <div id="segmentModal" class="modal hidden">
         <div class="modal-content">
             <h3>Wähle ein Segment</h3>
             <div class="segment-buttons">
@@ -331,10 +415,10 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js?v=1760159420936"></script>
 
     <!-- Firebase Config -->
-    <script src="firebase-config.js?v=1760159420936"></script>
-    <script src="auth.js?v=1760159420936"></script>
+    <script src="firebase-config.js?v=1760171768"></script>
+    <script src="auth.js?v=1760171768"></script>
 
-    <script src="script.js?v=1760159420936"></script>
+    <script src="script.js?v=1760171768"></script>
 
     <!-- Register Service Worker -->
     <script>

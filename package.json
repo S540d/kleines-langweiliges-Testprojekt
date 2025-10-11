@@ -1,6 +1,6 @@
 {
   "name": "eisenhauer-matrix",
-  "version": "1.4.0",
+  "version": "1.4.5",
   "description": "Eine moderne, mobile-first Progressive Web App zur Aufgabenverwaltung nach der Eisenhauer-Matrix-Methode.",
   "main": "index.html",
   "scripts": {

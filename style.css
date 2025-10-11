@@ -206,12 +206,12 @@ header h1 {
 
 /* Drag & Drop Hint */
 .drag-hint {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: var(--text-primary);
+    color: var(--card-bg);
     padding: 15px 20px;
     margin: 0 10px 10px 10px;
     border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     text-align: center;
     animation: slideDown 0.4s ease-out;
 }
@@ -223,9 +223,9 @@ header h1 {
 }
 
 .close-hint-btn {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: var(--card-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
     padding: 8px 20px;
     border-radius: 6px;
     cursor: pointer;
@@ -234,7 +234,7 @@ header h1 {
 }
 
 .close-hint-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: var(--task-bg);
 }
 
 .close-hint-btn:active {
@@ -254,14 +254,7 @@ header h1 {
 
 /* Add Task Section */
 .add-task-section {
-    background: transparent;
-    padding: 10px;
-    margin: 0 10px 10px 10px;
-    border-radius: 10px;
-    display: flex;
-    gap: 8px;
-    flex-shrink: 0;
-    align-items: center;
+    display: none; /* Hidden in v1.4.5 */
 }
 
 #taskInput {
@@ -327,6 +320,10 @@ header h1 {
 .segment-header {
     margin-bottom: 10px;
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
 }
 
 .q1 .segment-header { border-color: #1f2937; }
@@ -339,6 +336,35 @@ header h1 {
     font-size: 1rem;
     color: var(--text-primary);
     font-weight: 700;
+    flex: 1;
+}
+
+.segment-add-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: transparent;
+    border: 1.5px solid var(--text-secondary);
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    line-height: 1;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    padding: 0;
+}
+
+.segment-add-btn:hover {
+    background: var(--text-secondary);
+    color: var(--card-bg);
+    transform: scale(1.1);
+}
+
+.segment-add-btn:active {
+    transform: scale(0.95);
 }
 
 /* Task List */
@@ -953,4 +979,187 @@ body.dark-mode .search-highlight {
     background: var(--task-bg);
     border-radius: 8px;
     padding: 10px;
+}
+
+/* ============================================================================
+   Footer Styles (v1.4.5+)
+   ============================================================================ */
+.app-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.coffee-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #FFDD00;
+    color: #000;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: transform 0.2s;
+}
+
+.coffee-btn:hover {
+    transform: translateY(-2px);
+}
+
+.settings-btn-footer {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-primary);
+    transition: all 0.2s;
+}
+
+.settings-btn-footer:hover {
+    background: var(--task-bg);
+    transform: scale(1.05);
+}
+
+.settings-btn-footer:active {
+    transform: scale(0.95);
+}
+
+/* ============================================================================
+   Quick Add Modal Styles (v1.4.5+)
+   ============================================================================ */
+.quick-add-modal {
+    max-width: 500px;
+}
+
+.quick-add-category {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin: -5px 0 15px 0;
+    font-weight: 500;
+}
+
+.quick-add-input-wrapper {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.quick-add-input-wrapper input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    background: var(--task-bg);
+    color: var(--text-primary);
+    transition: border-color 0.2s;
+}
+
+.quick-add-input-wrapper input:focus {
+    outline: none;
+    border-color: var(--text-primary);
+}
+
+.char-counter {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    pointer-events: none;
+}
+
+.char-counter.warning {
+    color: #f59e0b;
+}
+
+.char-counter.error {
+    color: #ef4444;
+}
+
+.recurring-config-quick {
+    background: var(--task-bg);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.recurring-enable {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.recurring-enable input[type="checkbox"] {
+    cursor: pointer;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.submit-btn {
+    background: var(--text-primary);
+    color: var(--card-bg);
+    border: none;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.submit-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+}
+
+.submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ============================================================================
+   Hidden Element Utility
+   ============================================================================ */
+.hidden {
+    display: none !important;
+}
+
+/* ============================================================================
+   Mobile Optimizations for v1.4.5
+   ============================================================================ */
+@media (max-width: 600px) {
+    .app-footer {
+        justify-content: center;
+    }
+
+    .quick-add-modal {
+        max-width: 95%;
+        margin: 20px;
+    }
+
+    .modal-buttons {
+        flex-direction: column-reverse;
+    }
+
+    .modal-buttons button {
+        width: 100%;
+    }
 }

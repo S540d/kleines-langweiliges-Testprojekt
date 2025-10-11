@@ -340,6 +340,172 @@ metricsModal.addEventListener('click', (e) => {
     }
 });
 
+// Quick Add Modal Elements (v1.4.5+)
+const quickAddModal = document.getElementById('quickAddModal');
+const quickAddInput = document.getElementById('quickAddInput');
+const quickAddCharCount = document.getElementById('quickAddCharCount');
+const quickAddCategory = document.getElementById('quickAddCategory');
+const quickAddSubmitBtn = document.getElementById('quickAddSubmitBtn');
+const quickAddCancelBtn = document.getElementById('quickAddCancelBtn');
+const quickRecurringEnabled = document.getElementById('quickRecurringEnabled');
+const quickRecurringOptions = document.getElementById('quickRecurringOptions');
+let currentQuickAddSegment = null;
+
+// Segment names for display
+const segmentNames = {
+    1: { de: 'Do! (Dringend & Wichtig)', en: 'Do! (Urgent & Important)' },
+    2: { de: 'Schedule! (Nicht dringend & Wichtig)', en: 'Schedule! (Not Urgent & Important)' },
+    3: { de: 'Delegate! (Dringend & Nicht wichtig)', en: 'Delegate! (Urgent & Not Important)' },
+    4: { de: 'Ignore! (Nicht dringend & Nicht wichtig)', en: 'Ignore! (Not Urgent & Not Important)' },
+    5: { de: 'Done! (Erledigt)', en: 'Done! (Completed)' }
+};
+
+// Segment Add Buttons (v1.4.5+ - opens custom modal)
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('segment-add-btn')) {
+        const segmentId = parseInt(e.target.dataset.segment);
+        openQuickAddModal(segmentId);
+    }
+});
+
+// Open Quick Add Modal
+function openQuickAddModal(segmentId) {
+    currentQuickAddSegment = segmentId;
+    quickAddInput.value = '';
+    quickAddCharCount.textContent = '0/140';
+    quickAddCharCount.classList.remove('warning', 'error');
+    quickRecurringEnabled.checked = false;
+    quickRecurringOptions.style.display = 'none';
+
+    // Set category title
+    const categoryName = segmentNames[segmentId][currentLanguage] || segmentNames[segmentId]['en'];
+    quickAddCategory.textContent = categoryName;
+
+    // Update title
+    document.getElementById('quickAddTitle').textContent =
+        currentLanguage === 'de' ? 'Neue Aufgabe' : 'New Task';
+
+    quickAddModal.style.display = 'flex';
+    setTimeout(() => quickAddInput.focus(), 100);
+}
+
+// Character counter for quick add
+quickAddInput.addEventListener('input', () => {
+    const length = quickAddInput.value.length;
+    quickAddCharCount.textContent = `${length}/140`;
+
+    quickAddCharCount.classList.remove('warning', 'error');
+    if (length > 120) {
+        quickAddCharCount.classList.add('warning');
+    }
+    if (length >= 140) {
+        quickAddCharCount.classList.add('error');
+    }
+
+    // Enable/disable submit button
+    quickAddSubmitBtn.disabled = length === 0 || length > 140;
+});
+
+// Quick add recurring toggle
+quickRecurringEnabled.addEventListener('change', () => {
+    quickRecurringOptions.style.display = quickRecurringEnabled.checked ? 'block' : 'none';
+});
+
+// Quick add recurring type changes
+document.querySelectorAll('input[name="quickRecurringType"]').forEach(radio => {
+    radio.addEventListener('change', (e) => {
+        // Hide all sub-options
+        document.getElementById('quickWeekdaysContainer').style.display = 'none';
+        document.getElementById('quickMonthDayContainer').style.display = 'none';
+        document.getElementById('quickCustomDaysContainer').style.display = 'none';
+
+        // Show relevant sub-option
+        if (e.target.value === 'weekly') {
+            document.getElementById('quickWeekdaysContainer').style.display = 'flex';
+        } else if (e.target.value === 'monthly') {
+            document.getElementById('quickMonthDayContainer').style.display = 'block';
+        } else if (e.target.value === 'custom') {
+            document.getElementById('quickCustomDaysContainer').style.display = 'block';
+        }
+    });
+});
+
+// Submit quick add task
+quickAddSubmitBtn.addEventListener('click', () => {
+    const taskText = quickAddInput.value.trim();
+    if (!taskText || taskText.length > 140) return;
+
+    // Check if recurring
+    if (quickRecurringEnabled.checked) {
+        const recurringType = document.querySelector('input[name="quickRecurringType"]:checked').value;
+        let recurringConfig = { type: recurringType };
+
+        if (recurringType === 'weekly') {
+            const weekdays = Array.from(document.querySelectorAll('#quickWeekdaysContainer .weekday-check:checked'))
+                .map(cb => parseInt(cb.value));
+            if (weekdays.length === 0) {
+                alert(currentLanguage === 'de' ?
+                    'Bitte wähle mindestens einen Wochentag' :
+                    'Please select at least one weekday');
+                return;
+            }
+            recurringConfig.weekdays = weekdays;
+        } else if (recurringType === 'monthly') {
+            recurringConfig.dayOfMonth = parseInt(document.getElementById('quickMonthDay').value) || 1;
+        } else if (recurringType === 'custom') {
+            recurringConfig.intervalDays = parseInt(document.getElementById('quickCustomDays').value) || 1;
+        }
+
+        addTaskToSegmentWithRecurring(taskText, currentQuickAddSegment, recurringConfig);
+    } else {
+        addTaskToSegment(taskText, currentQuickAddSegment);
+    }
+
+    quickAddModal.style.display = 'none';
+});
+
+// Cancel quick add
+quickAddCancelBtn.addEventListener('click', () => {
+    quickAddModal.style.display = 'none';
+});
+
+// Close modal on outside click
+quickAddModal.addEventListener('click', (e) => {
+    if (e.target === quickAddModal) {
+        quickAddModal.style.display = 'none';
+    }
+});
+
+// Enter key submits
+quickAddInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter' && !quickAddSubmitBtn.disabled) {
+        quickAddSubmitBtn.click();
+    }
+});
+
+// Helper function for recurring tasks
+function addTaskToSegmentWithRecurring(text, segmentId, recurringConfig) {
+    const task = {
+        id: Date.now(),
+        text: text,
+        segment: segmentId,
+        completed: false,
+        createdAt: new Date().toISOString(),
+        recurring: recurringConfig
+    };
+    tasks.push(task);
+    saveTasks();
+    renderAllTasks();
+}
+
+// Footer Settings Button (v1.4.5)
+const settingsBtnFooter = document.getElementById('settingsBtnFooter');
+if (settingsBtnFooter) {
+    settingsBtnFooter.addEventListener('click', () => {
+        openSettingsModal();
+    });
+}
+
 // Functions
 function addTask() {
     const taskText = taskInput.value.trim();
