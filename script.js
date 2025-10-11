@@ -340,6 +340,25 @@ metricsModal.addEventListener('click', (e) => {
     }
 });
 
+// Segment Add Buttons (v1.4.5 - direct task creation)
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('segment-add-btn')) {
+        const segmentId = parseInt(e.target.dataset.segment);
+        const taskText = prompt(currentLanguage === 'de' ? 'Neue Aufgabe:' : 'New task:');
+        if (taskText && taskText.trim()) {
+            addTaskToSegment(taskText.trim(), segmentId);
+        }
+    }
+});
+
+// Footer Settings Button (v1.4.5)
+const settingsBtnFooter = document.getElementById('settingsBtnFooter');
+if (settingsBtnFooter) {
+    settingsBtnFooter.addEventListener('click', () => {
+        openSettingsModal();
+    });
+}
+
 // Functions
 function addTask() {
     const taskText = taskInput.value.trim();

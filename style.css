@@ -206,12 +206,12 @@ header h1 {
 
 /* Drag & Drop Hint */
 .drag-hint {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: var(--text-primary);
+    color: var(--card-bg);
     padding: 15px 20px;
     margin: 0 10px 10px 10px;
     border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     text-align: center;
     animation: slideDown 0.4s ease-out;
 }
@@ -223,9 +223,9 @@ header h1 {
 }
 
 .close-hint-btn {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: var(--card-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
     padding: 8px 20px;
     border-radius: 6px;
     cursor: pointer;
@@ -234,7 +234,7 @@ header h1 {
 }
 
 .close-hint-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: var(--task-bg);
 }
 
 .close-hint-btn:active {
@@ -254,14 +254,7 @@ header h1 {
 
 /* Add Task Section */
 .add-task-section {
-    background: transparent;
-    padding: 10px;
-    margin: 0 10px 10px 10px;
-    border-radius: 10px;
-    display: flex;
-    gap: 8px;
-    flex-shrink: 0;
-    align-items: center;
+    display: none; /* Hidden in v1.4.5 */
 }
 
 #taskInput {
@@ -327,6 +320,10 @@ header h1 {
 .segment-header {
     margin-bottom: 10px;
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
 }
 
 .q1 .segment-header { border-color: #1f2937; }
@@ -339,6 +336,35 @@ header h1 {
     font-size: 1rem;
     color: var(--text-primary);
     font-weight: 700;
+    flex: 1;
+}
+
+.segment-add-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: transparent;
+    border: 1.5px solid var(--text-secondary);
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    line-height: 1;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    padding: 0;
+}
+
+.segment-add-btn:hover {
+    background: var(--text-secondary);
+    color: var(--card-bg);
+    transform: scale(1.1);
+}
+
+.segment-add-btn:active {
+    transform: scale(0.95);
 }
 
 /* Task List */
